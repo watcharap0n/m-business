@@ -9,21 +9,22 @@ from typing import Optional
 from firebase_admin import auth
 import json
 from auth.firebase import Config_firebase
-# from auth.token_firebase import set_authentication, set_firebase
+from auth.token_firebase import set_authentication, set_firebase
 
-with open('auth/firebase.json', 'r') as json_file:
-    load_json = json.load(json_file)
-    client_firebase = load_json['firebase']
-    client_credential = load_json['credential']
+# with open('auth/firebase.json', 'r') as json_file:
+#     load_json = json.load(json_file)
+#     client_firebase = load_json['firebase']
+#     client_credential = load_json['credential']
 
 router = APIRouter()
 SECRET = 'watcharaponweeraborirak'
 manager = LoginManager(SECRET, tokenUrl='/secure/login', use_cookie=True)
-config = Config_firebase(path_db=client_firebase, path_auth=client_credential)
+# config = Config_firebase(path_db=client_firebase, path_auth=client_credential)
+config = Config_firebase(path_db=set_firebase, path_auth=set_authentication)
 pb = config.authentication()
-# var_mongodb = os.environ['MONGODB_URI']
-# db = MongoDB(database_name='Poker', uri=var_mongodb)
-db = MongoDB(database_name='linebot_mango', uri='mongodb://127.0.0.1:27017')
+var_mongodb = os.environ['MONGODB_URI']
+db = MongoDB(database_name='line', uri=var_mongodb)
+# db = MongoDB(database_name='linebot_mango', uri='mongodb://127.0.0.1:27017')
 
 
 @manager.user_loader
