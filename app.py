@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Request
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
-from routers import secure
+from routers import secure, information_table
 import uvicorn
 
 app = FastAPI()
@@ -15,10 +15,23 @@ app.include_router(
     responses={418: {'description': "I'm a teapot"}},
 )
 
+app.include_router(
+    information_table.router,
+    prefix='/information',
+    tags=['marketing info table'],
+    responses={418: {'description': "I'm a teapot"}}
 
-@app.route('/')
+)
+
+
+@app.get('/', tags=['page public'])
 def root_login(request: Request):
     return templates.TemplateResponse('login.html', context={'request': request})
+
+
+@app.get('/mk/info_table', tags=['page marketing'])
+def root_info_table(request: Request):
+    return templates.TemplateResponse('mk/information_table.html', context={'request': request})
 
 
 if __name__ == '__main__':
