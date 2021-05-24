@@ -8,7 +8,7 @@
         <br>
         <v-card class="mx-auto">
             <v-card-text>
-                <v-data-table :search="search" :headers="headers" :items="transaction">
+                <v-data-table multi-sort :search="search" :headers="headers" :items="transaction" >
                     <template v-slot:top>
                         <v-toolbar flat>
 
@@ -35,6 +35,11 @@
 
                     </template>
 
+                    <template v-slot:header.tag="{ header }">
+                        <v-chip color="primary">
+                            Tag
+                        </v-chip>
+                    </template>
 
                     <template v-slot:item.tag="{ item }">
                         <v-chip>
@@ -92,7 +97,7 @@
             headers: [
                 {
                     text: 'Tag',
-                    value: 'tag'
+                    value: 'tag',
                 },
                 {
                     text: 'User Info',
