@@ -1,30 +1,11 @@
 from fastapi import APIRouter
+import json
 
 router = APIRouter()
 
-data = [
-    {
-        'tag': 'a',
-        'name': 'watcharapon',
-        'product': 'consultant',
-        'tel': '0656791794',
-        'email': 'aasd@gmail.com'
-    },
-    {
-        'tag': 'b',
-        'name': 'thiphaporn',
-        'product': 'pusit',
-        'tel': '0632414155',
-        'email': 'wertt@gmail.com'
-    },
-    {
-        'tag': 'a',
-        'name': 'mawin',
-        'product': 'realestate',
-        'tel': '0512414552',
-        'email': 'erakei@gmail.com'
-    }
-]
+with open('auth/chatbot-mango-export-2.json', 'r') as json_file:
+    load_json = dict(json.load(json_file))
+    data = [load_json[x] for x in load_json.keys()]
 
 
 @router.get('/table')
