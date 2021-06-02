@@ -23,9 +23,5 @@ class DBModelMixin(BaseModel):
         json_encoders = {ObjectId: lambda x: str(x)}
 
 
-class Foo(DBModelMixin):
+class CutId(DBModelMixin):
     some_other_id: ObjectIdStr = ObjectId()
-
-
-
-
