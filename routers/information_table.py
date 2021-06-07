@@ -9,6 +9,8 @@ import os
 
 router = APIRouter()
 
+
+
 client = os.environ.get('MONGODB_URI')
 # client = 'mongodb://127.0.0.1:27017'
 db = MongoDB(database_name='dashboard', uri=client)
