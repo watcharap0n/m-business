@@ -414,6 +414,7 @@ new Vue({
   },
   methods: {
     initialize() {
+      this.spinTable = false
       const path = '/api/customer'
       axios.get(path)
           .then((res) => {
@@ -427,6 +428,7 @@ new Vue({
           })
     },
     APIImport() {
+      this.spinTable = false
       const path = '/api/import'
       axios.get(path)
           .then((res) => {
