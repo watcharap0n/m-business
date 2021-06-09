@@ -7,8 +7,8 @@ from bson import ObjectId
 from routers.items import Transaction
 import os
 
-# client = os.environ.get('MONGODB_URI')
-client = 'mongodb://127.0.0.1:27017'
+client = os.environ.get('MONGODB_URI')
+# client = 'mongodb://127.0.0.1:27017'
 db = MongoDB(database_name='Mango', uri=client)
 collection = 'imports'
 
