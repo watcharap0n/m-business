@@ -1,33 +1,22 @@
-from fastapi import APIRouter, Path, HTTPException
+from fastapi import APIRouter, Path, HTTPException, Body
 from typing import Optional
-from pydantic import BaseModel
 import datetime
 from db import MongoDB
 from object_str import CutId
 from bson import ObjectId
+from routers.items import Transaction
 import os
 
 router = APIRouter()
 
-client = os.environ.get('MONGODB_URI')
-# client = 'mongodb://127.0.0.1:27017'
-db = MongoDB(database_name='dashboard', uri=client)
-collection = 'mango'
+# client = os.environ.get('MONGODB_URI')
+client = 'mongodb://127.0.0.1:27017'
+db = MongoDB(database_name='Mango', uri=client)
+collection = 'customers'
 
 
-
-class Item(BaseModel):
-    name: Optional[str] = None
-    email: Optional[str] = None
-    tel: Optional[str] = None
-    product: Optional[str] = None
-    company: Optional[str] = None
-    channel: Optional[str] = None
-    tag: Optional[list] = None
-
-
-@router.get('/table')
-async def info_table_get():
+@router.get('/customer')
+async def customers_get():
     data = db.find(collection=collection, query={})
     data = list(data)
     for v in data:
@@ -35,9 +24,8 @@ async def info_table_get():
     return data[::-1]  # เอาข้อมูลล่าสุด
 
 
-@router.post('/table', status_code=201)
-async def info_table_post(item: Item):
-    print(item.dict())
+@router.post('/customer', status_code=201)
+async def customers_post(item: Transaction):
     try:
         key = CutId(_id=ObjectId()).dict()['id']
         item = item.dict()
@@ -52,9 +40,9 @@ async def info_table_post(item: Item):
         raise HTTPException(status_code=400, detail='API Something wrong!')
 
 
-@router.put('/table/{id}')
-async def info_table_put(
-        item: Item,
+@router.put('/customer/{id}')
+async def customers_put(
+        item: Transaction,
         id: Optional[str] = Path(None)
 ):
     payload = item.dict()
@@ -67,7 +55,19 @@ async def info_table_put(
     return 'success'
 
 
-@router.delete('/table/{id}')
-async def info_table_delete(id: Optional[str] = Path(None)):
+@router.delete('/customer/{id}')
+async def customers_delete(id: Optional[str] = Path(None)):
     db.delete_one(collection=collection, query={'id': id})
+    return 'success'
+
+
+@router.post('/move/customer')
+async def move_customer(items: Optional[list] = Body(None)):
+    for d in items:
+        db.delete_one(collection='imports', query={'id': d['id']})
+    for v in items:
+        key = CutId(_id=ObjectId()).dict()['id']
+        v['id'] = key
+        print(v)
+    db.insert_many(collection=collection, data=items)
     return 'success'

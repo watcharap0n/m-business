@@ -1,9 +1,13 @@
 from fastapi import FastAPI, Request
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
 from fastapi.middleware.cors import CORSMiddleware
-from routers import information_table
+from routers import customers, imports
 import uvicorn
 
 app = FastAPI()
+app.mount("/static", StaticFiles(directory="static"), name="static")
+template = Jinja2Templates(directory="templates")
 
 origins = [
     "http://localhost.tiangolo.com",
@@ -23,12 +27,25 @@ app.add_middleware(
 )
 
 app.include_router(
-    information_table.router,
-    prefix='/information',
-    tags=['marketing info table'],
+    customers.router,
+    prefix='/api',
+    tags=['Table Customers'],
     responses={418: {'description': "I'm a teapot"}}
 
 )
+
+app.include_router(
+    imports.router,
+    prefix='/api',
+    tags=['Table Import'],
+    responses={418: {'description': "I'm a teapot"}}
+)
+
+
+@app.get('/customers', tags=['Page'])
+async def customers(request: Request):
+    return template.TemplateResponse('customers.vue', context={'request': request})
+
 
 if __name__ == '__main__':
     uvicorn.run('app:app', debug=True, port=8888)
