@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Path, HTTPException, Body
+from fastapi import APIRouter, Path, HTTPException, Body, Query
 from typing import Optional
 import datetime
 from db import MongoDB
@@ -71,3 +71,6 @@ async def move_customer(items: Optional[list] = Body(None)):
         print(v)
     db.insert_many(collection=collection, data=items)
     return 'success'
+
+
+

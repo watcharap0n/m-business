@@ -1,5 +1,6 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, Any
+from enum import Enum
 
 
 class Transaction(BaseModel):
@@ -11,3 +12,10 @@ class Transaction(BaseModel):
     channel: Optional[str] = None
     message: Optional[str] = None
     tag: Optional[list] = None
+
+
+class TokenLINE(BaseModel):
+    ACCESS_TOKEN: Optional[str] = None
+    CHANNEL_ACCESS_TOKEN: Optional[str] = None
+
+

@@ -2,7 +2,7 @@ from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.middleware.cors import CORSMiddleware
-from routers import customers, imports
+from routers import customers, imports, tags
 import uvicorn
 
 app = FastAPI()
@@ -38,6 +38,13 @@ app.include_router(
     imports.router,
     prefix='/api',
     tags=['Table Import'],
+    responses={418: {'description': "I'm a teapot"}}
+)
+
+app.include_router(
+    tags.router,
+    prefix='/api',
+    tags=['Tags'],
     responses={418: {'description': "I'm a teapot"}}
 )
 
