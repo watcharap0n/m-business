@@ -347,7 +347,7 @@
         ></v-text-field>
 
         <v-subheader>
-          <strong> Your Webhook URL: </strong> [[webhook]]
+          <strong> Your Webhook URL: </strong> &nbsp;&nbsp; [[webhook]]
         </v-subheader>
 
       </v-form>
@@ -356,6 +356,7 @@
     <v-card-actions>
       <v-spacer></v-spacer>
       <v-btn
+          :loading="!spinWebhook"
           :disabled="!isEditing"
           :hidden="!validWebhook"
           color="success"
@@ -486,6 +487,7 @@ new Vue({
     SECRET_LINE: '',
     validWebhook: false,
     webhook: '',
+    spinWebhook: true,
     rules: [v => !!v || 'require!'],
   },
   created() {
@@ -680,6 +682,7 @@ new Vue({
     // start webhook
 
     saveWebhook() {
+      this.spinWebhook = false
       let form = this.$refs.formWebhook.validate();
       if (form === true) {
         let data = {ACCESS_TOKEN: this.ACCESS_TOKEN, SECRET_LINE: this.SECRET_LINE}
@@ -689,6 +692,7 @@ new Vue({
               this.webhook = res.data.webhook
               this.hasSaved = true;
               console.log(res.data);
+              this.spinWebhook = true
             })
             .catch((err) => {
               console.error(err)

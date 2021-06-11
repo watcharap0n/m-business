@@ -26,6 +26,7 @@ async def save(item: TokenLINE):
     path_wh = uuid.uuid4().hex
     result = item.dict()
     result['id'] = key
+    result['token'] = path_wh
     result['webhook'] = f'https://m-bussiness-bot.herokuapp.com/callback/{path_wh}'
     db.insert_one(collection=collection, data=result)
     del result['_id']
@@ -50,9 +51,8 @@ async def webhook(
         token: Optional[str] = Path(...),
         raw_json: Optional[dict] = Body(None)
 ):
-    q = db.find_one(collection=collection, query={'webhook': token})
+    q = db.find_one(collection=collection, query={'token': token})
     q = dict(q)
-    print(q)
     handler = q['SECRET_LINE']
     handler = WebhookHandler(handler)
     with open('static/line_log.json', 'w') as log_line:
