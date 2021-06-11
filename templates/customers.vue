@@ -24,6 +24,7 @@
 
         </v-bottom-navigation>
 
+        <!--     start table     -->
 
         <v-card-text>
           <v-data-table v-model="selected" :loading="!spinTable" show-select multi-sort :search="search"
@@ -294,6 +295,87 @@
         </v-btn>
       </template>
     </v-snackbar>
+
+    <!--    end table     -->
+
+
+    <!-- start stepper create webhook  -->
+    <br>
+    <br>
+    <v-toolbar
+        flat
+        color="teal"
+        dark
+    >
+      <v-icon>mdi-account</v-icon>
+      <v-toolbar-title class="font-weight-light">
+        Create Webhook
+      </v-toolbar-title>
+      <v-spacer></v-spacer>
+      <v-btn
+          color="green"
+          fab
+          dark
+          small
+          @click="isEditing = !isEditing"
+      >
+        <v-icon v-if="isEditing">
+          mdi-close
+        </v-icon>
+        <v-icon v-else>
+          mdi-pencil
+        </v-icon>
+      </v-btn>
+    </v-toolbar>
+    <v-card-text>
+      <v-form v-model="validWebhook" ref="formWebhook"
+              lazy-validation>
+        <v-text-field
+            required
+            :rules="rules"
+            v-model="ACCESS_TOKEN"
+            :disabled="!isEditing"
+            label="Access Secret Token"
+        ></v-text-field>
+
+        <v-text-field
+            required
+            :rules="rules"
+            v-model="SECRET_LINE"
+            :disabled="!isEditing"
+            label="Secret Channel"
+        ></v-text-field>
+
+        <v-subheader>
+          <strong> Your Webhook URL: </strong> [[webhook]]
+        </v-subheader>
+
+      </v-form>
+    </v-card-text>
+    <v-divider></v-divider>
+    <v-card-actions>
+      <v-spacer></v-spacer>
+      <v-btn
+          :disabled="!isEditing"
+          :hidden="!validWebhook"
+          color="success"
+          @click="saveWebhook"
+      >
+        Save
+      </v-btn>
+    </v-card-actions>
+    <v-snackbar
+        v-model="hasSaved"
+        :timeout="2000"
+        absolute
+        bottom
+        left
+    >
+      Your Create Webhook!
+    </v-snackbar>
+
+    <!-- end stepper create webhook -->
+
   </v-container>
 </v-app>
 </div>
@@ -305,6 +387,7 @@ new Vue({
   el: '#app',
   vuetify: new Vuetify(),
   data: {
+    // start var table
     page: 0,
     navigation: [
       {
@@ -395,6 +478,15 @@ new Vue({
     text: '',
     path: '',
     href: '',
+    //  end var table
+
+    hasSaved: false,
+    isEditing: null,
+    ACCESS_TOKEN: '',
+    SECRET_LINE: '',
+    validWebhook: false,
+    webhook: '',
+    rules: [v => !!v || 'require!'],
   },
   created() {
     this.initialize();
@@ -413,6 +505,9 @@ new Vue({
     }
   },
   methods: {
+
+    // start method table
+
     initialize() {
       this.spinTable = false
       const path = '/api/customer'
@@ -459,8 +554,7 @@ new Vue({
             .catch((err) => {
               console.log(err);
             })
-      }
-      else{
+      } else {
         this.colorSb = 'error'
         this.text = 'กรุณาเลือกข้อมูลที่จะต้องทำการย้าย!'
         this.snackbar = true
@@ -580,7 +674,33 @@ new Vue({
       }
       this.close()
     },
+
+    //  end method table
+
+    // start webhook
+
+    saveWebhook() {
+      let form = this.$refs.formWebhook.validate();
+      if (form === true) {
+        let data = {ACCESS_TOKEN: this.ACCESS_TOKEN, SECRET_LINE: this.SECRET_LINE}
+        const path = '/callback/save'
+        axios.post(path, data)
+            .then((res) => {
+              this.webhook = res.data.webhook
+              this.hasSaved = true;
+              console.log(res.data);
+            })
+            .catch((err) => {
+              console.error(err)
+            })
+      }
+    }
+
+    // end webhook
+
   },
+
+
   delimiters: ["[[", "]]"]
 })
 

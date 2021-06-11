@@ -7,20 +7,34 @@ import json
 from routers.items import TokenLINE
 from random import randint
 import os
+from bson import ObjectId
+import uuid
+from object_str import CutId
 from db import MongoDB
 
-
-# client = os.environ.get('MONGODB_URI')
-client = 'mongodb://127.0.0.1:27017'
-db = MongoDB(database_name='dashboard', uri=client)
+client = os.environ.get('MONGODB_URI')
+# client = 'mongodb://127.0.0.1:27017'
+db = MongoDB(database_name='Mango', uri=client)
 collection = 'line_bot'
-line_bot_api = LineBotApi("")
-handler = WebhookHandler("")
 
 router = APIRouter()
 
 
-def get_profile(user_id):
+@router.post('/save')
+async def save(item: TokenLINE):
+    key = CutId(_id=ObjectId()).dict()['id']
+    path_wh = uuid.uuid4().hex
+    result = item.dict()
+    result['id'] = key
+    result['webhook'] = f'https://m-bussiness-bot.herokuapp.com/callback/{path_wh}'
+    db.insert_one(collection=collection, data=result)
+    del result['_id']
+    return result
+
+
+def get_profile(user_id, q):
+    line_bot_api = q['ACCESS_TOKEN']
+    line_bot_api = LineBotApi(line_bot_api)
     profile = line_bot_api.get_profile(user_id)
     displayName = profile.display_name
     userId = profile.user_id
@@ -30,19 +44,17 @@ def get_profile(user_id):
     return result
 
 
-@router.post('/save')
-async def save():
-    pass
-
-
-@router.post('/webhook/{token}')
+@router.post('/{token}')
 async def webhook(
         request: Request,
         token: Optional[str] = Path(...),
         raw_json: Optional[dict] = Body(None)
 ):
-    data = {'user': 'kane', 'token': f'/callback/webhook/{token}'}
-    db.insert_one(collection=collection, data=data)
+    q = db.find_one(collection=collection, query={'webhook': token})
+    q = dict(q)
+    print(q)
+    handler = q['SECRET_LINE']
+    handler = WebhookHandler(handler)
     with open('static/line_log.json', 'w') as log_line:
         json.dump(raw_json, log_line)
     try:
@@ -52,7 +64,7 @@ async def webhook(
         _type = events['type']
         if _type == 'follow':
             userId = events['source']['userId']
-            profile = get_profile(userId)
+            profile = get_profile(userId, q)
             inserted = {'displayName': profile['displayName'], 'userId': userId, 'img': profile['img'],
                         'status': profile['status']}
             db.insert_one(collection='line_follower', data=inserted)
@@ -60,19 +72,20 @@ async def webhook(
             userId = events['source']['userId']
             db.delete_one('line_follower', query={'userId': userId})
         elif _type == 'postback':
-            event_postback(events)
+            event_postback(events, q)
         elif _type == 'message':
             message_type = events['message']['type']
             if message_type == 'text':
                 try:
                     userId = events['source']['userId']
                     message = events['message']['text']
-                    profile = get_profile(userId)
+                    profile = get_profile(userId, q)
                     push_message = {'user_id': userId, 'message': message, 'display_name': profile['displayName'],
                                     'img': profile['img'],
                                     'status': profile['status']}
                     db.insert_one(collection='message_user', data=push_message)
                     handler.handle(str(body, encoding='utf8'), signature)
+                    handler_message(events, q)
                 except InvalidSignatureError as v:
                     api_error = {'status_code': v.status_code, 'message': v.message}
                     raise HTTPException(status_code=400, detail=api_error)
@@ -80,25 +93,36 @@ async def webhook(
                 no_event = len(raw_json['events'])
                 for i in range(no_event):
                     events = raw_json['events'][i]
-                    event_handler(events)
+                    event_handler(events, q)
     except IndexError:
         raise HTTPException(status_code=200, detail={'Index': 'null'})
     return raw_json
 
 
-def event_handler(events):
+def event_handler(events, q):
+    line_bot_api = q['ACCESS_TOKEN']
+    line_bot_api = LineBotApi(line_bot_api)
     replyToken = events['replyToken']
     package_id = '446'
     stickerId = randint(1988, 2027)
     line_bot_api.reply_message(replyToken, StickerSendMessage(package_id, str(stickerId)))
 
 
-def event_postback(events):
+def event_postback(events, q):
     pass
 
 
-@handler.add(MessageEvent, message=TextMessage)
-def handler_message(event):
-    replyToken = event.reply_token
-    message_text = event.message.text
-    print(message_text, replyToken)
+def handler_message(events, q):
+    line_bot_api = q['ACCESS_TOKEN']
+    line_bot_api = LineBotApi(line_bot_api)
+    replyToken = events['replyToken']
+    user_id = events['source']['userId']
+    user = get_profile(user_id, q)
+    displayName = user['displayName']
+    line_bot_api.reply_message(replyToken, TextSendMessage(text=f'สวัสดีครับคุณ {displayName}'))
+
+# @handler.add(MessageEvent, message=TextMessage)
+# def handler_message(event):
+#     replyToken = event.reply_token
+#     message_text = event.message.text
+#     print(message_text, replyToken)

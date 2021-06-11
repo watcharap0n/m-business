@@ -55,6 +55,7 @@ app.include_router(
     responses={418: {'description': "i'm a teapot"}}
 )
 
+
 @app.get('/customers', tags=['Page'])
 async def customers(request: Request):
     return template.TemplateResponse('customers.vue', context={'request': request})
