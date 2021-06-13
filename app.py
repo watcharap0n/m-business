@@ -86,7 +86,15 @@ async def customers(
 ):
     if authentication:
         return template.TemplateResponse('customers.vue', context={'request': request})
-    return RedirectResponse(url='/root_login')
+    return RedirectResponse(url='/signin')
+
+
+@app.get('/')
+@app.get('/signin', tags=['Page'])
+async def signin(request: Request, authentication: str = Depends(cookie_extractor)):
+    if authentication:
+        return template.TemplateResponse('customers.vue', context={'request': request})
+    return template.TemplateResponse('signin.vue', context={'request': request})
 
 
 if __name__ == '__main__':

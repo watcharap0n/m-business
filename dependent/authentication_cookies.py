@@ -3,8 +3,7 @@ from routers.secure import auth
 from typing import Optional
 
 
-def cookie_extractor(access_token: Optional[str] = Cookie(None)):
-    print(access_token)
+async def cookie_extractor(access_token: Optional[str] = Cookie(None)):
     if not access_token:
         return None
     if access_token:

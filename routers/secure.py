@@ -53,10 +53,18 @@ async def login(
         user = pb.sign_in_with_email_and_password(email, password)
         check_verify = auth.get_user_by_email(user['email'])
         if check_verify.email_verified:
-            expires = 60 * 60 * 1
-            auth_cookie = auth.create_session_cookie(id_token=user['idToken'], expires_in=timedelta(hours=1))
-            response.set_cookie(key='access_token', value=str(auth_cookie), expires=expires, httponly=True, secure=True)
-            return {'url': '/customers', 'status': True, 'detail': 'login success'}
+            if remember == ['remember']:
+                expires = 60 * 60 * 1
+                auth_cookie = auth.create_session_cookie(id_token=user['idToken'], expires_in=timedelta(hours=1))
+                response.set_cookie(key='access_token', value=str(auth_cookie), expires=expires, httponly=True)
+                response.set_cookie(key='hash_email', value=str(email))
+                response.set_cookie(key='hash_password', value=str(password))
+                return {'url': '/customers', 'status': True, 'detail': 'login success'}
+            else:
+                expires = 60 * 60 * 1
+                auth_cookie = auth.create_session_cookie(id_token=user['idToken'], expires_in=timedelta(hours=1))
+                response.set_cookie(key='access_token', value=str(auth_cookie), expires=expires, httponly=True)
+                return {'url': '/customers', 'status': True, 'detail': 'login success'}
         elif not check_verify.email_verified:
             pb.send_email_verification(user['idToken'])
             return {'status': False, 'detail': 'email verification'}
@@ -66,14 +74,14 @@ async def login(
 
 @router.get('/logout')
 async def get_cookies():
-    response = RedirectResponse(url='/root_login')
-    response.delete_cookie('access-token')
+    response = RedirectResponse(url='/signin')
+    response.delete_cookie('access_token')
     return response
 
 
 @router.get('/socket_auth')
 async def socket_auth(request: Request):
-    token = request.cookies.get('access-token')
+    token = request.cookies.get('access_token')
     try:
         check = auth.verify_session_cookie(token)
         auth.revoke_refresh_tokens(check['sub'])
@@ -86,3 +94,20 @@ async def socket_auth(request: Request):
 async def forgot(forgot: str = Form(...)):
     pb.send_password_reset_email(forgot)
     return 'success'
+
+
+@router.get('/clear_cookie')
+async def clear_cookie():
+    response = RedirectResponse(url='/signin')
+    response.delete_cookie('access_token')
+    response.delete_cookie('hash_email')
+    response.delete_cookie('hash_password')
+    return response
+
+
+@router.get('/cookie_login')
+async def clear_cookie(request: Request):
+    email = request.cookies.get('hash_email')
+    password = request.cookies.get('hash_password')
+    data = {'email': email, 'password': password}
+    return data
