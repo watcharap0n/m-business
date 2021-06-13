@@ -34,6 +34,7 @@
           >
             <v-avatar>
               <img
+                  :loading="!spinAuth"
                   :src="[[userAuth.picture]]"
                   alt="John"
               >
@@ -109,6 +110,7 @@
 
       <v-container>
         <v-row class="text-center">
+
           <v-card class="mx-auto" class="elevation-1">
 
             <v-bottom-navigation
@@ -125,6 +127,7 @@
               </v-btn>
 
             </v-bottom-navigation>
+
 
             <!--     start table     -->
 
@@ -380,6 +383,8 @@
             </v-card-text>
           </v-card>
         </v-row>
+
+
         <v-snackbar
             dark
             :color="colorSb"
@@ -406,78 +411,116 @@
         <!-- start stepper create webhook  -->
         <br>
         <br>
-        <v-toolbar
-            color="cyan lighten-2"
-            dark
-        >
-          <v-icon>mdi-account</v-icon>
-          <v-toolbar-title class="font-weight-light">
-            Create Webhook
-          </v-toolbar-title>
-          <v-spacer></v-spacer>
-          <v-btn
-              color="green accent-1"
-              fab
-              dark
-              small
-              @click="isEditing = !isEditing"
-          >
-            <v-icon v-if="isEditing">
-              mdi-close
-            </v-icon>
-            <v-icon v-else>
-              mdi-pencil
-            </v-icon>
-          </v-btn>
-        </v-toolbar>
-        <v-card-text>
-          <v-form v-model="validWebhook" ref="formWebhook"
-                  lazy-validation>
-            <v-text-field
-                required
-                :rules="rules"
-                v-model="ACCESS_TOKEN"
-                :disabled="!isEditing"
-                label="Access Secret Token"
-            ></v-text-field>
+        <v-row>
 
-            <v-text-field
-                required
-                :rules="rules"
-                v-model="SECRET_LINE"
-                :disabled="!isEditing"
-                label="Secret Channel"
-            ></v-text-field>
+          <v-col cols="2">
+            <v-card
+                class="mx-auto"
+                max-width="500"
+            >
+              <v-list>
+                <v-list-item-group v-model="model">
+                  <v-list-item
+                      v-for="(item, i) in items"
+                      :key="i"
+                      @click="listModel(item.text)"
+                  >
+                    <v-list-item-icon>
+                      <v-icon v-text="item.icon"></v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-content>
+                      <v-list-item-title v-text="item.text"></v-list-item-title>
+                    </v-list-item-content>
+                  </v-list-item>
+                </v-list-item-group>
+              </v-list>
+            </v-card>
+          </v-col>
 
-            <v-subheader>
-              <strong> Your Webhook URL: </strong> &nbsp;&nbsp; [[webhook]]
-            </v-subheader>
+          <v-col cols="10">
 
-          </v-form>
-        </v-card-text>
-        <v-divider></v-divider>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn
-              :loading="!spinWebhook"
-              :disabled="!isEditing"
-              :hidden="!validWebhook"
-              color="success"
-              @click="saveWebhook"
-          >
-            Save
-          </v-btn>
-        </v-card-actions>
-        <v-snackbar
-            v-model="hasSaved"
-            :timeout="2000"
-            absolute
-            bottom
-            left
-        >
-          Your Create Webhook!
-        </v-snackbar>
 
+
+            <div :hidden="!showWebhook">
+              <v-toolbar
+                  color="cyan lighten-2"
+                  dark
+              >
+                <v-icon>mdi-account</v-icon>
+                <v-toolbar-title class="font-weight-light">
+                  Create Webhook
+                </v-toolbar-title>
+                <v-spacer></v-spacer>
+                <v-btn
+                    color="green accent-1"
+                    fab
+                    dark
+                    small
+                    @click="isEditing = !isEditing"
+                >
+                  <v-icon v-if="isEditing">
+                    mdi-close
+                  </v-icon>
+                  <v-icon v-else>
+                    mdi-pencil
+                  </v-icon>
+                </v-btn>
+              </v-toolbar>
+              <v-card-text>
+                <v-form v-model="validWebhook" ref="formWebhook"
+                        lazy-validation>
+                  <v-text-field
+                      required
+                      :rules="rules"
+                      v-model="ACCESS_TOKEN"
+                      :disabled="!isEditing"
+                      label="Access Secret Token"
+                  ></v-text-field>
+
+                  <v-text-field
+                      required
+                      :rules="rules"
+                      v-model="SECRET_LINE"
+                      :disabled="!isEditing"
+                      label="Secret Channel"
+                  ></v-text-field>
+
+                  <v-subheader>
+                    <strong> Your Webhook URL: </strong> &nbsp;&nbsp; [[webhook]]
+                  </v-subheader>
+
+                </v-form>
+              </v-card-text>
+              <v-divider></v-divider>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn
+                    :loading="!spinWebhook"
+                    :disabled="!isEditing"
+                    :hidden="!validWebhook"
+                    color="success"
+                    @click="saveWebhook"
+                >
+                  Save
+                </v-btn>
+              </v-card-actions>
+              <v-snackbar
+                  v-model="hasSaved"
+                  :timeout="2000"
+                  absolute
+                  bottom
+                  left
+              >
+                Your Create Webhook!
+              </v-snackbar>
+            </div>
+
+            <div :hidden="!showIntent">
+              <h2>In Progress...</h2>
+            </div>
+
+          </v-col>
+        </v-row>
         <!-- end stepper create webhook -->
       </v-container>
     </v-sheet>
@@ -603,7 +646,25 @@ new Vue({
       picture: '',
       email: '',
       uid: '',
-    }
+    },
+    spinAuth: false,
+
+
+    // item location
+
+    items: [
+      {
+        icon: 'mdi-inbox',
+        text: 'Webhook',
+      },
+      {
+        icon: 'mdi-star',
+        text: 'Train BOT',
+      },
+    ],
+    model: 0,
+    showWebhook: true,
+    showIntent: false,
   },
   beforeCreate() {
     const path = '/secure/socket_auth'
@@ -615,14 +676,17 @@ new Vue({
           user.email = res.data.email
           user.uid = res.data.uid
         })
-  },
+  }
+  ,
   created() {
     this.initialize();
-  },
+  }
+  ,
   computed: {
     formTitle() {
       return this.editedIndex === -1 ? 'New Customer' : 'Edit Customer'
-    },
+    }
+    ,
     color() {
       switch (this.page) {
         case 0:
@@ -631,7 +695,8 @@ new Vue({
           return 'pink accent-2'
       }
     }
-  },
+  }
+  ,
   methods: {
 
     // start method table
@@ -649,7 +714,8 @@ new Vue({
           .then((err) => {
             console.log(err)
           })
-    },
+    }
+    ,
     APIImport() {
       this.spinTable = false
       const path = '/api/import'
@@ -663,7 +729,8 @@ new Vue({
           .then((err) => {
             console.log(err)
           })
-    },
+    }
+    ,
     async moveImport() {
       if (this.selected.length > 0) {
         this.spinImport = true
@@ -688,14 +755,16 @@ new Vue({
         this.snackbar = true
 
       }
-    },
+    }
+    ,
     changeTransaction(data) {
       if (data === 'imports') {
         this.APIImport()
       } else if (data === 'customers') {
         this.initialize()
       }
-    },
+    }
+    ,
     colorProduct(product) {
       if (product === 'Construction') {
         return 'green accent-1'
@@ -706,7 +775,8 @@ new Vue({
       if (product === 'Project Planning') {
         return 'red accent-1'
       }
-    },
+    }
+    ,
     async addTransaction(data) {
       let href = this.href
       if (href === 'customer')
@@ -724,7 +794,8 @@ new Vue({
           .catch((err) => {
             console.log(err);
           })
-    },
+    }
+    ,
     async editTransaction(data, id) {
       let href = this.href
       if (href === 'customer')
@@ -741,7 +812,8 @@ new Vue({
           .catch((err) => {
             console.log(err);
           })
-    },
+    }
+    ,
     async deleteTransaction(id) {
       let href = this.href
       if (href === 'customer')
@@ -759,38 +831,44 @@ new Vue({
           .catch((err) => {
             console.log(err);
           })
-    },
+    }
+    ,
     editItem(item) {
       console.log(this.href)
       this.editedIndex = this.transaction.indexOf(item)
       this.editedItem = Object.assign({}, item)
       this.dialogCustomer = true;
-    },
+    }
+    ,
     deleteItem(item) {
       this.editedIndex = this.transaction.indexOf(item)
       this.editedItem = Object.assign({}, item)
       this.dialogDelete = true
-    },
+    }
+    ,
     async deleteItemConfirm() {
       this.spinButton = false;
       await this.deleteTransaction(this.editedItem.id);
       this.transaction.splice(this.editedIndex, 1);
       this.closeDelete()
-    },
+    }
+    ,
     close() {
       this.dialogCustomer = false
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem)
         this.editedIndex = -1
       })
-    },
+    }
+    ,
     closeDelete() {
       this.dialogDelete = false
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem)
         this.editedIndex = -1
       })
-    },
+    }
+    ,
     async save() {
       if (this.editedIndex > -1) {
         this.spinButton = false;
@@ -801,7 +879,8 @@ new Vue({
         await this.addTransaction(this.editedItem);
       }
       this.close()
-    },
+    }
+    ,
 
     //  end method table
 
@@ -824,16 +903,29 @@ new Vue({
               console.error(err)
             })
       }
-    },
+    }
+    ,
 
     // end webhook
 
-
-    // logout
-
     logout() {
       return window.location = '/secure/logout'
-    }
+    },
+
+
+    // listModel
+    listModel(data) {
+      if (data === 'Webhook'){
+        this.showIntent = false
+        this.showWebhook = true
+      }
+      else if (data === 'Train BOT')
+      {
+        this.showWebhook = false
+        this.showIntent = true
+
+      }
+    },
 
   },
 
