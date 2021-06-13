@@ -67,7 +67,7 @@
                         size="164"
                         tile
                     >
-                      <v-img :src="userAuth.image"></v-img>
+                      <v-img :src="userAuth.picture"></v-img>
                     </v-avatar>
                   </v-col>
                   <v-col class="py-0">
