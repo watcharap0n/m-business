@@ -19,8 +19,8 @@
 
       <v-spacer></v-spacer>
 
-[[userAuth.name]]
-&nbsp;
+      [[userAuth.name]]
+      &nbsp;
       <v-menu
           bottom
           left
@@ -34,7 +34,7 @@
           >
             <v-avatar>
               <img
-                  src="https://cdn.vuetifyjs.com/images/john.jpg"
+                  :src="[[userAuth.image]]"
                   alt="John"
               >
             </v-avatar>
@@ -81,9 +81,9 @@
                         </v-list-item-title>
                         <v-list-item-subtitle>Email: [[userAuth.email]]</v-list-item-subtitle>
                         <v-spacer></v-spacer>
-                       <v-btn text color="red" @click="logout">
-                         <strong>Logout</strong>
-                       </v-btn>
+                        <v-btn text color="red" @click="logout">
+                          <strong>Logout</strong>
+                        </v-btn>
                       </v-list-item-content>
                     </v-list-item>
                   </v-col>
@@ -831,7 +831,7 @@ new Vue({
 
     // logout
 
-    logout(){
+    logout() {
       return window.location = '/secure/logout'
     }
 
