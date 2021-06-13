@@ -9,3 +9,5 @@ config
 auth/firebase.json
 auth/credential.json
 .vscode
+environ/client_environ
+environ/client_environ.py

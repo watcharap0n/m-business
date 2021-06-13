@@ -1,9 +1,16 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Depends
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.middleware.cors import CORSMiddleware
-from routers import customers, imports, tags, wh_client
+from dependent.authentication_cookies import cookie_extractor
+from fastapi.responses import RedirectResponse
+from routers import customers, imports, tags, wh_client, secure
+import time
 import uvicorn
+import logging
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -55,10 +62,31 @@ app.include_router(
     responses={418: {'description': "i'm a teapot"}}
 )
 
+app.include_router(
+    secure.router,
+    prefix='/secure',
+    tags=['Secure'],
+    responses={418: {'description': "I'm a teapot"}}
+)
+
+
+@app.middleware('http')
+async def add_process_time_header(request: Request, call_next):
+    start_time = time.time()
+    response = await call_next(request)
+    process_time = time.time() - start_time
+    response.headers['X-Process-Time'] = str(round(process_time, 5))
+    return response
+
 
 @app.get('/customers', tags=['Page'])
-async def customers(request: Request):
-    return template.TemplateResponse('customers.vue', context={'request': request})
+async def customers(
+        request: Request,
+        authentication: str = Depends(cookie_extractor)
+):
+    if authentication:
+        return template.TemplateResponse('customers.vue', context={'request': request})
+    return RedirectResponse(url='/root_login')
 
 
 if __name__ == '__main__':

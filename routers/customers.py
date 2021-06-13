@@ -52,13 +52,13 @@ async def customers_put(
     payload['time'] = _d.strftime("%H:%M:%S")
     values = {'$set': payload}
     db.update_one(collection=collection, values=values, query=query)
-    return 'success'
+    return {'message': 'success'}
 
 
 @router.delete('/customer/{id}')
 async def customers_delete(id: Optional[str] = Path(None)):
     db.delete_one(collection=collection, query={'id': id})
-    return 'success'
+    return {'message': 'success'}
 
 
 @router.post('/move/customer')
@@ -70,7 +70,4 @@ async def move_customer(items: Optional[list] = Body(None)):
         v['id'] = key
         print(v)
     db.insert_many(collection=collection, data=items)
-    return 'success'
-
-
-
+    return {'message': 'success'}

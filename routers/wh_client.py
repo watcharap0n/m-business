@@ -1,16 +1,16 @@
 from fastapi import APIRouter, Request, HTTPException, Body, Path
-from typing import Optional
 from linebot import LineBotApi, WebhookHandler, WebhookParser
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import StickerSendMessage, TextSendMessage, TextMessage, MessageEvent
-import json
 from routers.items import TokenLINE
 from random import randint
-import os
 from bson import ObjectId
-import uuid
 from object_str import CutId
+from typing import Optional
 from db import MongoDB
+import uuid
+import json
+import os
 
 client = os.environ.get('MONGODB_URI')
 # client = 'mongodb://127.0.0.1:27017'
@@ -121,8 +121,4 @@ def handler_message(events, q):
     displayName = user['displayName']
     line_bot_api.reply_message(replyToken, TextSendMessage(text=f'สวัสดีครับคุณ {displayName}'))
 
-# @handler.add(MessageEvent, message=TextMessage)
-# def handler_message(event):
-#     replyToken = event.reply_token
-#     message_text = event.message.text
-#     print(message_text, replyToken)
+

@@ -1,6 +1,6 @@
+from firebase_admin import credentials
 import firebase_admin
 import pyrebase
-from firebase_admin import credentials
 
 
 class Config_firebase:
@@ -13,3 +13,9 @@ class Config_firebase:
         firebase = self.path_db
         pb = pyrebase.initialize_app(firebase).auth()
         return pb
+
+    def database_fb(self):
+        firebase = self.path_db
+        config = pyrebase.initialize_app(firebase)
+        db = config.database()
+        return db
