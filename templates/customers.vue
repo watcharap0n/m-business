@@ -34,7 +34,7 @@
           >
             <v-avatar>
               <img
-                  :src="[[userAuth.image]]"
+                  :src="[[userAuth.picture]]"
                   alt="John"
               >
             </v-avatar>
