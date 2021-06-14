@@ -136,6 +136,8 @@
                             :headers="headers"
                             :items="transaction">
 
+                <!--       slot TOP         -->
+
                 <template v-slot:top>
                   <v-toolbar flat>
                     <v-text-field
@@ -194,8 +196,11 @@
                                   md="4"
                               >
                                 <v-text-field
+                                    prepend-inner-icon="mdi-account"
                                     v-model="editedItem.name"
                                     label="Name"
+                                    outlined
+                                    dense
                                 ></v-text-field>
                               </v-col>
                               <v-col
@@ -203,10 +208,14 @@
                                   sm="6"
                                   md="4"
                               >
-                                <v-text-field
+                                <v-select
+                                    prepend-inner-icon="mdi-post-outline"
                                     v-model="editedItem.product"
+                                    :items="productMango"
                                     label="Product"
-                                ></v-text-field>
+                                    outlined
+                                    dense
+                                ></v-select>
                               </v-col>
                               <v-col
                                   cols="12"
@@ -216,6 +225,9 @@
                                 <v-text-field
                                     v-model="editedItem.email"
                                     label="Email"
+                                    prepend-inner-icon="mdi-email"
+                                    outlined
+                                    dense
                                 ></v-text-field>
                               </v-col>
                               <v-col
@@ -226,6 +238,9 @@
                                 <v-text-field
                                     v-model="editedItem.tel"
                                     label="Tel"
+                                    prepend-inner-icon="mdi-card-account-phone"
+                                    outlined
+                                    dense
                                 ></v-text-field>
                               </v-col>
                               <v-col
@@ -234,8 +249,11 @@
                                   md="4"
                               >
                                 <v-text-field
+                                    prepend-inner-icon="mdi-office-building"
                                     v-model="editedItem.company"
                                     label="Company"
+                                    outlined
+                                    dense
                                 ></v-text-field>
                               </v-col>
                               <v-col
@@ -245,7 +263,10 @@
                               >
                                 <v-text-field
                                     v-model="editedItem.channel"
+                                    prepend-inner-icon="mdi-access-point-check"
                                     label="Channel"
+                                    outlined
+                                    dense
                                 ></v-text-field>
                               </v-col>
                               <v-col
@@ -254,8 +275,11 @@
                                   md="12"
                               >
                                 <v-textarea
+                                    prepend-inner-icon="mdi-android-messages"
                                     v-model="editedItem.message"
                                     label="Message"
+                                    outlined
+                                    dense
                                 ></v-textarea>
                               </v-col>
                               <v-col
@@ -263,13 +287,17 @@
                                   sm="12"
                                   md="12"
                               >
-                                <v-combobox
+                                <v-autocomplete
+                                    prepend-inner-icon="mdi-tag"
                                     v-model="editedItem.tag"
-                                    label="Tag"
-                                    multiple
+                                    :items="itemsTag"
+                                    outlined
                                     dense
                                     chips
-                                ></v-combobox>
+                                    small-chips
+                                    label="Tags"
+                                    multiple
+                                ></v-autocomplete>
                               </v-col>
                             </v-row>
                           </v-container>
@@ -310,6 +338,127 @@
                       </v-card>
                     </v-dialog>
                   </v-toolbar>
+
+
+                  <!-- tag start -->
+
+                  <v-toolbar flat>
+                    <v-btn
+                        elevation="3"
+                        :loading="!spinTable"
+                        :disabled="!btnTag"
+                        medium
+                        small
+                        color="#FF648D"
+                        dark
+                        @click="tagTransaction(selected)"
+                    ><i class="fas fa-user-tag"></i>
+                    </v-btn>
+
+                    <div class="small" style="margin-left: 10px; margin-top: 23px; margin-right: 20px">
+                      <v-combobox
+                          :loading="!spinTable"
+                          v-model="model"
+                          :filter="filter"
+                          :hide-no-data="!searchTag"
+                          :items="itemsTag"
+                          :search-input.sync="searchTag"
+                          hide-selected
+                          label="แท็ก"
+                          multiple
+                          dense
+                          small-chips
+
+                      >
+                        <template v-slot:no-data>
+                          <v-list-item>
+                            <v-icon color="green">mdi-arrow-right-thick</v-icon>
+                            <span class="subheading">สร้าง</span>&nbsp;&nbsp;
+                            <v-chip
+                                style="color: white"
+                                color="pink lighten-2"
+                                label
+                                small
+                            >
+                              [[ searchTag ]]
+                            </v-chip>
+                          </v-list-item>
+                        </template>
+                        <template v-slot:selection="{ attrs, item, parent, selected, index}">
+                          <v-chip
+                              v-if="index < 2"
+                              v-if="item === Object(item)"
+                              v-bind="attrs"
+                              color="pink lighten-2"
+                              :input-value="selected"
+                              label
+                              small
+                              close
+                              close-icon="mdi-delete"
+                              @click:close="parent.selectItem(item)"
+                          >
+                      <span class="pr-2" style="color: white">
+                        [[ item.text ]]
+                      </span>
+                          </v-chip>
+                          <span v-if="index === 1"
+                                class="grey--text caption">(+[[ model.length - 1 ]] แท็กอื่นๆ)
+                    </span>
+                        </template>
+
+                        <template v-slot:item="{ index, item }">
+                          <v-text-field
+                              v-if="editingTag === item"
+                              v-model="editingTag.text"
+                              autofocus
+                              flat
+                              background-color="transparent"
+                              hide-details
+                              solo
+                              @keyup.enter="edit(index, item)"
+                          ></v-text-field>
+                          <v-chip
+                              v-else
+                              color="pink lighten-2"
+                              dark
+                              label
+                              small
+                          >
+                            [[ item.text ]]
+                          </v-chip>
+                          <v-spacer></v-spacer>
+                          <v-list-item-action @click.stop>
+                            <v-row>
+                              <v-col>
+                                <v-btn
+                                    icon
+                                    @click.stop.prevent="edit(index, item)"
+                                >
+                                  <v-icon color="teal">[[ editingTag !== item ? 'mdi-pencil' : 'mdi-check' ]]</v-icon>
+                                </v-btn>
+                              </v-col>
+                              <v-col>
+                                <v-btn
+                                    icon
+                                    @click.stop.prevent="toRemove(index, item)"
+                                >
+                                  <v-icon color="red">mdi-delete</v-icon>
+                                </v-btn>
+                              </v-col>
+                            </v-row>
+                          </v-list-item-action>
+                        </template>
+                      </v-combobox>
+
+                    </div>
+
+
+                  </v-toolbar>
+
+
+                  <!--tag end-->
+
+
                 </template>
 
                 <template v-slot:item.tag="{item}">
@@ -419,7 +568,7 @@
                 max-width="500"
             >
               <v-list>
-                <v-list-item-group v-model="model">
+                <v-list-item-group v-model="modelList">
                   <v-list-item
                       v-for="(item, i) in items"
                       :key="i"
@@ -438,7 +587,6 @@
           </v-col>
 
           <v-col cols="10">
-
 
 
             <div :hidden="!showWebhook">
@@ -553,7 +701,8 @@ new Vue({
       {
         text: 'Actions',
         value: 'actions',
-        sortable: false
+        sortable: false,
+        width: 80
       },
       {
         text: 'Tag',
@@ -628,8 +777,24 @@ new Vue({
     path: '',
     href: '',
     isProfile: false,
+    productMango: ['RealEstate', 'Construction', 'BI Dashboard', 'Project Planning', 'CSM', 'QCM', 'Maintenance', 'Rental', 'MRP'],
+
     //  end var table
 
+
+    // start tag
+
+    itemsTag: [],
+    searchTag: null,
+    editingTag: null,
+    colorsTag: 'pink',
+    model: [],
+    btnTag: false,
+
+    // end tags
+
+
+    // start webhook
     hasSaved: false,
     isEditing: null,
     ACCESS_TOKEN: '',
@@ -638,6 +803,9 @@ new Vue({
     webhook: '',
     spinWebhook: true,
     rules: [v => !!v || 'require!'],
+
+
+    //end webhook
 
     // socket auth
 
@@ -662,9 +830,41 @@ new Vue({
         text: 'Train BOT',
       },
     ],
-    model: 0,
+    modelList: 0,
     showWebhook: true,
     showIntent: false,
+  },
+  watch: {
+    model(val, prev) {
+      if (val.length === prev.length) return
+      this.model = val.map(v => {
+        if (typeof v === 'string') {
+          v = {
+            text: v,
+            color: this.colorsTag
+          }
+          this.addTag(v)
+          this.nonce++
+        }
+        return v
+      })
+      if (this.model.length > 0 && this.selected.length > 0) {
+        this.btnTag = true
+      } else if (this.model.length === 0) {
+        this.btnTag = false
+      }
+
+    },
+
+    selected() {
+      if (this.selected.length === 0) {
+        this.btnTag = false
+
+      } else if (this.selected.length > 0 && this.model.length > 0) {
+        this.btnTag = true
+      }
+    },
+
   },
   beforeCreate() {
     const path = '/secure/socket_auth'
@@ -680,6 +880,7 @@ new Vue({
   ,
   created() {
     this.initialize();
+    this.getTags();
   }
   ,
   computed: {
@@ -884,6 +1085,105 @@ new Vue({
 
     //  end method table
 
+
+    // start method tags
+
+    getTags() {
+      const path = '/api/tag'
+      axios.get(path)
+          .then((res) => {
+            this.itemsTag = res.data
+          })
+          .catch((err) => {
+            console.error(err)
+          })
+    }
+    ,
+
+
+    filter(item, queryText, itemText) {
+      const hasValue = val => val != null ? val : ''
+      const text = hasValue(itemText)
+      const query = hasValue(queryText)
+      return text.toString()
+          .toLowerCase()
+          .indexOf(query.toString().toLowerCase()) > -1
+    }
+    ,
+
+    edit(index, item) {
+      if (!this.editingTag) {
+        this.editingTag = item
+        this.editingIndexTag = index
+
+      } else {
+        this.setTag(item.id, this.editingTag)
+        this.editingTag = null
+        this.editingIndexTag = -1
+      }
+    }
+    ,
+
+    addTag(item) {
+      const path = `/api/tag?tag=${item.text}`
+      axios.get(path)
+          .then(() => {
+            this.getTags()
+            console.log('success')
+          })
+          .catch((err) => {
+            console.error(err)
+          })
+    }
+    ,
+
+    setTag(id, item) {
+      const path = `/api/tag/${item}?id-query=${id}`;
+      axios.put(path)
+          .then(() => {
+            console.log('success')
+          })
+          .catch((error) => {
+            console.error(error)
+          })
+    }
+    ,
+
+    toRemove(index, item) {
+      this.itemsTag.splice(this.itemsTag.indexOf(item), 1)
+      this.removeTag(item.id)
+    }
+    ,
+
+    removeTag(id) {
+      console.log(id)
+      const path = `/api/tag?id-query=${id}`;
+      axios.delete(path)
+          .then(() => {
+            this.getTags()
+            console.log('success')
+          })
+          .catch((error) => {
+            console.error(error)
+          })
+    }
+    ,
+
+    tagTransaction(selected) {
+      let data = {'id': selected, 'tag': this.model}
+      const path = '/api/tag'
+      axios.post(path, data)
+          .then((res) => {
+            console.log(res.data)
+          })
+          .catch((err) => {
+            console.error(err)
+          })
+    },
+
+
+    // end tag
+
     // start webhook
 
     saveWebhook() {
@@ -896,7 +1196,6 @@ new Vue({
             .then((res) => {
               this.webhook = res.data.webhook
               this.hasSaved = true;
-              console.log(res.data);
               this.spinWebhook = true
             })
             .catch((err) => {
@@ -910,24 +1209,25 @@ new Vue({
 
     logout() {
       return window.location = '/secure/logout'
-    },
+    }
+    ,
 
 
     // listModel
     listModel(data) {
-      if (data === 'Webhook'){
+      if (data === 'Webhook') {
         this.showIntent = false
         this.showWebhook = true
-      }
-      else if (data === 'Train BOT')
-      {
+      } else if (data === 'Train BOT') {
         this.showWebhook = false
         this.showIntent = true
 
       }
-    },
+    }
+    ,
 
-  },
+  }
+  ,
 
 
   delimiters: ["[[", "]]"]

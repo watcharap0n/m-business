@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Path, Query
+from fastapi import APIRouter, Path, Query, Body
 from db import MongoDB
 from object_str import CutId
 from typing import Optional
@@ -12,14 +12,13 @@ db = MongoDB(database_name='Mango', uri=client)
 collection = 'tags_customer'
 
 
-@router.get('/tag')
+@router.get('/tag', status_code=201)
 async def find_tag(tag: Optional[str] = None):
     if tag:
-        lst = [tag]
         key = CutId(_id=ObjectId()).dict()['id']
-        data = {'tags': lst, 'id': key}
+        data = {'text': tag, 'id': key}
         db.insert_one(collection='tags_customer', data=data)
-        return 'success'
+        return {'message': 'success'}
     data = db.find(collection=collection, query={})
     data = list(data)
     for v in data:
@@ -30,7 +29,25 @@ async def find_tag(tag: Optional[str] = None):
 @router.put('/tag/{item}', description='add tag to database')
 async def add_tag(
         item: Optional[str] = Path(..., title='append tag', description='append tag keep to the MongoDB'),
-        q: Optional[str] = Query(..., alias="id-query", description='ID Tag Query MongoDB')):
-    data = db.find_one(collection=collection, query={'id': q})
-    data['tags'].append(item)
-    return {'item': item, 'q': q}
+        id: Optional[str] = Query(..., alias="id-query", description='ID Tag Query MongoDB')):
+    query = {'id': id}
+    values = {'$set': {'text': item}}
+    db.update_one(collection=collection, query=query, values=values)
+    return {'item': item, 'q': id}
+
+
+@router.delete('/tag', description='delete tag to database')
+async def delete_tag(
+        id: Optional[str] = Query(..., alias='id-query')
+):
+    db.delete_one(collection=collection, query={'id': id})
+    return {'message': 'success'}
+
+
+@router.post('/tag')
+async def post_tag(item: Optional[dict] = None):
+    id = item['id']
+    value = [x['text'] for x in item['tag']]
+    for i in id:
+        db.update_one(collection='customers', query={'id': i['id']}, values={'$set': {'tag': value}})
+    return item
