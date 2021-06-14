@@ -49,47 +49,43 @@
                 max-width="434"
                 tile
             >
-              <v-img
-                  height="100%"
-                  src="https://cdn.vuetifyjs.com/images/cards/server-room.jpg"
+              <v-avatar
+                  class="profile"
+                  color="grey"
+                  size="250"
+                  tile
               >
-                <v-row
-                    align="end"
-                    class="fill-height"
-                >
-                  <v-col
-                      align-self="start"
-                      class="pa-0"
-                      cols="12"
+                <v-img  :src="userAuth.picture">
+                  <v-row
+                      align="end"
+                      class="fill-height"
                   >
-                    <v-avatar
-                        class="profile"
-                        color="grey"
-                        size="164"
-                        tile
+                    <v-col
+                        align-self="start"
+                        class="pa-0"
+                        cols="12"
                     >
-                      <v-img :src="userAuth.picture"></v-img>
-                    </v-avatar>
-                  </v-col>
-                  <v-col class="py-0">
-                    <v-list-item
-                        color="rgba(0, 0, 0, .4)"
-                        dark
-                    >
-                      <v-list-item-content>
-                        <v-list-item-title class="text-h6">
-                          [[userAuth.name]]
-                        </v-list-item-title>
-                        <v-list-item-subtitle>Email: [[userAuth.email]]</v-list-item-subtitle>
-                        <v-spacer></v-spacer>
-                        <v-btn text color="red" @click="logout">
-                          <strong>Logout</strong>
-                        </v-btn>
-                      </v-list-item-content>
-                    </v-list-item>
-                  </v-col>
-                </v-row>
-              </v-img>
+                    </v-col>
+                    <v-col class="py-0">
+                      <v-list-item
+                          color="rgba(0, 0, 0, .4)"
+                          dark
+                      >
+                        <v-list-item-content>
+                          <v-list-item-title class="text-h6">
+                            [[userAuth.name]]
+                          </v-list-item-title>
+                          <v-list-item-subtitle>Email: [[userAuth.email]]</v-list-item-subtitle>
+                          <v-spacer></v-spacer>
+                          <v-btn text color="red" @click="logout">
+                            <strong>Logout</strong>
+                          </v-btn>
+                        </v-list-item-content>
+                      </v-list-item>
+                    </v-col>
+                  </v-row>
+                </v-img>
+              </v-avatar>
             </v-card>
           </v-list-item>
         </v-list>
