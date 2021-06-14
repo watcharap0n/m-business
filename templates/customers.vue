@@ -149,6 +149,7 @@
                 <template v-slot:top>
                   <v-toolbar flat>
                     <v-text-field
+                        :loading="!spinTable"
                         v-model="search"
                         append-icon="mdi-magnify"
                         label="Search"
