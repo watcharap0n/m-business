@@ -9,8 +9,8 @@
 
   <v-card class="overflow-hidden">
     <v-app-bar
+        style="background: linear-gradient(to right, #7C4DFF, #304FFE, #448AFF);"
         absolute
-        color="light-blue lighten-2"
         dark
         dense
     >
@@ -118,7 +118,7 @@
 
             <v-bottom-navigation
                 v-model="page"
-                :background-color="color"
+                style="background: linear-gradient(to right, #7C4DFF, #304FFE, #448AFF);"
                 dark
                 flat
                 shift
