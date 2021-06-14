@@ -17,3 +17,5 @@ class Transaction(BaseModel):
 class TokenLINE(BaseModel):
     ACCESS_TOKEN: Optional[str] = None
     SECRET_LINE: Optional[str] = None
+
+

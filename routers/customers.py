@@ -71,3 +71,6 @@ async def move_customer(items: Optional[list] = Body(None)):
         print(v)
     db.insert_many(collection=collection, data=items)
     return {'message': 'success'}
+
+
+
