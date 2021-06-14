@@ -208,7 +208,7 @@ new Vue({
       value => !value || value.size < 2000000 || 'ขนาดรูปควรน้อยกว่า 2 MB!',
     ],
     images: [
-      {src: 'static/images/bot1.jpg'},
+      {src: 'static/images/social.jpg'},
       {src: 'static/images/bot3.png'},
     ],
     fe: {
