@@ -17,6 +17,13 @@
 
       <v-app-bar-title>Mango BOT</v-app-bar-title>
 
+      <v-switch
+          style="margin-top: 25px; margin-left: 15px"
+          v-model="$vuetify.theme.dark"
+          inset
+          label="Change Theme Dark"
+      ></v-switch>
+
       <v-spacer></v-spacer>
 
       [[userAuth.name]]
@@ -55,7 +62,7 @@
                   size="250"
                   tile
               >
-                <v-img  :src="userAuth.picture">
+                <v-img :src="userAuth.picture">
                   <v-row
                       align="end"
                       class="fill-height"
