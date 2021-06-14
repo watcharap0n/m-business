@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request, Depends
+from fastapi import FastAPI, Request, Depends, Response
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.middleware.cors import CORSMiddleware
@@ -94,7 +94,14 @@ async def customers(
 async def signin(request: Request, authentication: str = Depends(cookie_extractor)):
     if authentication:
         return template.TemplateResponse('customers.vue', context={'request': request})
-    return template.TemplateResponse('signin.vue', context={'request': request})
+    cookie = request.cookies.get('color')
+    if cookie:
+        page = template.TemplateResponse('signin.vue', context={'request': request})
+        return page
+    elif not cookie:
+        page = template.TemplateResponse('signin.vue', context={'request': request})
+        page.set_cookie(key='color', value='#000000')
+        return page
 
 
 if __name__ == '__main__':
