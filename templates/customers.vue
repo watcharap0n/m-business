@@ -1301,6 +1301,8 @@ new Vue({
       const path = `/api/auth_color`;
       await axios.post(path, data)
           .then((res) => {
+            this.text = 'บันทึกค่าสีเรียบร้อยแล้ว'
+            this.snackbar = true
             console.log(res.data)
           })
           .catch((err) => {
