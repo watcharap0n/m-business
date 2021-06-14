@@ -9,7 +9,7 @@
 
   <v-card class="overflow-hidden">
     <v-app-bar
-        style="background: linear-gradient(to right, #7C4DFF, #304FFE, #448AFF);"
+        :style="{background: `${showColor}`}"
         absolute
         dark
         dense
@@ -118,7 +118,7 @@
 
             <v-bottom-navigation
                 v-model="page"
-                style="background: linear-gradient(to right, #7C4DFF, #304FFE, #448AFF);"
+                :style="{background: `${showColor}`}"
                 dark
                 flat
                 shift
@@ -600,7 +600,7 @@
 
             <div :hidden="!showWebhook">
               <v-toolbar
-                  color="cyan lighten-2"
+                  :style="{background: `${showColor}`}"
                   dark
               >
                 <v-icon>mdi-account</v-icon>
@@ -675,6 +675,41 @@
             <div :hidden="!showIntent">
               <h2>In Progress...</h2>
             </div>
+
+
+            <!--  start  color-->
+            <div :hidden="!showMyColor">
+              <v-row>
+
+                <v-col
+                    class="d-flex justify-center"
+                >
+                  <v-color-picker v-model="color"></v-color-picker>
+                </v-col>
+
+                <v-col
+                    cols="12"
+                    md="4"
+                >
+                  <v-sheet
+                      class="pa-4"
+                  >
+
+                    <pre>[[ showColor ]]</pre>
+
+
+                    <v-btn
+                        color="green accent-1"
+                        @click="saveColor"
+                    >
+                      บันทึกจดจำค่าสี
+
+                    </v-btn>
+                  </v-sheet>
+                </v-col>
+              </v-row>
+            </div>
+            <!-- end color -->
 
           </v-col>
         </v-row>
@@ -838,10 +873,25 @@ new Vue({
         icon: 'mdi-star',
         text: 'Train BOT',
       },
+      {
+        icon: 'mdi-format-color-fill',
+        text: 'Color'
+      }
     ],
     modelList: 0,
     showWebhook: true,
     showIntent: false,
+    showMyColor: false,
+
+    // color
+    types: ['hex', 'hexa', 'rgba', 'hsla', 'hsva'],
+    type: 'hex',
+    hex: '#000000',
+    hexa: '#FF00FFFF',
+    rgba: {r: 255, g: 0, b: 255, a: 1},
+    hsla: {h: 300, s: 1, l: 0.5, a: 1},
+    hsva: {h: 300, s: 1, v: 1, a: 1},
+
   },
   watch: {
     model(val, prev) {
@@ -873,7 +923,6 @@ new Vue({
         this.btnTag = true
       }
     },
-
   },
   beforeCreate() {
     const path = '/secure/socket_auth'
@@ -888,6 +937,7 @@ new Vue({
   }
   ,
   created() {
+    this.getColorCookie();
     this.initialize();
     this.getTags();
   }
@@ -895,16 +945,23 @@ new Vue({
   computed: {
     formTitle() {
       return this.editedIndex === -1 ? 'New Customer' : 'Edit Customer'
-    }
-    ,
-    color() {
-      switch (this.page) {
-        case 0:
-          return 'cyan lighten-2'
-        case 1:
-          return 'pink accent-2'
-      }
-    }
+    },
+    color: {
+      get() {
+        return this[this.type]
+      },
+      set(v) {
+        this[this.type] = v
+      },
+    },
+    showColor() {
+      if (typeof this.color === 'string') return this.color
+
+      return JSON.stringify(Object.keys(this.color).reduce((color, key) => {
+        color[key] = Number(this.color[key].toFixed(2))
+        return color
+      }, {}), null, 2)
+    },
   }
   ,
   methods: {
@@ -1226,17 +1283,42 @@ new Vue({
     listModel(data) {
       if (data === 'Webhook') {
         this.showIntent = false
+        this.showMyColor = false
         this.showWebhook = true
       } else if (data === 'Train BOT') {
         this.showWebhook = false
+        this.showMyColor = false
         this.showIntent = true
-
+      } else if (data === 'Color') {
+        this.showWebhook = false
+        this.showIntent = false
+        this.showMyColor = true
       }
-    }
-    ,
+    },
 
-  }
-  ,
+    async saveColor() {
+      let data = {color: this.showColor, uid: this.userAuth.uid}
+      const path = `/api/auth_color`;
+      await axios.post(path, data)
+          .then((res) => {
+            console.log(res.data)
+          })
+          .catch((err) => {
+            console.error(err)
+          })
+    },
+    getColorCookie() {
+      const path = '/api/color_cookie'
+      axios.get(path)
+          .then((res) => {
+            this.hex = res.data
+            console.log(res.data)
+          })
+          .catch((err) => {
+            console.error(err)
+          })
+    },
+  },
 
 
   delimiters: ["[[", "]]"]

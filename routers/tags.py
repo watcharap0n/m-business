@@ -1,4 +1,5 @@
-from fastapi import APIRouter, Path, Query, Body
+from fastapi import APIRouter, Path, Query, Body, Response, Request
+from fastapi.responses import RedirectResponse
 from db import MongoDB
 from object_str import CutId
 from typing import Optional
@@ -51,3 +52,20 @@ async def post_tag(item: Optional[dict] = None):
     for i in id:
         db.update_one(collection='customers', query={'id': i['id']}, values={'$set': {'tag': value}})
     return item
+
+
+@router.post('/auth_color')
+async def get_color(
+        response: Response,
+        color: Optional[dict] = Body(None),
+):
+    response.set_cookie(key='color', value=color['color'])
+    return {'message': color['color']}
+
+
+@router.get('/color_cookie', tags=['Cookie'])
+async def get_cookie_color(
+        request: Request
+):
+    cookie = request.cookies.get('color')
+    return cookie

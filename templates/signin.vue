@@ -58,7 +58,6 @@
 
                                   <v-text-field v-model="passwordLG"
                                                 :rules="validPassword" label="รหัสผ่าน"
-                                                hint="ใส่รหัสอย่างน้อย 8 ตัว" counter
                                                 type="password">
                                   </v-text-field>
 
