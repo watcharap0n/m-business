@@ -125,7 +125,12 @@
                 class="elevation-1"
             >
               <v-btn v-for="(v, i) in navigation" :key="i" @click="changeTransaction(v.href)">
-                <span>[[v.header]]</span>
+                <v-badge
+                    color="#FF648D"
+                    :content="transaction.length"
+                >
+                  <span>[[v.header]]</span>
+                </v-badge>
                 <v-icon>[[v.icon]]</v-icon>
               </v-btn>
 
