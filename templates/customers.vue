@@ -354,7 +354,7 @@
                   <v-toolbar flat>
                     <v-btn
                         elevation="3"
-                        :loading="!spinTable"
+                        :loading="!spinTag"
                         :disabled="!btnTag"
                         medium
                         small
@@ -834,7 +834,7 @@ new Vue({
     colorsTag: 'pink',
     model: [],
     btnTag: false,
-
+    spinTag: true,
     // end tags
 
 
@@ -1236,10 +1236,12 @@ new Vue({
     ,
 
     tagTransaction(selected) {
+      this.spinTag = false
       let data = {'id': selected, 'tag': this.model}
       const path = '/api/tag'
       axios.post(path, data)
           .then((res) => {
+            this.spinTag = true
             this.initialize()
             console.log(res.data)
           })
