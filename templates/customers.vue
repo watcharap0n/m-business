@@ -1240,6 +1240,7 @@ new Vue({
       const path = '/api/tag'
       axios.post(path, data)
           .then((res) => {
+            this.initialize()
             console.log(res.data)
           })
           .catch((err) => {
