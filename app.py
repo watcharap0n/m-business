@@ -4,7 +4,7 @@ from fastapi.templating import Jinja2Templates
 from fastapi.middleware.cors import CORSMiddleware
 from dependent.authentication_cookies import cookie_extractor
 from fastapi.responses import RedirectResponse
-from routers import customers, imports, tags, wh_client, secure
+from routers import customers, imports, tags, wh_client, secure, api_cors
 import time
 import uvicorn
 import logging
@@ -23,6 +23,7 @@ origins = [
     "http://localhost:8080",
     "http://127.0.0.1:8080",
     "https://mango-client.herokuapp.com",
+    "https://mangoconsultant.net"
 ]
 
 app.add_middleware(
@@ -66,6 +67,13 @@ app.include_router(
     secure.router,
     prefix='/secure',
     tags=['Secure'],
+    responses={418: {'description': "I'm a teapot"}}
+)
+
+app.include_router(
+    api_cors.router,
+    prefix='/cors',
+    tags=['CORS'],
     responses={418: {'description': "I'm a teapot"}}
 )
 
