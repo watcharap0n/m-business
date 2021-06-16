@@ -1,4 +1,5 @@
 # M Business Fullstack FastAPI and Vue.js - MongoDB Deploy Heroku
+
 ****
 URL : `http://m-bussiness-bot.herokuapp.com`
 
@@ -7,6 +8,7 @@ URL : `http://m-bussiness-bot.herokuapp.com`
 Generate a backend and frontend stack using Python, including interactive API documentation.
 
 ###### Interactive API documentation
+
 **page 1**
 
 ![Alt text](https://github.com/watcharap0n/m-business/blob/main/static/github/1.png?raw=true "Title")
@@ -17,9 +19,7 @@ Generate a backend and frontend stack using Python, including interactive API do
 
 **Page Sign In**
 
-
 ![Alt text](https://github.com/watcharap0n/m-business/blob/main/static/github/signin.png?raw=true "Title")
-
 
 **Feature**
 
@@ -37,10 +37,9 @@ Generate a backend and frontend stack using Python, including interactive API do
     - Database MongoDB
     - Docker Compose Local
 
-
 **Firebase service authentication**
 
-
+![Alt text](https://github.com/watcharap0n/m-business/blob/main/static/github/authentication.png?raw=true "Title")
 
 **Config Variable In Heroku**
 
@@ -63,3 +62,42 @@ Generate a backend and frontend stack using Python, including interactive API do
     "token_uri": os.environ['token_uri'],
     "auth_provider_x509_cert_url": os.environ['auth_provider_x509_cert_url'],
     "client_x509_cert_url": os.environ['client_x509_cert_url']
+
+**Build && Setup Python**
+
+~~~~
+$ pip install virtualenv
+~~~~
+
+~~~~
+$ virtualenv venv
+~~~~
+
+~~~~
+$ source venv/bin/activate
+~~~~
+
+~~~~
+$ (venv) pip install -r requirements.txt
+~~~~
+
+~~~~
+$ brew tap mongodb/brew
+$ brew install mongodb-community@4.4
+$ brew install --cask robo-3t
+ ~~~~
+
+~~~~
+$ sudo mongod --dbpath /usr/local/var/mongodb
+~~~~
+
+**Deploy On Heroku**
+
+~~~~
+$ heroku login
+$ heroku git:clone -a (repo-name)
+$ cd game-card-watcharapono
+$ git add .
+$ git commit -am "make it better"
+$ git push heroku master
+ ~~~~
