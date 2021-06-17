@@ -40,3 +40,4 @@ class INTENT_BOT(BaseModel):
     question: Optional[list] = None
     answer: Optional[list] = None
     uid: Optional[str] = None
+    access_token: Optional[str] = None

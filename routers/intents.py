@@ -1,10 +1,11 @@
-from fastapi import APIRouter, Body, Request
+from fastapi import APIRouter, Body, Request, Query
 from typing import Optional
 from db import MongoDB
 from bson import ObjectId
 from routers.secure import auth
 from object_str import CutId
 from routers.items import INTENT_BOT
+import re
 import os
 
 router = APIRouter()
@@ -14,11 +15,10 @@ db = MongoDB(database_name='Mango', uri=client)
 collection = 'intents'
 
 
-@router.get('/data')
-async def data_intent(request: Request):
-    token = request.cookies.get('access_token')
-    check = auth.verify_session_cookie(token)
-    data = db.find(collection=collection, query={'uid': check['uid']})
+@router.post('/data')
+async def data_intent(access_token: Optional[dict] = Body(None)):
+    access_token = access_token['access_token']
+    data = db.find(collection=collection, query={'access_token': access_token})
     data = list(data)
     for v in data:
         del v['_id']

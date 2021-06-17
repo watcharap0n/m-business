@@ -686,6 +686,68 @@
                   Dataset Train Bot
 
                   <v-spacer></v-spacer>
+                  <v-dialog
+                      v-model="dialogAcesstoken"
+                      persistent
+                      max-width="500"
+                  >
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn
+                          color="error"
+                          dark
+                          :hidden="!hiddenAccess"
+                          v-bind="attrs"
+                          v-on="on"
+                      >
+                        <v-icon left>
+                          mdi-pencil
+                        </v-icon>
+                        Access Token
+                      </v-btn>
+                    </template>
+                    <v-card>
+
+                      <v-toolbar flat color="success" dark>
+                        Access Token
+                      </v-toolbar>
+
+                      <v-card-text>
+                        <div class="mb-2">
+                          <v-form v-model="validAccess" ref="formAccess">
+                            <v-text-field
+                                v-model="nameAccestoken"
+                                :rules="rules"
+                                label="Your Access Token"
+                                clearable
+                            ></v-text-field>
+                          </v-form>
+                        </div>
+
+
+                      </v-card-text>
+
+                      <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn
+                            color="red darken-1"
+                            text
+                            @click="dialogAcesstoken = false"
+                        >
+                          Disagree
+                        </v-btn>
+                        <v-btn
+                            color="green darken-1"
+                            text
+                            :disabled="!validAccess"
+                            :loading="!spinIntent"
+                            @click="formAccessToken"
+                        >
+                          Agree
+                        </v-btn>
+                      </v-card-actions>
+                    </v-card>
+
+                  </v-dialog>
 
 
                   <v-dialog
@@ -757,6 +819,7 @@
                 >
                   <v-col cols="5">
                     <v-treeview
+                        :hidden="!treeHidden"
                         :active.sync="active"
                         :load-children="getIntents"
                         :items="itemsIntent"
@@ -1175,11 +1238,15 @@ new Vue({
 
 
     // start intent
-
+    treeHidden: false,
     hiddenIntent: false,
+    hiddenAccess: true,
     nameIntent: '',
+    nameAccestoken: '',
+    validAccess: false,
     dialogIntent: false,
     dialogDeleteIntent: false,
+    dialogAcesstoken: false,
     question: '',
     answer: '',
     active: [],
@@ -1192,6 +1259,7 @@ new Vue({
       name: '',
       question: [],
       answer: [],
+      access_token: '',
     }
 
 
@@ -1614,10 +1682,16 @@ new Vue({
 
     // start intent
 
+    formAccessToken() {
+      this.hiddenAccess = false
+      this.dialogAcesstoken = false
+      this.treeHidden = true
+    },
     async getIntents(item) {
       await pause(1500)
-      const path = '/intent/data'
-      return axios.get(path)
+      let data = {'access_token': this.nameAccestoken}
+      const path = `/intent/data/?access_token=${this.nameAccestoken}`
+      return axios.post(path, data)
           .then((res) => {
             item.children.push(...res.data)
             this.hiddenIntent = true
@@ -1628,10 +1702,12 @@ new Vue({
       this.spinIntent = false
       this.dataAppend.name = this.nameIntent
       this.dataAppend.uid = this.userAuth.uid
+      this.dataAppend.access_token = this.nameAccestoken
       console.log(this.dataAppend)
       const path = '/intent/add'
       axios.post(path, this.dataAppend)
           .then((res) => {
+            this.nameIntent = ''
             this.spinIntent = true
             this.users.push(res.data)
             this.dialogIntent = false
