@@ -2,12 +2,14 @@ from fastapi import APIRouter, Request, HTTPException, Body, Path
 from linebot import LineBotApi, WebhookHandler, WebhookParser
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import StickerSendMessage, TextSendMessage, TextMessage, MessageEvent
+from model_text_classifire import intent_model
 from routers.items import TokenLINE
 from random import randint
 from bson import ObjectId
 from object_str import CutId
 from typing import Optional
 from db import MongoDB
+from numpy import random
 import uuid
 import json
 import os
@@ -51,6 +53,7 @@ async def webhook(
         token: Optional[str] = Path(...),
         raw_json: Optional[dict] = Body(None)
 ):
+    # client_token = 'c96bf514c5264bf7a72acd8290f1cff0'
     q = db.find_one(collection=collection, query={'token': token})
     q = dict(q)
     handler = q['SECRET_LINE']
@@ -115,10 +118,18 @@ def event_postback(events, q):
 def handler_message(events, q):
     line_bot_api = q['ACCESS_TOKEN']
     line_bot_api = LineBotApi(line_bot_api)
+    text = events['message']['text']
+    data = intent_model(text, q['ACCESS_TOKEN'])
+    label = data['predict']
+    choice_answers = data['answers']
+    confident = data['confident'][0] * 100
     replyToken = events['replyToken']
     user_id = events['source']['userId']
     user = get_profile(user_id, q)
     displayName = user['displayName']
-    line_bot_api.reply_message(replyToken, TextSendMessage(text=f'สวัสดีครับคุณ {displayName}'))
-
+    if confident > 69:
+        choice = random.choice(choice_answers[int(label)])
+        line_bot_api.reply_message(replyToken, TextSendMessage(text=choice))
+    else:
+        line_bot_api.reply_message(replyToken, TextSendMessage(text='ฉันไม่เข้าใจ'))
 
