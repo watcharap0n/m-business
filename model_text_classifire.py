@@ -21,7 +21,8 @@ def intent_model(p_text=str, query=str):
         for v in text['question']:
             txt += v
         sum_text.append(txt)
-
+    if len(sum_text) == 1 and len(ans_text) == 1:
+        return {'require': 'ต้องสร้าง Intent อย่างน้อย 2 Intent ก่อนถึงจะสามารถใช้งานบอทได้ครับ'}
     count_vector = CountVectorizer(tokenizer=word_tokenize)
     tf_transformer = TfidfTransformer(use_idf=False)
     x_train_count = count_vector.fit_transform(sum_text)

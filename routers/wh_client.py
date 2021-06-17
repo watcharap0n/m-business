@@ -119,12 +119,14 @@ def handler_message(events, q):
     line_bot_api = q['ACCESS_TOKEN']
     line_bot_api = LineBotApi(line_bot_api)
     text = events['message']['text']
+    replyToken = events['replyToken']
+    user_id = events['source']['userId']
     data = intent_model(text, q['ACCESS_TOKEN'])
+    if data.get('require'):
+        line_bot_api.reply_message(replyToken, TextSendMessage(text=data.get('require')))
     label = data['predict']
     choice_answers = data['answers']
     confident = data['confident'][0] * 100
-    replyToken = events['replyToken']
-    user_id = events['source']['userId']
     user = get_profile(user_id, q)
     displayName = user['displayName']
     if confident > 69:
