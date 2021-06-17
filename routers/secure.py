@@ -57,8 +57,9 @@ async def login(
                 expires = 60 * 60 * 1
                 auth_cookie = auth.create_session_cookie(id_token=user['idToken'], expires_in=timedelta(hours=1))
                 response.set_cookie(key='access_token', value=str(auth_cookie), expires=expires, httponly=True)
-                response.set_cookie(key='hash_email', value=str(email))
-                response.set_cookie(key='hash_password', value=str(password))
+                expires = 60 * 60 * 24 * 5
+                response.set_cookie(key='hash_email', value=str(email), expires=expires)
+                response.set_cookie(key='hash_password', value=str(password), expires=expires)
                 return {'url': '/customers', 'status': True, 'detail': 'login success'}
             else:
                 expires = 60 * 60 * 1

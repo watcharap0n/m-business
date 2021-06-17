@@ -21,10 +21,10 @@ async def customers_get():
     data = list(data)
     for v in data:
         del v['_id']
-    return data[::-1]  # เอาข้อมูลล่าสุด
+    return data[::-1]
 
 
-@router.post('/customer', status_code=201)
+@router.post('/customer', status_code=201, response_model=Transaction)
 async def customers_post(item: Transaction):
     try:
         key = CutId(_id=ObjectId()).dict()['id']
@@ -68,7 +68,6 @@ async def move_customer(items: Optional[list] = Body(None)):
     for v in items:
         key = CutId(_id=ObjectId()).dict()['id']
         v['id'] = key
-        print(v)
     db.insert_many(collection=collection, data=items)
     return {'message': 'success'}
 

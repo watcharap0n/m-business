@@ -59,7 +59,8 @@ async def get_color(
         response: Response,
         color: Optional[dict] = Body(None),
 ):
-    response.set_cookie(key='color', value=color['color'])
+    expires = 60 * 60 * 24 * 5
+    response.set_cookie(key='color', value=color['color'], expires=expires)
     return {'message': color['color']}
 
 
