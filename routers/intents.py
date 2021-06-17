@@ -5,6 +5,7 @@ from bson import ObjectId
 from routers.secure import auth
 from object_str import CutId
 from routers.items import INTENT_BOT
+import os
 
 router = APIRouter()
 client = os.environ.get('MONGODB_URI')
