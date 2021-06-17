@@ -4,7 +4,7 @@ from fastapi.templating import Jinja2Templates
 from fastapi.middleware.cors import CORSMiddleware
 from dependent.authentication_cookies import cookie_extractor
 from fastapi.responses import RedirectResponse
-from routers import customers, imports, tags, wh_client, secure, api_cors
+from routers import customers, imports, tags, wh_client, secure, api_cors, intents
 import time
 import uvicorn
 import logging
@@ -77,6 +77,13 @@ app.include_router(
     responses={418: {'description': "I'm a teapot"}}
 )
 
+app.include_router(
+    intents.router,
+    prefix='/intent',
+    tags=['Intents'],
+    responses={418: {'description': "I'm a teapot"}}
+)
+
 
 @app.middleware('http')
 async def add_process_time_header(request: Request, call_next):
@@ -110,6 +117,11 @@ async def signin(request: Request, authentication: str = Depends(cookie_extracto
         page = template.TemplateResponse('signin.vue', context={'request': request})
         page.set_cookie(key='color', value='#000000')
         return page
+
+
+@app.get('/intents', tags=['Page'])
+async def intents(request: Request):
+    return template.TemplateResponse('intents.vue', context={'request': request})
 
 
 if __name__ == '__main__':

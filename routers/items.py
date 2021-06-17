@@ -32,3 +32,11 @@ class FROM_MANGO(BaseModel):
 class TokenLINE(BaseModel):
     ACCESS_TOKEN: Optional[str] = None
     SECRET_LINE: Optional[str] = None
+
+
+class INTENT_BOT(BaseModel):
+    id: Optional[str] = None
+    name: Optional[str] = None
+    question: Optional[list] = None
+    answer: Optional[list] = None
+    uid: Optional[str] = None
