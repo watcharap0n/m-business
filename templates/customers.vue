@@ -631,7 +631,7 @@
                       :rules="rules"
                       v-model="ACCESS_TOKEN"
                       :disabled="!isEditing"
-                      label="Access Secret Token"
+                      label="Channel Access Token"
                   ></v-text-field>
 
                   <v-text-field
@@ -639,7 +639,7 @@
                       :rules="rules"
                       v-model="SECRET_LINE"
                       :disabled="!isEditing"
-                      label="Secret Channel"
+                      label="Channel secret"
                   ></v-text-field>
 
                   <v-subheader>
@@ -702,7 +702,7 @@
                         <v-icon left>
                           mdi-pencil
                         </v-icon>
-                        Access Token
+                        Channel Access Token
                       </v-btn>
                     </template>
                     <v-card>
