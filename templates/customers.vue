@@ -678,7 +678,7 @@
 
 
               <v-card>
-                <v-card-title dark :style="{background: `${showColor}`}" >
+                <v-card-title dark :style="{background: `${showColor}`}">
                   <v-icon dark>
                     mdi-robot
                   </v-icon>
@@ -863,6 +863,7 @@
                                 clearable
                                 label="Create Question"
                                 type="text"
+                                :loading="!spinIntent"
                                 @click:append-outer="sendQuestion"
                             ></v-text-field>
 
@@ -910,6 +911,7 @@
                               clearable
                               label="Create Answer"
                               type="text"
+                              :loading="!spinIntent"
                               @click:append-outer="sendAnswer"
                           ></v-text-field>
 
@@ -1650,12 +1652,16 @@ new Vue({
 
     },
     async sendQuestion() {
+      this.spinIntent = false
       this.selectedIntent.question.push(this.question)
       await this.updateIntent()
+      this.spinIntent = true
     },
     async sendAnswer() {
+      this.spinIntent = false
       this.selectedIntent.answer.push(this.answer)
       await this.updateIntent()
+      this.spinIntent = true
     },
     async removeAnswer(item) {
       this.selectedIntent.answer.splice(this.selectedIntent.answer.indexOf(item), 1)
