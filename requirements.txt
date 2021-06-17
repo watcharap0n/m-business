@@ -1,5 +1,4 @@
 aiofiles==0.6.0
-attacut==1.0.6
 attrs==21.2.0
 autopep8==1.5.7
 CacheControl==0.12.6
@@ -79,7 +78,6 @@ starlette==0.13.6
 termcolor==1.1.0
 threadpoolctl==2.1.0
 toml==0.10.2
-torch==1.9.0
 tqdm==4.61.1
 typing-extensions==3.7.4.3
 typish==1.9.2
