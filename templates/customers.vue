@@ -693,8 +693,7 @@
                   >
                     <template v-slot:activator="{ on, attrs }">
                       <v-btn
-                          color="error"
-                          dark
+                          color="green accent-1"
                           :hidden="!hiddenAccess"
                           v-bind="attrs"
                           v-on="on"
@@ -714,12 +713,12 @@
                       <v-card-text>
                         <div class="mb-2">
                           <v-form v-model="validAccess" ref="formAccess">
-                            <v-text-field
+                            <v-textarea
                                 v-model="nameAccestoken"
                                 :rules="rules"
                                 label="Your Access Token"
                                 clearable
-                            ></v-text-field>
+                            ></v-textarea>
                           </v-form>
                         </div>
 
