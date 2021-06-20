@@ -1,3 +1,4 @@
+[CHATBOT_myself.pdf](https://github.com/watcharap0n/m-business/files/6683094/CHATBOT_myself.pdf)
 # M Business Fullstack FastAPI and Vue.js - MongoDB Deploy Heroku
 
 ****
