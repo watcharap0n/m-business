@@ -100,7 +100,7 @@ async def customers(
         authentication: str = Depends(cookie_extractor)
 ):
     if authentication:
-        return template.TemplateResponse('customers.vue', context={'request': request})
+        return template.TemplateResponse('public/customers.vue', context={'request': request})
     return RedirectResponse(url='/signin')
 
 
@@ -108,20 +108,20 @@ async def customers(
 @app.get('/signin', tags=['Page'])
 async def signin(request: Request, authentication: str = Depends(cookie_extractor)):
     if authentication:
-        return template.TemplateResponse('customers.vue', context={'request': request})
+        return template.TemplateResponse('public/customers.vue', context={'request': request})
     cookie = request.cookies.get('color')
     if cookie:
-        page = template.TemplateResponse('signin.vue', context={'request': request})
+        page = template.TemplateResponse('admin/signin.vue', context={'request': request})
         return page
     elif not cookie:
-        page = template.TemplateResponse('signin.vue', context={'request': request})
+        page = template.TemplateResponse('admin/signin.vue', context={'request': request})
         page.set_cookie(key='color', value='#000000')
         return page
 
 
 @app.get('/intents', tags=['Page'])
 async def intents(request: Request):
-    return template.TemplateResponse('intents.vue', context={'request': request})
+    return template.TemplateResponse('public/intents.vue', context={'request': request})
 
 
 if __name__ == '__main__':

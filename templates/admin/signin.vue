@@ -1,10 +1,7 @@
-{% extends "layout.html" %}
+{% extends "admin/layout.html" %}
 {% block content %}
-
 <br>
 <br>
-<div id="app">
-<v-app id="inspire" style="font-family: 'Prompt', sans-serif; background: #F5F5F5">
   <!-- contents -->
   <div class="jumbotron">
     <v-container>
@@ -182,9 +179,6 @@
     </v-container>
   </div>
 
-
-</v-app>
-</div>
 
 
 <script>
