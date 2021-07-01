@@ -237,9 +237,9 @@
               axios.get(path)
                   .then((res) => {
                       if (res.data.email) {
+                          this.remember = true
                           this.emailLG = res.data.email
                           this.passwordLG = res.data.password
-                          this.remember = true
                       }
                   })
                   .catch((err) => {
