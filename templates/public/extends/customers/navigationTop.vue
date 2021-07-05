@@ -5,7 +5,7 @@
     dense
 >
 
-  {% include 'public/appBar.vue' %}
+  {% include 'public/extends/customers/appBar.vue' %}
 
   <v-app-bar-title>Mango BOT</v-app-bar-title>
 

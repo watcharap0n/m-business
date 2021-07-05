@@ -1,10 +1,11 @@
-from fastapi import FastAPI, Request, Depends, Response
+from fastapi import FastAPI, Request, Depends, Response, Path, HTTPException
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.middleware.cors import CORSMiddleware
 from dependent.authentication_cookies import cookie_extractor
 from fastapi.responses import RedirectResponse
-from routers import customers, imports, tags, wh_client, secure, api_cors, intents
+from routers import customers, imports, tags, wh_client, secure, api_cors, intents, quotation
+from typing import Optional
 import time
 import uvicorn
 import logging
@@ -84,6 +85,13 @@ app.include_router(
     responses={418: {'description': "I'm a teapot"}}
 )
 
+app.include_router(
+    quotation.router,
+    prefix='/quotation',
+    tags=['Quotation'],
+    responses={418: {'description': "I'm a teapot"}}
+)
+
 
 @app.middleware('http')
 async def add_process_time_header(request: Request, call_next):
@@ -109,19 +117,30 @@ async def customers(
 async def signin(request: Request, authentication: str = Depends(cookie_extractor)):
     if authentication:
         return template.TemplateResponse('public/customers.vue', context={'request': request})
-    cookie = request.cookies.get('color')
-    if cookie:
-        page = template.TemplateResponse('admin/signin.vue', context={'request': request})
-        return page
-    elif not cookie:
-        page = template.TemplateResponse('admin/signin.vue', context={'request': request})
-        page.set_cookie(key='color', value='#000000')
-        return page
+    return template.TemplateResponse('admin/signin.vue', context={'request': request})
+    # cookie = request.cookies.get('color')
+    # if cookie:
+    #     page = template.TemplateResponse('admin/signin.vue', context={'request': request})
+    #     return page
+    # elif not cookie:
+    #     page = template.TemplateResponse('admin/signin.vue', context={'request': request})
+    #     page.set_cookie(key='color', value='#000000')
+    #     return page
 
 
 @app.get('/intents', tags=['Page'])
 async def intents(request: Request):
     return template.TemplateResponse('public/intents.vue', context={'request': request})
+
+
+@app.get('/line/quotation', tags=['Page'])
+async def quotation_line(request: Request):
+    return template.TemplateResponse('LINE/quotation.vue', context={'request': request})
+
+
+@app.get('/facebook/quotation')
+async def quotation_facebook(request: Request):
+    return template.TemplateResponse('FACEBOOK/quotation.vue', context={'request': request})
 
 
 if __name__ == '__main__':

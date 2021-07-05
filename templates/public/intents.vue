@@ -1,9 +1,9 @@
-{% extends "admin/layout.html" %}
+{% extends "admin/main_layout.html" %}
 {% block content %}
   <!-- contents -->
   <v-card class="overflow-hidden" height="850">
 
-    {% include 'public/navigationTop.vue' %}
+    {% include 'public/extends/customers/navigationTop.vue' %}
 
     <br>
     <br><br>

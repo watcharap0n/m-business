@@ -15,15 +15,15 @@ class Transaction(BaseModel):
 
 
 class FROM_MANGO(BaseModel):
-    firstname: Optional[str] = None
+    name: Optional[str] = None
     email: Optional[str] = None
     company: Optional[str] = None
     tel: Optional[str] = None
     product: Optional[str] = None
     other: Optional[str] = None
-    comment: Optional[str] = None
+    message: Optional[str] = None
     userId: Optional[str] = None
-    token: Optional[str] = None
+    email_private: Optional[str] = None
     displayName: Optional[str] = None
     picture: Optional[str] = None
     channel: Optional[str] = None
