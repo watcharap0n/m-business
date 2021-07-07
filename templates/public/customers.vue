@@ -1,13 +1,11 @@
 {% extends "admin/main_layout.html" %}
 {% block content %}
 
-  <v-card class="overflow-hidden" height="1000">
 
     {% include 'public/extends/customers/navigationTop.vue' %}
 
     <br><br><br>
-    <v-container>
-
+    <div class="container-fluid">
       <v-card class="mx-auto" class="elevation-1">
 
         <v-bottom-navigation
@@ -20,7 +18,7 @@
         >
           <v-btn v-for="(v, i) in navigation" :key="i" @click="changeTransaction(v.href)">
             <v-badge
-                color="#FF648D"
+                color="success"
                 :content="transaction.length"
             >
               <span>[[v.header]]</span>
@@ -33,14 +31,17 @@
 
         <!--     start table     -->
 
-        <v-card-text>
           <v-data-table v-model="selected" :loading="!spinTable" show-select multi-sort :search="search"
                         :headers="headers"
+                        loading-text="Loading... Please wait"
+                        class="elevation-5 rounded-xl"
+                        height="500"
                         :items="transaction">
 
             <!--       slot TOP         -->
 
             <template v-slot:top>
+
               <v-toolbar flat>
                 <v-text-field
                     :loading="!spinTable"
@@ -432,7 +433,6 @@
               </v-btn>
             </template>
           </v-data-table>
-        </v-card-text>
       </v-card>
 
 
@@ -457,8 +457,7 @@
       </v-snackbar>
 
 
-    </v-container>
-  </v-card>
+    </div>
   {% block script %}
     <script src="/static/js/customers.js"></script>
   {% endblock %}

@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, Body
-from routers.items import FROM_MANGO
+from routers.items import Transaction
 from bson import ObjectId
 from db import MongoDB
 from object_str import CutId
@@ -10,11 +10,11 @@ router = APIRouter()
 client = os.environ.get('MONGODB_URI')
 # client = 'mongodb://127.0.0.1:27017'
 db = MongoDB(database_name='Mango', uri=client)
-collection = 'quotation'
+collection = 'imports'
 
 
-@router.post('/data/quotation', response_model=FROM_MANGO)
-async def data_quotation(item: FROM_MANGO):
+@router.post('/data/quotation', response_model=Transaction)
+async def data_quotation(item: Transaction):
     try:
         key = CutId(_id=ObjectId()).dict()['id']
         item = item.dict()

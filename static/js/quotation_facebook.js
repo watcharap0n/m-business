@@ -25,7 +25,7 @@ new Vue({
             message: '',
             userId: '',
             email_private: '',
-            displayName: '',
+            profile: '',
             picture: '',
             channel: 'FACEBOOK'
         },
@@ -81,7 +81,7 @@ new Vue({
                     console.log(res)
                     this.dialog = false
                     this.formElement.userId = res.id
-                    this.formElement.displayName = res.name
+                    this.formElement.profile = res.name
                     this.formElement.email_private = res.email
                     this.formElement.picture = res.picture.data.url
                     console.log(this.formElement)

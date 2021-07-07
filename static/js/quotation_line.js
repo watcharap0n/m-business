@@ -24,7 +24,7 @@ new Vue({
             message: '',
             userId: '',
             email_private: '',
-            displayName: '',
+            profile: '',
             picture: '',
             channel: ''
         },
@@ -39,7 +39,7 @@ new Vue({
                         .then((profile) => {
                             console.log(liff.getContext());
                             this.userId = profile.userId
-                            this.displayName = profile.displayName
+                            this.profile = profile.displayName
                             this.picture = profile.pictureUrl
                             this.private = liff.getDecodedIDToken
                             this.channel = 'LINE'

@@ -4,14 +4,23 @@ from enum import Enum
 
 
 class Transaction(BaseModel):
+    id: Optional[str] = None
     name: Optional[str] = None
     email: Optional[str] = None
+    company: Optional[str] = None
     tel: Optional[str] = None
     product: Optional[str] = None
-    company: Optional[str] = None
-    channel: Optional[str] = None
+    other: Optional[str] = None
     message: Optional[str] = None
-    tag: Optional[list] = None
+    userId: Optional[str] = None
+    email_private: Optional[str] = None
+    profile: Optional[str] = None
+    picture: Optional[str] = None
+    channel: Optional[str] = None
+    authUser: Optional[dict] = {}
+    tag: Optional[list] = []
+    date: Optional[str] = None
+    time: Optional[str] = None
 
 
 class FROM_MANGO(BaseModel):
@@ -24,7 +33,7 @@ class FROM_MANGO(BaseModel):
     message: Optional[str] = None
     userId: Optional[str] = None
     email_private: Optional[str] = None
-    displayName: Optional[str] = None
+    profile: Optional[str] = None
     picture: Optional[str] = None
     channel: Optional[str] = None
 

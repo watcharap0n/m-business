@@ -33,17 +33,14 @@ new Vue({
                 text: 'Actions',
                 value: 'actions',
                 sortable: false,
-                width: 80
             },
             {
                 text: 'Tag',
                 value: 'tag',
-                width: 100,
             },
             {
                 text: 'Product',
                 value: 'product',
-                width: 155,
                 align: 'start'
             },
             {
@@ -64,6 +61,14 @@ new Vue({
                 value: 'channel'
             },
             {
+                text: 'Profile',
+                value: 'profile'
+            },
+            {
+                text: 'Assign',
+                value: 'username'
+            },
+            {
                 text: 'Data/Time',
                 value: 'date',
                 align: 'center',
@@ -71,24 +76,38 @@ new Vue({
 
         ],
         editedItem: {
+            id: '',
+            name: '',
             tag: [],
             product: '',
-            name: '',
             email: '',
+            email_private: '',
+            profile: '',
+            picture: '',
+            userId: '',
+            other: '',
             tel: '',
             company: '',
             channel: '',
             message: '',
+            authUser: {}
         },
         defaultItem: {
+            id: '',
+            name: '',
             tag: [],
             product: '',
-            name: '',
             email: '',
+            email_private: '',
+            profile: '',
+            picture: '',
+            userId: '',
+            other: '',
             tel: '',
             company: '',
             channel: '',
             message: '',
+            authUser: {}
         },
         search: '',
         transaction: [],
@@ -221,6 +240,8 @@ new Vue({
                 await axios.post(path, this.selected)
                     .then((res) => {
                         this.selected.forEach((data) => {
+                            console.log(data)
+                            Object.assign(data.authUser, this.userAuth)
                             this.transaction.splice(this.transaction.indexOf(data), 1)
                         })
                         this.spinImport = false
@@ -230,6 +251,7 @@ new Vue({
                         this.selected = []
                     })
                     .catch((err) => {
+                        this.selected = []
                         console.log(err);
                     })
             } else {
@@ -263,6 +285,7 @@ new Vue({
                 this.path = '/api/customer'
             if (href === 'import')
                 this.path = '/api/import'
+            Object.assign(this.editedItem.authUser, this.userAuth)
             await axios.post(this.path, data)
                 .then((res) => {
                     this.spinButton = true;
@@ -270,6 +293,7 @@ new Vue({
                     this.text = `คุณได้เพิ่มข้อมูล ${this.editedItem.name}`
                     this.colorSb = 'success'
                     this.snackbar = true
+                    console.log(res.data)
                 })
                 .catch((err) => {
                     console.log(err);
@@ -300,6 +324,7 @@ new Vue({
                 this.path = `/api/import/${id}`
             await axios.delete(this.path)
                 .then((res) => {
+                    this.selected = []
                     this.spinButton = true;
                     console.log(res.data);
                     this.colorSb = 'red'
@@ -440,11 +465,11 @@ new Vue({
         },
 
         //appBar
-        redirectPage(item){
+        redirectPage(item) {
             console.log(item)
-            if(item.text === 'DataTable')
+            if (item.text === 'DataTable')
                 window.location = '/customers'
-            if(item.text === 'Intents')
+            if (item.text === 'Intents')
                 window.location = '/intents'
         },
 
