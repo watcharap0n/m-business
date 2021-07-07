@@ -59,8 +59,8 @@ new Vue({
                 console.log('vue')
             });
         },
-        statusChangeCallback() {
-            FB.getLoginStatus((response) => {
+        async statusChangeCallback() {
+            await FB.getLoginStatus((response) => {
                 this.spinFB = false
                 this.showFB = true
                 console.log(response)
@@ -75,8 +75,8 @@ new Vue({
                 }
             });  // See the onlogin handler
         },
-        facebookLogin() {
-            FB.login((response) => {
+        async facebookLogin() {
+            await FB.login((response) => {
                 FB.api('/me', {"fields": "id,name,email,picture"}, ((res) => {
                     console.log(res)
                     this.dialog = false
