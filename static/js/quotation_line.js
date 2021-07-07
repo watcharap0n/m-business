@@ -26,7 +26,7 @@ new Vue({
             email_private: '',
             profile: '',
             picture: '',
-            channel: ''
+            channel: 'LINE'
         },
         valid: false,
         spinBtn: true,
@@ -38,11 +38,10 @@ new Vue({
                     liff.getProfile()
                         .then((profile) => {
                             console.log(liff.getContext());
-                            this.userId = profile.userId
-                            this.profile = profile.displayName
-                            this.picture = profile.pictureUrl
-                            this.private = liff.getDecodedIDToken
-                            this.channel = 'LINE'
+                            this.formElement.userId = profile.userId
+                            this.formElement.profile = profile.displayName
+                            this.formElement.picture = profile.pictureUrl
+                            this.formElement.email_private = liff.getDecodedIDToken
                         })
                 }
                 else {
