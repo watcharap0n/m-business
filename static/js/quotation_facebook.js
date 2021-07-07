@@ -27,16 +27,18 @@ new Vue({
             email_private: '',
             displayName: '',
             picture: '',
-            channel: ''
+            channel: 'FACEBOOK'
         },
         valid: false,
         spinBtn: true,
         dialog: true,
+        spinFB: true,
+        showFB: false,
     },
     delimiters: ["[[", "]]"],
 
     created() {
-        this.statusChangeCallback();
+        this.statusChangeCallback()
 
         window.fbAsyncInit = function () {
             FB.init({
@@ -54,13 +56,17 @@ new Vue({
         checkLoginState() {
             FB.getLoginStatus((response) => {   // See the onlogin handler
                 console.log(response)
-                statusChangeCallback(response)
-                console.log(response)
+                console.log('vue')
             });
         },
         statusChangeCallback() {
             FB.getLoginStatus((response) => {
+                this.spinFB = false
+                this.showFB = true
                 console.log(response)
+                if (response.authResponse) {
+                    this.dialog = false
+                }
                 if (response.status === 'connected') {
                     this.dialog = false
                     this.facebookLogin()
@@ -71,14 +77,14 @@ new Vue({
         },
         facebookLogin() {
             FB.login((response) => {
-                FB.api('/me', ((res) => {
+                FB.api('/me', {"fields": "id,name,email,picture"}, ((res) => {
+                    console.log(res)
                     this.dialog = false
                     this.formElement.userId = res.id
                     this.formElement.displayName = res.name
-                    this.formElement.channel = 'FACEBOOK'
-                }))
-                FB.api('/me/permissions', ((res) => {
-                    console.log(res.data)
+                    this.formElement.email_private = res.email
+                    this.formElement.picture = res.picture.data.url
+                    console.log(this.formElement)
                 }))
             },)
         },

@@ -22,9 +22,15 @@
 
 
         <v-card-actions>
+          <v-progress-circular
+              :hidden="!spinFB"
+              :size="50"
+              color="primary"
+              indeterminate
+          ></v-progress-circular>
 
-
-          <div @click="facebookLogin" class="fb-login-button" scope="public_profile,email"
+          <div :hidden="!showFB" onlogin="checkLoginState();"
+               class="fb-login-button" scope="public_profile,email"
                data-scope="public_profile,email"
                data-width="" data-size="large"
                data-button-type="continue_with"
@@ -35,6 +41,14 @@
       </v-card>
     </v-dialog>
 
+    <script>
+        function checkLoginState() {
+            FB.getLoginStatus(function (response) {
+                console.log(response)
+                location.reload();
+            });
+        }
+    </script>
 
     <div class="d-flex flex-column justify-space-between align-center subheading pt-4">
       <v-img width="200" src="/static/images/mango-profile.jpg">
