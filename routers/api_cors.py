@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, Body
-from routers.items import FROM_MANGO
+from routers.models import FROM_MANGO, Test_API
 from bson import ObjectId
 from db import MongoDB
 from object_str import CutId
@@ -28,3 +28,9 @@ async def cors_mango(item: FROM_MANGO):
         return item
     except:
         raise HTTPException(status_code=400, detail='API Something wrong!')
+
+
+
+@router.post('/test_api', response_model=Test_API)
+async def test_api(item: Test_API):
+    return item

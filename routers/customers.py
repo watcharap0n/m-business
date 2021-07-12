@@ -4,13 +4,13 @@ import datetime
 from db import MongoDB
 from object_str import CutId
 from bson import ObjectId
-from routers.items import Transaction
+from routers.models import Transaction
 import os
 
 router = APIRouter()
 
-client = os.environ.get('MONGODB_URI')
-# client = 'mongodb://127.0.0.1:27017'
+# client = os.environ.get('MONGODB_URI')
+client = 'mongodb://127.0.0.1:27017'
 db = MongoDB(database_name='Mango', uri=client)
 collection = 'customers'
 
@@ -66,8 +66,11 @@ async def move_customer(items: Optional[list] = Body(None)):
     for d in items:
         db.delete_one(collection='imports', query={'id': d['id']})
     for v in items:
+        _d = datetime.datetime.now()
         key = CutId(_id=ObjectId()).dict()['id']
         v['id'] = key
+        v['date_insert'] = _d.strftime("%d/%m/%y")
+        v['time_insert'] = _d.strftime("%H:%M:%S")
     db.insert_many(collection=collection, data=items)
     return {'message': 'success'}
 

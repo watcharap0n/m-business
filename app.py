@@ -1,11 +1,10 @@
-from fastapi import FastAPI, Request, Depends, Response, Path, HTTPException
+from fastapi import FastAPI, Request, Depends
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.middleware.cors import CORSMiddleware
 from dependent.authentication_cookies import cookie_extractor
 from fastapi.responses import RedirectResponse
 from routers import customers, imports, tags, wh_client, secure, api_cors, intents, quotation
-from typing import Optional
 import time
 import uvicorn
 import logging

@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Optional, Any
+from typing import Optional, List, Dict
 from enum import Enum
 
 
@@ -17,8 +17,8 @@ class Transaction(BaseModel):
     profile: Optional[str] = None
     picture: Optional[str] = None
     channel: Optional[str] = None
-    authUser: Optional[dict] = {}
-    tag: Optional[list] = []
+    authUser: Dict = {}
+    tag: List[str] = []
     date: Optional[str] = None
     time: Optional[str] = None
 
@@ -50,3 +50,10 @@ class INTENT_BOT(BaseModel):
     answer: Optional[list] = None
     uid: Optional[str] = None
     access_token: Optional[str] = None
+
+
+class Test_API(BaseModel):
+    id: str
+    message: Optional[str] = None
+    tags: List[str] = []
+    data: Dict = {}

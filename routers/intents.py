@@ -2,10 +2,8 @@ from fastapi import APIRouter, Body
 from typing import Optional
 from db import MongoDB
 from bson import ObjectId
-from routers.secure import auth
 from object_str import CutId
-from routers.items import INTENT_BOT
-import re
+from routers.models import INTENT_BOT
 import os
 
 router = APIRouter()

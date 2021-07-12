@@ -4,7 +4,7 @@ import datetime
 from db import MongoDB
 from object_str import CutId
 from bson import ObjectId
-from routers.items import Transaction
+from routers.models import Transaction
 import os
 
 client = os.environ.get('MONGODB_URI')
@@ -24,9 +24,10 @@ async def import_get():
     return data[::-1]
 
 
-@router.post('/import', status_code=201)
+@router.post('/import', status_code=201, response_model=Transaction)
 async def import_post(item: Transaction):
     try:
+        print(item.dict())
         key = CutId(_id=ObjectId()).dict()['id']
         item = item.dict()
         _d = datetime.datetime.now()
