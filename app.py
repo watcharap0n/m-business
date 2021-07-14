@@ -4,6 +4,7 @@ from fastapi.templating import Jinja2Templates
 from fastapi.middleware.cors import CORSMiddleware
 from dependent.authentication_cookies import cookie_extractor
 from fastapi.responses import RedirectResponse
+from starlette.websockets import WebSocket
 from routers import customers, imports, tags, wh_client, secure, api_cors, intents, quotation
 import time
 import uvicorn
@@ -12,7 +13,7 @@ import logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
-app = FastAPI(docs_url='/docs_kane')
+app = FastAPI(docs_url='/docs/doc', redoc_url='/docs/redoc')
 app.mount("/static", StaticFiles(directory="static"), name="static")
 template = Jinja2Templates(directory="templates")
 
@@ -128,8 +129,10 @@ async def signin(request: Request, authentication: str = Depends(cookie_extracto
 
 
 @app.get('/intents', tags=['Page'])
-async def intents(request: Request):
-    return template.TemplateResponse('public/intents.vue', context={'request': request})
+async def intents(request: Request, authentication: str = Depends(cookie_extractor)):
+    if authentication:
+        return template.TemplateResponse('public/intents.vue', context={'request': request})
+    return template.TemplateResponse('admin/signin.vue', context={'request': request})
 
 
 @app.get('/line/quotation', tags=['Page'])
@@ -137,10 +140,25 @@ async def quotation_line(request: Request):
     return template.TemplateResponse('LINE/quotation.vue', context={'request': request})
 
 
-@app.get('/facebook/quotation')
+@app.get('/facebook/quotation', tags=['Page'])
 async def quotation_facebook(request: Request):
     return template.TemplateResponse('FACEBOOK/quotation.vue', context={'request': request})
 
 
+@app.get('/test_ws')
+async def test_ws(request: Request):
+    return template.TemplateResponse('test_ws.vue', context={'request': request})
+
+
+@app.websocket('/ws')
+async def websocket_endpoint(websocket: WebSocket):
+    user_dict = {}
+    await websocket.accept()
+    while True:
+        data = await websocket.receive_text()
+        user_dict['user'] = data
+        await websocket.send_json(user_dict)
+
+
 if __name__ == '__main__':
-    uvicorn.run('app:app', debug=True, port=8888)
+    uvicorn.run('app:app', debug=True)

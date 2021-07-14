@@ -67,6 +67,9 @@ new Vue({
             {text: 'DataTable', icon: 'mdi-database'},
             {text: 'Intents', icon: 'mdi-account'},
         ],
+
+        //chatbot
+
     },
     delimiters: ["[[", "]]"],
 

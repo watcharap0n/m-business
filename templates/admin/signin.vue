@@ -270,6 +270,7 @@
                                   'คุณลงทะเบียนสำเร็จแล้ว',
                                   'success'
                               ).then(() => {
+                                  this.$refs.form.reset();
                                   this.fe = Object.assign({}, this.feDefault);
                                   this.imgFile = null
                                   this.valid = false;

@@ -455,6 +455,8 @@
         </v-col>
       </v-row>
 
+{% include 'public/extends/intents/chatbot.vue' %}
+
     </v-container>
   </v-card>
 

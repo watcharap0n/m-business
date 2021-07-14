@@ -26,19 +26,15 @@ async def import_get():
 
 @router.post('/import', status_code=201, response_model=Transaction)
 async def import_post(item: Transaction):
-    try:
-        print(item.dict())
-        key = CutId(_id=ObjectId()).dict()['id']
-        item = item.dict()
-        _d = datetime.datetime.now()
-        item["date"] = _d.strftime("%d/%m/%y")
-        item["time"] = _d.strftime("%H:%M:%S")
-        item["id"] = key
-        db.insert_one(collection=collection, data=item)
-        del item['_id']
-        return item
-    except:
-        raise HTTPException(status_code=400, detail='API Something wrong!')
+    key = CutId(_id=ObjectId()).dict()['id']
+    item = item.dict()
+    _d = datetime.datetime.now()
+    item["date"] = _d.strftime("%d/%m/%y")
+    item["time"] = _d.strftime("%H:%M:%S")
+    item["id"] = key
+    db.insert_one(collection=collection, data=item)
+    del item['_id']
+    return item
 
 
 @router.put('/import/{id}')
@@ -53,10 +49,10 @@ async def import_put(
     payload['time'] = _d.strftime("%H:%M:%S")
     values = {'$set': payload}
     db.update_one(collection=collection, values=values, query=query)
-    return 'success'
+    return {'message': 'success'}
 
 
-@router.delete('/import/{id}')
+@router.delete('/import/{id}', status_code=204)
 async def import_delete(id: Optional[str] = Path(None)):
     db.delete_one(collection=collection, query={'id': id})
-    return 'success'
+    return {'message': 'success'}

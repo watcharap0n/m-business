@@ -57,8 +57,8 @@ async def login(
                 expires_token = 60 * 60 * 1
                 expires_remember = 60 * 60 * 24 * 5
                 auth_cookie = auth.create_session_cookie(id_token=user['idToken'], expires_in=timedelta(hours=1))
-                response.set_cookie(key='access_token', value=str(auth_cookie), expires=expires_token, httponly=True,
-                                    secure=True)
+                response.set_cookie(key='access_token', value=str(auth_cookie), expires=expires_token,
+                                    )
                 response.set_cookie(key='hash_email', value=str(email), expires=expires_remember)
                 response.set_cookie(key='hash_password', value=str(password), expires=expires_remember)
                 response.set_cookie(key='remember', value='remember', expires=expires_remember)
@@ -66,8 +66,8 @@ async def login(
             else:
                 expires_token = 60 * 60 * 1
                 auth_cookie = auth.create_session_cookie(id_token=user['idToken'], expires_in=timedelta(hours=1))
-                response.set_cookie(key='access_token', value=str(auth_cookie), expires=expires_token, httponly=True,
-                                    secure=True)
+                response.set_cookie(key='access_token', value=str(auth_cookie), expires=expires_token,
+                                    )
                 return {'url': '/customers', 'status': True, 'detail': 'login success'}
         elif not check_verify.email_verified:
             pb.send_email_verification(user['idToken'])

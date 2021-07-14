@@ -26,18 +26,15 @@ async def customers_get():
 
 @router.post('/customer', status_code=201, response_model=Transaction)
 async def customers_post(item: Transaction):
-    try:
-        key = CutId(_id=ObjectId()).dict()['id']
-        item = item.dict()
-        _d = datetime.datetime.now()
-        item["date"] = _d.strftime("%d/%m/%y")
-        item["time"] = _d.strftime("%H:%M:%S")
-        item["id"] = key
-        db.insert_one(collection=collection, data=item)
-        del item['_id']
-        return item
-    except:
-        raise HTTPException(status_code=400, detail='API Something wrong!')
+    key = CutId(_id=ObjectId()).dict()['id']
+    item = item.dict()
+    _d = datetime.datetime.now()
+    item["date"] = _d.strftime("%d/%m/%y")
+    item["time"] = _d.strftime("%H:%M:%S")
+    item["id"] = key
+    db.insert_one(collection=collection, data=item)
+    del item['_id']
+    return item
 
 
 @router.put('/customer/{id}')
@@ -55,7 +52,7 @@ async def customers_put(
     return {'message': 'success'}
 
 
-@router.delete('/customer/{id}')
+@router.delete('/customer/{id}', status_code=204)
 async def customers_delete(id: Optional[str] = Path(None)):
     db.delete_one(collection=collection, query={'id': id})
     return {'message': 'success'}
@@ -73,6 +70,3 @@ async def move_customer(items: Optional[list] = Body(None)):
         v['time_insert'] = _d.strftime("%H:%M:%S")
     db.insert_many(collection=collection, data=items)
     return {'message': 'success'}
-
-
-
