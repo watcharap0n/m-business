@@ -22,6 +22,11 @@ Generate a backend and frontend stack using Python, including interactive API do
 
 ![Alt text](https://github.com/watcharap0n/m-business/blob/main/static/github/signin.png?raw=true "Title")
 
+**Concept Design Patterns**
+    
+    (MVC) Model View Controller
+    
+
 **Feature**
 
     - Python FastAPI backend:
@@ -37,6 +42,14 @@ Generate a backend and frontend stack using Python, including interactive API do
     - Vue frontend Generated with Vue CDN and Vuetify
     - Database MongoDB
     - Docker Compose Local
+
+**Testing APP**
+
+    Testing FastAPI (API)
+    Testing Database
+    Using by Testing Client > test_app.py (test_modules) run script
+    
+    
 
 **Firebase service authentication**
 
