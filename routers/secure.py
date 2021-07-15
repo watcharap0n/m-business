@@ -26,7 +26,7 @@ async def register(
         filename = file.filename
         upload_dir = os.path.join('static', 'uploads')
         file_input = os.path.join(upload_dir, file.filename)
-        http = f'https://m-bussiness-bot.herokuapp.com/static/uploads/{filename}'
+        http = f'https://mango2smartmarketing.herokuapp.com/static/uploads/{filename}'
         user = auth.create_user(
             email=email,
             password=password,
