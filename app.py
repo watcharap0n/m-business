@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from dependent.authentication_cookies import cookie_extractor
 from fastapi.responses import RedirectResponse
 from starlette.websockets import WebSocket
-from routers import customers, imports, tags, wh_client, secure, api_cors, intents, quotation
+from routers import customers, imports, tags, wh_client, secure, api_cors, intents, quotation, wh_notify
 import time
 import uvicorn
 import logging
@@ -86,6 +86,13 @@ app.include_router(
     quotation.router,
     prefix='/quotation',
     tags=['Quotation'],
+    responses={418: {'description': "I'm a teapot"}}
+)
+
+app.include_router(
+    wh_notify.router,
+    prefix='/mango',
+    tags=['notify'],
     responses={418: {'description': "I'm a teapot"}}
 )
 

@@ -2,6 +2,7 @@ from db import MongoDB
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer, TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from pythainlp.tokenize import word_tokenize
+import re
 import os
 
 client = os.environ.get('MONGODB_URI')
@@ -23,11 +24,12 @@ def intent_model(p_text=str, query=str):
         sum_text.append(txt)
     if len(sum_text) == 1 and len(ans_text) == 1:
         return {'require': 'ต้องสร้าง Intent อย่างน้อย 2 Intent ก่อนถึงจะสามารถใช้งานบอทได้ครับ'}
+    sum_text = [re.sub(re.compile(r'\s+'), '', i) for i in sum_text]
     tf_vect = TfidfVectorizer(tokenizer=word_tokenize)
     x_train_vect = tf_vect.fit_transform(sum_text)
     my_classifire = LogisticRegression(penalty='none')
     my_classifire.fit(x_train_vect, embedding)
-    x_test_vect = tf_vect.transform(x_train_vect)
+    x_test_vect = tf_vect.transform([p_text])
     prediction = my_classifire.predict(x_test_vect)
     proba = my_classifire.predict_proba(x_test_vect)[0][prediction]
     return {'predict': prediction, 'confident': proba, 'answers': ans_text}

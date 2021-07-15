@@ -29,7 +29,7 @@ async def save(item: TokenLINE):
     result = item.dict()
     result['id'] = key
     result['token'] = path_wh
-    result['webhook'] = f'https://m-bussiness-bot.herokuapp.com/callback/{path_wh}'
+    result['webhook'] = f'https://mango2smartmarketing.herokuapp.com/callback/{path_wh}'
     db.insert_one(collection=collection, data=result)
     del result['_id']
     return result
@@ -53,7 +53,6 @@ async def webhook(
         token: Optional[str] = Path(...),
         raw_json: Optional[dict] = Body(None)
 ):
-    # client_token = 'c96bf514c5264bf7a72acd8290f1cff0'
     q = db.find_one(collection=collection, query={'token': token})
     q = dict(q)
     handler = q['SECRET_LINE']
