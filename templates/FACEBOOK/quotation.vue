@@ -7,19 +7,25 @@
 
     <v-dialog
         transition="dialog-bottom-transition"
-        max-width="600"
+        max-width="320"
         persistent
         v-model="dialog"
     >
-      <v-card>
-        <v-card-title class="text-h5">
-          Please Login your Facebook!
-        </v-card-title>
+      <v-card
 
-        <v-card-text>
+      >
+        <v-list-item three-line>
+          <v-list-item-content>
+            <div class="text-overline mb-4">
+              FACEBOOK
+            </div>
+            <v-list-item-title class="text-h5 mb-1">
+              กรุณาเข้าสู่ระบบ Facebook
+            </v-list-item-title>
+            <v-list-item-subtitle> ดำเนินการเข้าสู่ระบบก่อนกรอกแบบฟอร์ม </v-list-item-subtitle>
+          </v-list-item-content>
 
-        </v-card-text>
-
+        </v-list-item>
 
         <v-card-actions>
           <v-progress-circular
@@ -29,15 +35,14 @@
               indeterminate
           ></v-progress-circular>
 
-          <div :hidden="!showFB" onlogin="checkLoginState();"
+          <div onlogin="checkLoginState();"
                class="fb-login-button" scope="public_profile,email"
                data-scope="public_profile,email"
                data-width="" data-size="large"
                data-button-type="continue_with"
-               data-layout="rounded" data-auto-logout-link="false" data-use-continue-as="true"></div>
-
-
+               data-layout="default" data-auto-logout-link="false" data-use-continue-as="true"></div>
         </v-card-actions>
+
       </v-card>
     </v-dialog>
 

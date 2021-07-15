@@ -33,7 +33,6 @@ new Vue({
         spinBtn: true,
         dialog: true,
         spinFB: true,
-        showFB: false,
     },
     delimiters: ["[[", "]]"],
 
@@ -62,7 +61,6 @@ new Vue({
         async statusChangeCallback() {
             await FB.getLoginStatus((response) => {
                 this.spinFB = false
-                this.showFB = true
                 console.log(response)
                 if (response.authResponse) {
                     this.dialog = false
