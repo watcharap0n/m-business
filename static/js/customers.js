@@ -237,13 +237,13 @@ new Vue({
             if (this.selected.length > 0) {
                 this.spinImport = true
                 const path = '/api/move/customer'
+                this.selected.forEach((data) => {
+                    data.authUser = this.userAuth
+                    this.transaction.splice(this.transaction.indexOf(data), 1)
+                })
+                console.log(this.selected)
                 await axios.post(path, this.selected)
                     .then((res) => {
-                        this.selected.forEach((data) => {
-                            console.log(data)
-                            Object.assign(data.authUser, this.userAuth)
-                            this.transaction.splice(this.transaction.indexOf(data), 1)
-                        })
                         this.spinImport = false
                         this.text = `คุณได้ทำการย้ายข้อมูลไปหน้า customers แล้ว!`
                         this.colorSb = 'success'
@@ -251,8 +251,8 @@ new Vue({
                         this.selected = []
                     })
                     .catch((err) => {
+                        this.text = 'เกิดข้อผิดพลาด'
                         this.selected = []
-                        console.log(err);
                     })
             } else {
                 this.colorSb = 'error'
@@ -293,7 +293,6 @@ new Vue({
                     this.text = `คุณได้เพิ่มข้อมูล ${this.editedItem.name}`
                     this.colorSb = 'success'
                     this.snackbar = true
-                    console.log(res.data)
                 })
                 .catch((err) => {
                     console.log(err);

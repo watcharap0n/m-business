@@ -18,18 +18,15 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 template = Jinja2Templates(directory="templates")
 
 origins = [
-    "http://localhost.tiangolo.com",
-    "https://localhost.tiangolo.com",
-    "http://localhost",
-    "http://localhost:8080",
-    "http://127.0.0.1:8080",
+    'https://572666a1f922.ngrok.io'
+    "http://127.0.0.1:5000",
     "https://mango-client.herokuapp.com",
-    "https://mangoconsultant.net"
+    "http://www.mangoconsultant.net"
 ]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
