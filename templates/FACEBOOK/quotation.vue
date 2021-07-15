@@ -7,7 +7,7 @@
 
     <v-dialog
         transition="dialog-bottom-transition"
-        max-width="320"
+        max-width="330"
         persistent
         v-model="dialog"
     >

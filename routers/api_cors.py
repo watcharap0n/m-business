@@ -4,6 +4,8 @@ from bson import ObjectId
 from db import MongoDB
 from object_str import CutId
 import datetime
+from linebot.models import TextSendMessage
+from routers.wh_notify import line_bot_api_notify
 import os
 
 router = APIRouter()
@@ -22,10 +24,11 @@ async def cors_mango(item: Transaction):
     item["time"] = _d.strftime("%H:%M:%S")
     item["id"] = key
     db.insert_one(collection=collection, data=item)
+    name = item['name']
+    product = item['product']
+    tel = item['tel']
+    line_bot_api_notify.broadcast(TextSendMessage(text=f'แจ้งเตือน! คุณ {name} ขอใบเสนอราคาตัว {product} ติดต่อเบอร์ {tel}'))
     del item['_id']
     return item
 
 
-@router.post('/test_api', response_model=UserItem)
-async def test_api(item: UserItem):
-    return item
