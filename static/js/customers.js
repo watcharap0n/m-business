@@ -90,7 +90,8 @@ new Vue({
             company: '',
             channel: '',
             message: '',
-            authUser: {}
+            username: '',
+            uid: '',
         },
         defaultItem: {
             id: '',
@@ -107,7 +108,8 @@ new Vue({
             company: '',
             channel: '',
             message: '',
-            authUser: {}
+            username: '',
+            uid: '',
         },
         search: '',
         transaction: [],
@@ -238,10 +240,10 @@ new Vue({
                 this.spinImport = true
                 const path = '/api/move/customer'
                 this.selected.forEach((data) => {
-                    data.authUser = this.userAuth
+                    data.username = this.userAuth.name
+                    data.uid = this.userAuth.uid
                     this.transaction.splice(this.transaction.indexOf(data), 1)
                 })
-                console.log(this.selected)
                 await axios.post(path, this.selected)
                     .then((res) => {
                         this.spinImport = false
@@ -263,8 +265,12 @@ new Vue({
         },
         changeTransaction(data) {
             if (data === 'imports') {
+                this.selected = []
+                this.model = []
                 this.APIImport()
             } else if (data === 'customers') {
+                this.selected = []
+                this.model = []
                 this.initialize()
             }
         },
@@ -285,7 +291,8 @@ new Vue({
                 this.path = '/api/customer'
             if (href === 'import')
                 this.path = '/api/import'
-            Object.assign(this.editedItem.authUser, this.userAuth)
+            this.editedItem.uid = this.userAuth.uid
+            this.editedItem.username = this.userAuth.name
             await axios.post(this.path, data)
                 .then((res) => {
                     this.spinButton = true;
@@ -335,7 +342,6 @@ new Vue({
                 })
         },
         editItem(item) {
-            console.log(this.href)
             this.editedIndex = this.transaction.indexOf(item)
             this.editedItem = Object.assign({}, item)
             this.dialogCustomer = true;
@@ -447,13 +453,12 @@ new Vue({
         },
         tagTransaction(selected) {
             this.spinTag = false
-            let data = {'id': selected, 'tag': this.model}
+            let data = {id: selected, tag: this.model, href: this.href}
             const path = '/api/tag'
             axios.post(path, data)
                 .then((res) => {
                     this.spinTag = true
                     this.initialize()
-                    console.log(res.data)
                 })
                 .catch((err) => {
                     console.error(err)

@@ -45,12 +45,19 @@ async def delete_tag(
     return {'message': 'success'}
 
 
-@router.post('/tag')
-async def post_tag(item: Optional[dict] = None):
+def query_collection_tag(item: dict, collect: str):
     id = item['id']
     value = [x['text'] for x in item['tag']]
     for i in id:
-        db.update_one(collection='customers', query={'id': i['id']}, values={'$set': {'tag': value}})
+        db.update_one(collection=collect, query={'id': i['id']}, values={'$set': {'tag': value}})
+
+
+@router.post('/tag')
+async def post_tag(item: Optional[dict] = None):
+    if item.get('href') == 'import':
+        query_collection_tag(item, 'imports')
+    elif item.get('href') == 'customer':
+        query_collection_tag(item, 'customers')
     return item
 
 

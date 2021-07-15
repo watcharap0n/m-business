@@ -18,7 +18,8 @@ class Transaction(BaseModel):
     profile: Optional[str] = Field(None, example='Profile LINE or Facebook')
     picture: Optional[str] = Field(None, example='Picture LINE or Facebook')
     channel: Optional[str] = Field(None, example='Get Channel LINE or Facebook')
-    authUser: Optional[dict] = {}
+    username: Optional[str] = None
+    uid: Optional[str] = None
     tag: Optional[list] = []
     date: Optional[str] = None
     time: Optional[str] = None
