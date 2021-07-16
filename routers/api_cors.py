@@ -34,13 +34,13 @@ async def cors_mango(item: Transaction):
     return item
 
 
-def key_model_transaction(item: dict):
+def key_model_transaction(item: dict, channel: str):
     item['other'] = None
     item['userId'] = None
     item['email_private'] = None
     item['profile'] = None
     item['picture'] = None
-    item['channel'] = 'GetDemo'
+    item['channel'] = channel
     item['username'] = None
     item['uid'] = None
     item['tag'] = []
@@ -55,7 +55,7 @@ async def get_demo(item: Optional[dict] = Body(None)):
     item["date"] = _d.strftime("%d/%m/%y")
     item["time"] = _d.strftime("%H:%M:%S")
     item["id"] = key
-    item = key_model_transaction(item)
+    item = key_model_transaction(item, 'GetDemo')
     db.insert_one(collection=collection, data=item)
     del item['_id']
     return item
@@ -75,7 +75,7 @@ async def contact(item: Optional[dict] = Body(None)):
     item["time"] = _d.strftime("%H:%M:%S")
     item["id"] = key
     del item['contact_email_div']
-    item = key_model_transaction(item)
+    item = key_model_transaction(item, 'Contact')
     db.insert_one(collection=collection, data=item)
     del item['_id']
     return item
