@@ -8,6 +8,7 @@ from typing import Optional
 from features_line.flex_message import flex_notify_channel
 from routers.wh_notify import line_bot_api_notify
 import os
+import pytz
 
 router = APIRouter()
 client = os.environ.get('MONGODB_URI')
@@ -18,9 +19,10 @@ collection = 'imports'
 
 @router.post('/cors_mango', response_model=Transaction)
 async def cors_mango(item: Transaction):
+    tz = pytz.timezone('Asia/Bangkok')
     key = CutId(_id=ObjectId()).dict()['id']
     item = item.dict()
-    _d = datetime.datetime.now()
+    _d = datetime.datetime.now(tz)
     item["date"] = _d.strftime("%d/%m/%y")
     item["time"] = _d.strftime("%H:%M:%S")
     item["id"] = key
@@ -56,8 +58,9 @@ def key_model_transaction(item: dict, channel: str):
 
 @router.post('/get_demo', status_code=201)
 async def get_demo(item: Optional[dict] = Body(None)):
+    tz = pytz.timezone('Asia/Bangkok')
     key = CutId(_id=ObjectId()).dict()['id']
-    _d = datetime.datetime.now()
+    _d = datetime.datetime.now(tz)
     item['name'] = item.pop('fname')
     item["date"] = _d.strftime("%d/%m/%y")
     item["time"] = _d.strftime("%H:%M:%S")
@@ -85,8 +88,9 @@ async def get_demo(item: Optional[dict] = Body(None)):
 
 @router.post('/contact', status_code=201)
 async def contact(item: Optional[dict] = Body(None)):
+    tz = pytz.timezone('Asia/Bangkok')
     key = CutId(_id=ObjectId()).dict()['id']
-    _d = datetime.datetime.now()
+    _d = datetime.datetime.now(tz)
     item['email'] = item.pop('contact_email')
     item['name'] = item.pop('contact_name')
     item['company'] = item.pop('contact_name_company')
