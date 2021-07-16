@@ -5,7 +5,7 @@ from db import MongoDB
 from object_str import CutId
 import datetime
 from typing import Optional
-from linebot.models import TextSendMessage
+from features_line.flex_message import flex_notify_channel
 from routers.wh_notify import line_bot_api_notify
 import os
 
@@ -28,8 +28,15 @@ async def cors_mango(item: Transaction):
     name = item['name']
     product = item['product']
     tel = item['tel']
+    channel = item['channel']
+    date = item['date']
+    time = item['time']
+    email = item['email']
+    message = item['message']
+    company = item['company']
     line_bot_api_notify.broadcast(
-        TextSendMessage(text=f'แจ้งเตือน! คุณ {name} ขอใบเสนอราคาตัว {product} ติดต่อเบอร์ {tel}'))
+        flex_notify_channel(channel=channel, date_time=f'{date} {time}', company=company, name=name, tel=tel,
+                            email=email, product=product, message=message))
     del item['_id']
     return item
 
@@ -57,6 +64,18 @@ async def get_demo(item: Optional[dict] = Body(None)):
     item["id"] = key
     item = key_model_transaction(item, 'GetDemo')
     db.insert_one(collection=collection, data=item)
+    name = item['name']
+    product = item['product']
+    tel = item['tel']
+    channel = item['channel']
+    date = item['date']
+    time = item['time']
+    email = item['email']
+    message = item['message']
+    company = item['company']
+    line_bot_api_notify.broadcast(
+        flex_notify_channel(channel=channel, date_time=f'{date} {time}', company=company, name=name, tel=tel,
+                            email=email, product=product, message=message))
     del item['_id']
     return item
 
@@ -77,5 +96,17 @@ async def contact(item: Optional[dict] = Body(None)):
     del item['contact_email_div']
     item = key_model_transaction(item, 'Contact')
     db.insert_one(collection=collection, data=item)
+    name = item['name']
+    product = item['product']
+    tel = item['tel']
+    channel = item['channel']
+    date = item['date']
+    time = item['time']
+    email = item['email']
+    message = item['message']
+    company = item['company']
+    line_bot_api_notify.broadcast(
+        flex_notify_channel(channel=channel, date_time=f'{date} {time}', company=company, name=name, tel=tel,
+                            email=email, product=product, message=message))
     del item['_id']
     return item
