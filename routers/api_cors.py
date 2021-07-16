@@ -73,10 +73,13 @@ async def get_demo(item: Optional[dict] = Body(None)):
     email = item['email']
     message = item['message']
     company = item['company']
-    line_bot_api_notify.broadcast(
-        flex_notify_channel(channel=channel, date_time=f'{date} {time}', company=company, name=name, tel=tel,
-                            email=email, product=product, message=message))
     del item['_id']
+    if company == 'google':
+        return item
+    else:
+        line_bot_api_notify.broadcast(
+            flex_notify_channel(channel=channel, date_time=f'{date} {time}', company=company, name=name, tel=tel,
+                                email=email, product=product, message=message))
     return item
 
 
@@ -105,8 +108,11 @@ async def contact(item: Optional[dict] = Body(None)):
     email = item['email']
     message = item['message']
     company = item['company']
-    line_bot_api_notify.broadcast(
-        flex_notify_channel(channel=channel, date_time=f'{date} {time}', company=company, name=name, tel=tel,
-                            email=email, product=product, message=message))
     del item['_id']
+    if company == 'google':
+        return item
+    else:
+        line_bot_api_notify.broadcast(
+            flex_notify_channel(channel=channel, date_time=f'{date} {time}', company=company, name=name, tel=tel,
+                                email=email, product=product, message=message))
     return item
