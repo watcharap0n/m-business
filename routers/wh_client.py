@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Request, HTTPException, Body, Path
-from linebot import LineBotApi, WebhookHandler, WebhookParser
+from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
-from linebot.models import StickerSendMessage, TextSendMessage, TextMessage, MessageEvent
-from model_text_classifire import intent_model
+from linebot.models import StickerSendMessage, TextSendMessage
+from machine_leanning.model_text_classifire import intent_model
 from models.token_line import TokenLINE
 from random import randint
 from bson import ObjectId
