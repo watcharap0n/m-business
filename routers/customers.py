@@ -4,7 +4,7 @@ import datetime
 from db import MongoDB
 from object_str import CutId
 from bson import ObjectId
-from routers.models import Transaction
+from models.transaction import Transaction
 import os
 
 router = APIRouter()

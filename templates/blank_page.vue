@@ -1,4 +1,4 @@
-{% extends "main_layout.html" %}
+{% extends "admin/main_layout.html" %}
 {% block content %}
 
 <br>

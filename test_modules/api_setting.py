@@ -27,7 +27,7 @@ class TestAPP:
             'authUser': {
                 'uid': 'kane',
             },
-            'tag': ['noting', 'success'],
+            'tag': ['error', 'success'],
             'date': '',
             'time': ''
         }

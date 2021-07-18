@@ -3,7 +3,7 @@ from typing import Optional
 from db import MongoDB
 from bson import ObjectId
 from object_str import CutId
-from routers.models import INTENT_BOT
+from models.intent_bot import Intent
 import os
 
 router = APIRouter()
@@ -23,8 +23,8 @@ async def data_intent(access_token: Optional[dict] = Body(None)):
     return data
 
 
-@router.post('/add', status_code=201, response_model=INTENT_BOT)
-async def add_intent(item: INTENT_BOT):
+@router.post('/add', status_code=201, response_model=Intent)
+async def add_intent(item: Intent):
     key = CutId(_id=ObjectId()).dict()['id']
     item = item.dict()
     item['id'] = key

@@ -1,5 +1,5 @@
-from fastapi import APIRouter, HTTPException, Body
-from routers.models import Transaction, UserItem
+from fastapi import APIRouter, Body
+from models.transaction import Transaction
 from bson import ObjectId
 from db import MongoDB
 from object_str import CutId

@@ -3,7 +3,7 @@ from linebot import LineBotApi, WebhookHandler, WebhookParser
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import StickerSendMessage, TextSendMessage, TextMessage, MessageEvent
 from model_text_classifire import intent_model
-from routers.models import TokenLINE
+from models.token_line import TokenLINE
 from random import randint
 from bson import ObjectId
 from object_str import CutId
