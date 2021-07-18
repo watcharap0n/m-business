@@ -36,6 +36,7 @@ async def cors_mango(item: Transaction):
     email = item['email']
     message = item['message']
     company = item['company']
+    print(name, product, tel, channel, date, time, email, message, company)
     line_bot_api_notify.broadcast(
         flex_notify_channel(channel=channel, date_time=f'{date} {time}', company=company, name=name, tel=tel,
                             email=email, product=product, message=message))
@@ -80,6 +81,7 @@ async def get_demo(item: Optional[dict] = Body(None)):
     if company == 'google':
         return item
     else:
+        print(name, product, tel, channel, date, time, email, message, company)
         line_bot_api_notify.broadcast(
             flex_notify_channel(channel=channel, date_time=f'{date} {time}', company=company, name=name, tel=tel,
                                 email=email, product=product, message=message))
@@ -116,6 +118,7 @@ async def contact(item: Optional[dict] = Body(None)):
     if company == 'google':
         return item
     else:
+        print(name, product, tel, channel, date, time, email, message, company)
         line_bot_api_notify.broadcast(
             flex_notify_channel(channel=channel, date_time=f'{date} {time}', company=company, name=name, tel=tel,
                                 email=email, product=product, message=message))

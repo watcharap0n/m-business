@@ -1,7 +1,7 @@
 from linebot.models import (FlexSendMessage)
 
 
-def flex_notify_channel(channel: str, date_time: str, company: str, name: str, tel: str, email: str, product: str, message: str):
+def flex_notify_channel(channel, date_time, company, name, tel, email, product, message):
     flex_msg = FlexSendMessage(
         alt_text='Notify! customer contact',
         contents={
