@@ -17,6 +17,22 @@ db = MongoDB(database_name='Mango', uri=client)
 collection = 'imports'
 
 
+def condition_message(channel, date, time, company, name, tel, email, product,
+                      message):
+    if message:
+        line_bot_api_notify.broadcast('Ue5dadd2dd3552271033e77d1518415c9',
+                                      flex_notify_channel(channel=channel, date_time=f'{date} {time}',
+                                                          company=company,
+                                                          name=name, tel=tel,
+                                                          email=email, product=product, message=message))
+    else:
+        line_bot_api_notify.push_message('Ue5dadd2dd3552271033e77d1518415c9',
+                                         flex_notify_channel(channel=channel, date_time=f'{date} {time}',
+                                                             company=company,
+                                                             name=name, tel=tel,
+                                                             email=email, product=product, message='ไม่มีข้อความ'))
+
+
 @router.post('/cors_mango', response_model=Transaction)
 async def cors_mango(item: Transaction):
     tz = pytz.timezone('Asia/Bangkok')
@@ -36,11 +52,8 @@ async def cors_mango(item: Transaction):
     email = item['email']
     message = item['message']
     company = item['company']
-    print(name, product, tel, channel, date, time, email, message, company)
-    line_bot_api_notify.broadcast(
-        flex_notify_channel(channel=channel, date_time=f'{date} {time}', company=company, name=name, tel=tel,
-                            email=email, product=product, message=message))
     del item['_id']
+    condition_message(channel, date, time, company, name, tel, email, product, message)
     return item
 
 
@@ -81,10 +94,7 @@ async def get_demo(item: Optional[dict] = Body(None)):
     if company == 'google':
         return item
     else:
-        print(name, product, tel, channel, date, time, email, message, company)
-        line_bot_api_notify.broadcast(
-            flex_notify_channel(channel=channel, date_time=f'{date} {time}', company=company, name=name, tel=tel,
-                                email=email, product=product, message=message))
+        condition_message(channel, date, time, company, name, tel, email, product, message)
     return item
 
 
@@ -118,8 +128,5 @@ async def contact(item: Optional[dict] = Body(None)):
     if company == 'google':
         return item
     else:
-        print(name, product, tel, channel, date, time, email, message, company)
-        line_bot_api_notify.broadcast(
-            flex_notify_channel(channel=channel, date_time=f'{date} {time}', company=company, name=name, tel=tel,
-                                email=email, product=product, message=message))
+        condition_message(channel, date, time, company, name, tel, email, product, message)
     return item
