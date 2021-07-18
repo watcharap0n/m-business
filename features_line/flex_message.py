@@ -1,7 +1,11 @@
 from linebot.models import (FlexSendMessage)
+from typing import Optional
 
 
-def flex_notify_channel(channel, date_time, company, name, tel, email, product, message):
+def flex_notify_channel(channel: Optional[str] = '', date_time: Optional[str] = '', company: Optional[str] = '',
+                        name: Optional[str] = '',
+                        tel: Optional[str] = '', email: Optional[str] = '', product: Optional[str] = '',
+                        message: Optional[str] = ''):
     flex_msg = FlexSendMessage(
         alt_text='Notify! customer contact',
         contents={
