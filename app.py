@@ -9,6 +9,7 @@ from routers import customers, imports, tags, wh_client, secure, api_cors, inten
 import time
 import uvicorn
 import logging
+import os
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -165,4 +166,5 @@ async def websocket_endpoint(websocket: WebSocket):
 
 
 if __name__ == '__main__':
-    uvicorn.run('app:app', debug=True)
+    port = int(os.environ.get('PORT', 8005))
+    uvicorn.run('app:app', debug=True, port=port)
