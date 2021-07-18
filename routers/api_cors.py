@@ -20,17 +20,17 @@ collection = 'imports'
 def condition_message(channel, date, time, company, name, tel, email, product,
                       message):
     if message:
-        line_bot_api_notify.broadcast('Ue5dadd2dd3552271033e77d1518415c9',
-                                      flex_notify_channel(channel=channel, date_time=f'{date} {time}',
-                                                          company=company,
-                                                          name=name, tel=tel,
-                                                          email=email, product=product, message=message))
+        line_bot_api_notify.broadcast(
+            flex_notify_channel(channel=channel, date_time=f'{date} {time}',
+                                company=company,
+                                name=name, tel=tel,
+                                email=email, product=product, message=message))
     else:
-        line_bot_api_notify.push_message('Ue5dadd2dd3552271033e77d1518415c9',
-                                         flex_notify_channel(channel=channel, date_time=f'{date} {time}',
-                                                             company=company,
-                                                             name=name, tel=tel,
-                                                             email=email, product=product, message='ไม่มีข้อความ'))
+        line_bot_api_notify.broadcast(
+            flex_notify_channel(channel=channel, date_time=f'{date} {time}',
+                                company=company,
+                                name=name, tel=tel,
+                                email=email, product=product, message='ไม่มีข้อความ'))
 
 
 @router.post('/cors_mango', response_model=Transaction)
