@@ -57,7 +57,7 @@ async def cors_mango(item: Transaction):
     return item
 
 
-def key_model_transaction(item: dict, channel: str):
+def key_model_transaction(item: dict, channel: str) -> dict:
     item['other'] = None
     item['userId'] = None
     item['email_private'] = None
