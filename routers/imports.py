@@ -45,8 +45,6 @@ async def import_put(
     payload = item.dict()
     _d = datetime.datetime.now()
     query = {'id': id}
-    payload['date'] = _d.strftime("%d/%m/%y")
-    payload['time'] = _d.strftime("%H:%M:%S")
     values = {'$set': payload}
     db.update_one(collection=collection, values=values, query=query)
     return {'message': 'success'}

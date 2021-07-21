@@ -7,6 +7,9 @@ class MongoDB:
         self.client = MongoClient(uri)
         self.database = self.client[database_name]
 
+    def database_config(self):
+        return self.database
+
     @staticmethod
     def find_dictionary(programming, query):
         return programming.find(query)

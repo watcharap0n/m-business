@@ -123,14 +123,6 @@ async def signin(request: Request, authentication: str = Depends(cookie_extracto
     if authentication:
         return template.TemplateResponse('public/customers.vue', context={'request': request})
     return template.TemplateResponse('admin/signin.vue', context={'request': request})
-    # cookie = request.cookies.get('color')
-    # if cookie:
-    #     page = template.TemplateResponse('admin/signin.vue', context={'request': request})
-    #     return page
-    # elif not cookie:
-    #     page = template.TemplateResponse('admin/signin.vue', context={'request': request})
-    #     page.set_cookie(key='color', value='#000000')
-    #     return page
 
 
 @app.get('/intents', tags=['Page'])
