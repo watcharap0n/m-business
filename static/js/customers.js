@@ -267,10 +267,12 @@ new Vue({
         async changeTransaction(data) {
             if (data === 'imports') {
                 await this.APIImport()
-                // this.selected = []
-                // this.model = []
+                this.selected = []
+                this.model = []
             } else if (data === 'customers') {
                 await this.initialize()
+                this.selected = []
+                this.model = []
             }
         },
         colorProduct(product) {
