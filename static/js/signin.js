@@ -70,7 +70,6 @@ new Vue({
                   }
                   if (form === true) {
                       this.spinBtn = false
-                      console.log('success')
                       let formData = new FormData();
                       formData.append('file', this.imgFile);
                       formData.append('email', this.fe.email);

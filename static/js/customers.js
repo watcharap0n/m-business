@@ -195,9 +195,9 @@ new Vue({
                 user.uid = res.data.uid
             })
     },
-    created() {
-        this.initialize();
-        this.getTags();
+    async created() {
+        await this.initialize();
+        await this.getTags();
     },
 
     computed: {
@@ -207,10 +207,10 @@ new Vue({
     },
     methods: {
         // table
-        initialize() {
+        async initialize() {
             this.spinTable = false
             const path = '/api/customer'
-            axios.get(path)
+           await axios.get(path)
                 .then((res) => {
                     this.spinTable = true;
                     this.transaction = res.data;
@@ -221,10 +221,10 @@ new Vue({
                     console.log(err)
                 })
         },
-        APIImport() {
+        async APIImport() {
             this.spinTable = false
             const path = '/api/import'
-            axios.get(path)
+           await axios.get(path)
                 .then((res) => {
                     this.spinTable = true;
                     this.transaction = res.data;
@@ -264,15 +264,13 @@ new Vue({
 
             }
         },
-        changeTransaction(data) {
+      async changeTransaction(data) {
             if (data === 'imports') {
+               await this.APIImport()
                 this.selected = []
                 this.model = []
-                this.APIImport()
             } else if (data === 'customers') {
-                this.selected = []
-                this.model = []
-                this.initialize()
+               await this.initialize()
             }
         },
         colorProduct(product) {

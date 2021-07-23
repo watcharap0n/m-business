@@ -259,7 +259,7 @@
                 ><i class="fas fa-user-tag"></i>
                 </v-btn>
 
-                
+
                 <div class="small" style="margin-left: 10px; margin-top: 23px; margin-right: 20px">
                   <v-combobox
                       :loading="!spinTable"
