@@ -30,8 +30,8 @@
 
 
         <!--     start table     -->
-
-          <v-data-table v-model="selected" :loading="!spinTable" show-select multi-sort :search="search"
+[[selectedCustomers]]
+          <v-data-table v-model="selectedCustomers" :loading="!spinTable" show-select multi-sort :search="search"
                         :headers="headers"
                         loading-text="Loading... Please wait"
                         class="elevation-5 rounded-xl"

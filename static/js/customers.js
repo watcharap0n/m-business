@@ -113,7 +113,7 @@ new Vue({
         },
         search: '',
         transaction: [],
-        selected: [],
+        selectedCustomers: [],
         spinButton: true,
         imgError: false,
         spinTable: false,
@@ -237,25 +237,25 @@ new Vue({
         },
         async moveImport() {
 
-            if (this.selected.length > 0) {
+            if (this.selectedCustomers.length > 0) {
                 this.spinImport = true
                 const path = '/api/move/customer'
-                this.selected.forEach((data) => {
+                this.selectedCustomers.forEach((data) => {
                     data.username = this.userAuth.name
                     data.uid = this.userAuth.uid
                     this.transaction.splice(this.transaction.indexOf(data), 1)
                 })
-                await axios.post(path, this.selected)
+                await axios.post(path, this.selectedCustomers)
                     .then((res) => {
                         this.spinImport = false
                         this.text = `คุณได้ทำการย้ายข้อมูลไปหน้า customers แล้ว!`
                         this.colorSb = 'success'
                         this.snackbar = true
-                        this.selected = []
+                        this.selectedCustomers = []
                     })
                     .catch((err) => {
                         this.text = 'เกิดข้อผิดพลาด'
-                        this.selected = []
+                        this.selectedCustomers = []
                     })
             } else {
                 this.colorSb = 'error'
@@ -267,8 +267,8 @@ new Vue({
       async changeTransaction(data) {
             if (data === 'imports') {
                await this.APIImport()
-                this.selected = []
-                this.model = []
+                // this.selected = []
+                // this.model = []
             } else if (data === 'customers') {
                await this.initialize()
             }
@@ -329,7 +329,7 @@ new Vue({
                 this.path = `/api/import/${id}`
             await axios.delete(this.path)
                 .then((res) => {
-                    this.selected = []
+                    this.selectedCustomers = []
                     this.spinButton = true;
                     console.log(res.data);
                     this.colorSb = 'red'
