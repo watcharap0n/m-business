@@ -113,7 +113,7 @@ new Vue({
         },
         search: '',
         transaction: [],
-        selectedCustomers: [],
+        selected: [],
         spinButton: true,
         imgError: false,
         spinTable: false,
@@ -173,13 +173,20 @@ new Vue({
                 }
                 return v
             })
-            if (this.model.length > 0 && this.selectedCustomers.length > 0) {
+            if (this.model.length > 0 && this.selected.length > 0) {
                 this.btnTag = true
-            } else if (this.model.length === 0) {
+            } else if (this.model.length === 0 || this.selected.length === 0) {
                 this.btnTag = false
             }
-
         },
+        selected(){
+            if (this.selected.length > 0 && this.model.length > 0){
+                this.btnTag = true
+            }
+            else if (this.selected.length === 0 || this.model.length === 0){
+                this.btnTag = false
+            }
+        }
     },
 
     beforeCreate() {
@@ -237,25 +244,25 @@ new Vue({
         },
         async moveImport() {
 
-            if (this.selectedCustomers.length > 0) {
+            if (this.selected.length > 0) {
                 this.spinImport = true
                 const path = '/api/move/customer'
-                this.selectedCustomers.forEach((data) => {
+                this.selected.forEach((data) => {
                     data.username = this.userAuth.name
                     data.uid = this.userAuth.uid
                     this.transaction.splice(this.transaction.indexOf(data), 1)
                 })
-                await axios.post(path, this.selectedCustomers)
+                await axios.post(path, this.selected)
                     .then((res) => {
                         this.spinImport = false
                         this.text = `คุณได้ทำการย้ายข้อมูลไปหน้า customers แล้ว!`
                         this.colorSb = 'success'
                         this.snackbar = true
-                        this.selectedCustomers = []
+                        this.selected = []
                     })
                     .catch((err) => {
                         this.text = 'เกิดข้อผิดพลาด'
-                        this.selectedCustomers = []
+                        this.selected = []
                     })
             } else {
                 this.colorSb = 'error'
@@ -280,10 +287,10 @@ new Vue({
                 return 'green accent-1'
             }
             if (product === 'RealEstate') {
-                return 'light-blue accent-1'
+                return 'blue lighten-4'
             }
             if (product === 'Project Planning') {
-                return 'red accent-1'
+                return 'pink lighten-4'
             }
         },
         async addTransaction(data) {
@@ -331,7 +338,7 @@ new Vue({
                 this.path = `/api/import/${id}`
             await axios.delete(this.path)
                 .then((res) => {
-                    this.selectedCustomers = []
+                    this.selected = []
                     this.spinButton = true;
                     console.log(res.data);
                     this.colorSb = 'red'

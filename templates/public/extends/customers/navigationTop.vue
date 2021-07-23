@@ -1,5 +1,5 @@
 <v-app-bar
-    style="background: linear-gradient(90deg, rgba(252,117,149,1) 0%, rgba(255,16,117,1) 77%, rgba(255,67,118,1) 100%);"
+    style="background: linear-gradient(to right, #7C4DFF, #304FFE, #448AFF);;"
     absolute
     dark
     dense

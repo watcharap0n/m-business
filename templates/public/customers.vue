@@ -2,462 +2,502 @@
 {% block content %}
 
 
-    {% include 'public/extends/customers/navigationTop.vue' %}
+  {% include 'public/extends/customers/navigationTop.vue' %}
 
-    <br><br><br>
-    <div class="container-fluid">
-      <v-card class="mx-auto" class="elevation-1">
+  <br><br><br>
+  <div class="container-fluid">
+    <v-card class="mx-auto" class="elevation-1">
 
-        <v-bottom-navigation
-            style="background: linear-gradient(90deg, rgba(252,117,149,1) 0%, rgba(255,16,117,1) 77%, rgba(255,67,118,1) 100%);"
-            v-model="page"
-            dark
-            flat
-            shift
-            class="elevation-1"
-        >
-          <v-btn v-for="(v, i) in navigation" :key="i" @click="changeTransaction(v.href)">
-            <v-badge
-                color="success"
-                :content="transaction.length"
+      <v-bottom-navigation
+          style="background: linear-gradient(to right, #7C4DFF, #304FFE, #448AFF);"
+          v-model="page"
+          dark
+          flat
+          shift
+          class="elevation-1"
+      >
+        <v-btn v-for="(v, i) in navigation" :key="i" @click="changeTransaction(v.href)">
+          <v-badge
+              color="pink lighten-2"
+              :content="transaction.length"
+          >
+            <span>[[v.header]]</span>
+          </v-badge>
+          <v-icon>[[v.icon]]</v-icon>
+        </v-btn>
+
+      </v-bottom-navigation>
+
+
+      <!--     start table     -->
+      <v-data-table v-model="selected" :loading="!spinTable" show-select multi-sort :search="search"
+                    :headers="headers"
+                    loading-text="Loading... Please wait"
+                    class="elevation-5 rounded-xl"
+                    height="500"
+                    :items="transaction">
+
+        <!--       slot TOP         -->
+
+        <template v-slot:top>
+
+          <v-toolbar flat>
+
+            <v-dialog
+                persistent
+                v-model="dialogCustomer"
+                max-width="650"
             >
-              <span>[[v.header]]</span>
-            </v-badge>
-            <v-icon>[[v.icon]]</v-icon>
-          </v-btn>
-
-        </v-bottom-navigation>
-
-
-        <!--     start table     -->
-          <v-data-table v-model="selectedCustomers" :loading="!spinTable" show-select multi-sort :search="search"
-                        :headers="headers"
-                        loading-text="Loading... Please wait"
-                        class="elevation-5 rounded-xl"
-                        height="500"
-                        :items="transaction">
-
-            <!--       slot TOP         -->
-
-            <template v-slot:top>
-
-              <v-toolbar flat>
-                <v-text-field
-                    :loading="!spinTable"
-                    v-model="search"
-                    append-icon="mdi-magnify"
-                    label="Search"
-                    single-line
-                    hide-details
-                >
-                </v-text-field>
-                <v-spacer></v-spacer>
-
+              <template v-slot:activator="{ on, attrs }">
                 <v-btn
-                    color="indigo accent-1"
-                    class="mb-2"
-                    :hidden="!btnImport"
-                    @click="moveImport"
-                    :loading="spinImport"
+                    style="margin-left: 10px"
+                    color="green accent-1"
+                    style="color: rgb(59, 212, 160)"
+                    v-bind="attrs"
+                    v-on="on"
                 >
-                  <v-icon left>mdi-application-import</v-icon>
-                  Imports
+                  <v-icon left>mdi-account-circle</v-icon>
+                  Add Customer
                 </v-btn>
-
-                &nbsp;
-
-                <v-dialog
-                    persistent
-                    v-model="dialogCustomer"
-                    max-width="650"
-                >
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-btn
-                        color="green accent-1"
-                        class="mb-2"
-                        v-bind="attrs"
-                        v-on="on"
-                    >
-                      <v-icon left>mdi-account-circle</v-icon>
-                      Add Customer
-                    </v-btn>
-                  </template>
-                  <v-card>
-                    <v-toolbar class="elevation-1" flat color="green accent-1">
-                      <v-card-title>
-                        <v-icon medium style="margin-right: 10px">mdi-account-circle
-                        </v-icon>
-                        <h3>[[ formTitle ]]</h3>
-                      </v-card-title>
-                    </v-toolbar>
-                    <v-card-text>
-                      <v-container>
-                        <v-row>
-                          <v-col
-                              cols="12"
-                              sm="6"
-                              md="4"
-                          >
-                            <v-text-field
-                                prepend-inner-icon="mdi-account"
-                                v-model="editedItem.name"
-                                label="Name"
-                                outlined
-                                dense
-                            ></v-text-field>
-                          </v-col>
-                          <v-col
-                              cols="12"
-                              sm="6"
-                              md="4"
-                          >
-                            <v-select
-                                prepend-inner-icon="mdi-post-outline"
-                                v-model="editedItem.product"
-                                :items="productMango"
-                                label="Product"
-                                outlined
-                                dense
-                            ></v-select>
-                          </v-col>
-                          <v-col
-                              cols="12"
-                              sm="6"
-                              md="4"
-                          >
-                            <v-text-field
-                                v-model="editedItem.email"
-                                label="Email"
-                                prepend-inner-icon="mdi-email"
-                                outlined
-                                dense
-                            ></v-text-field>
-                          </v-col>
-                          <v-col
-                              cols="12"
-                              sm="6"
-                              md="4"
-                          >
-                            <v-text-field
-                                v-model="editedItem.tel"
-                                label="Tel"
-                                prepend-inner-icon="mdi-card-account-phone"
-                                outlined
-                                dense
-                            ></v-text-field>
-                          </v-col>
-                          <v-col
-                              cols="12"
-                              sm="6"
-                              md="4"
-                          >
-                            <v-text-field
-                                prepend-inner-icon="mdi-office-building"
-                                v-model="editedItem.company"
-                                label="Company"
-                                outlined
-                                dense
-                            ></v-text-field>
-                          </v-col>
-                          <v-col
-                              cols="12"
-                              sm="6"
-                              md="4"
-                          >
-                            <v-text-field
-                                v-model="editedItem.channel"
-                                prepend-inner-icon="mdi-access-point-check"
-                                label="Channel"
-                                outlined
-                                dense
-                            ></v-text-field>
-                          </v-col>
-                          <v-col
-                              cols="12"
-                              sm="12"
-                              md="12"
-                          >
-                            <v-textarea
-                                prepend-inner-icon="mdi-android-messages"
-                                v-model="editedItem.message"
-                                label="Message"
-                                outlined
-                                dense
-                            ></v-textarea>
-                          </v-col>
-                          <v-col
-                              cols="12"
-                              sm="12"
-                              md="12"
-                          >
-                            <v-autocomplete
-                                prepend-inner-icon="mdi-tag"
-                                v-model="editedItem.tag"
-                                :items="itemsTag"
-                                outlined
-                                dense
-                                chips
-                                small-chips
-                                label="Tags"
-                                multiple
-                            ></v-autocomplete>
-                          </v-col>
-                        </v-row>
-                      </v-container>
-                    </v-card-text>
-                    <v-card-actions>
-                      <v-spacer></v-spacer>
-                      <v-btn
-                          color="error"
-                          text
-                          @click="close"
+              </template>
+              <v-card>
+                <v-toolbar class="elevation-1" flat color="green accent-1">
+                  <v-card-title>
+                    <v-icon medium style="margin-right: 10px">mdi-account-circle
+                    </v-icon>
+                    <h3>[[ formTitle ]]</h3>
+                  </v-card-title>
+                </v-toolbar>
+                <v-card-text>
+                  <v-container>
+                    <v-row>
+                      <v-col
+                          cols="12"
+                          sm="6"
+                          md="4"
                       >
-                        ยกเลิก
-                      </v-btn>
-                      <v-btn
-                          color="success"
-                          text
-                          @click="save"
-                          :loading="!spinButton"
+                        <v-text-field
+                            prepend-inner-icon="mdi-account"
+                            v-model="editedItem.name"
+                            label="Name"
+                            outlined
+                            dense
+                        ></v-text-field>
+                      </v-col>
+                      <v-col
+                          cols="12"
+                          sm="6"
+                          md="4"
                       >
-                        บันทึก
-                      </v-btn>
-                    </v-card-actions>
-                  </v-card>
-                </v-dialog>
-
-
-                <v-dialog v-model="dialogDelete" max-width="500px">
-                  <v-card>
-                    <v-card-title class="text-h5">คุณแน่ใจว่าจะลบข้อมูล ?</v-card-title>
-                    <v-card-actions>
-                      <v-spacer></v-spacer>
-                      <v-btn color="success" text @click="closeDelete">ยกเลิก</v-btn>
-                      <v-btn color="error" text @click="deleteItemConfirm"
-                             :loading="!spinButton">ตกลง
-                      </v-btn>
-                      <v-spacer></v-spacer>
-                    </v-card-actions>
-                  </v-card>
-                </v-dialog>
-              </v-toolbar>
-
-
-              <!-- tag start -->
-
-              <v-toolbar flat>
-                <v-btn
-                    elevation="3"
-                    :loading="!spinTag"
-                    :disabled="!btnTag"
-                    medium
-                    small
-                    color="#FF648D"
-                    dark
-                    @click="tagTransaction(selectedCustomers)"
-                ><i class="fas fa-user-tag"></i>
-                </v-btn>
-
-
-                <div class="small" style="margin-left: 10px; margin-top: 23px; margin-right: 20px">
-                  <v-combobox
-                      :loading="!spinTable"
-                      v-model="model"
-                      :filter="filter"
-                      :hide-no-data="!searchTag"
-                      :items="itemsTag"
-                      :search-input.sync="searchTag"
-                      hide-selected
-                      label="แท็ก"
-                      multiple
-                      dense
-                      small-chips
-
+                        <v-select
+                            prepend-inner-icon="mdi-post-outline"
+                            v-model="editedItem.product"
+                            :items="productMango"
+                            label="Product"
+                            outlined
+                            dense
+                        ></v-select>
+                      </v-col>
+                      <v-col
+                          cols="12"
+                          sm="6"
+                          md="4"
+                      >
+                        <v-text-field
+                            v-model="editedItem.email"
+                            label="Email"
+                            prepend-inner-icon="mdi-email"
+                            outlined
+                            dense
+                        ></v-text-field>
+                      </v-col>
+                      <v-col
+                          cols="12"
+                          sm="6"
+                          md="4"
+                      >
+                        <v-text-field
+                            v-model="editedItem.tel"
+                            label="Tel"
+                            prepend-inner-icon="mdi-card-account-phone"
+                            outlined
+                            dense
+                        ></v-text-field>
+                      </v-col>
+                      <v-col
+                          cols="12"
+                          sm="6"
+                          md="4"
+                      >
+                        <v-text-field
+                            prepend-inner-icon="mdi-office-building"
+                            v-model="editedItem.company"
+                            label="Company"
+                            outlined
+                            dense
+                        ></v-text-field>
+                      </v-col>
+                      <v-col
+                          cols="12"
+                          sm="6"
+                          md="4"
+                      >
+                        <v-text-field
+                            v-model="editedItem.channel"
+                            prepend-inner-icon="mdi-access-point-check"
+                            label="Channel"
+                            outlined
+                            dense
+                        ></v-text-field>
+                      </v-col>
+                      <v-col
+                          cols="12"
+                          sm="12"
+                          md="12"
+                      >
+                        <v-textarea
+                            prepend-inner-icon="mdi-android-messages"
+                            v-model="editedItem.message"
+                            label="Message"
+                            outlined
+                            dense
+                        ></v-textarea>
+                      </v-col>
+                      <v-col
+                          cols="12"
+                          sm="12"
+                          md="12"
+                      >
+                        <v-autocomplete
+                            prepend-inner-icon="mdi-tag"
+                            v-model="editedItem.tag"
+                            :items="itemsTag"
+                            outlined
+                            dense
+                            chips
+                            small-chips
+                            label="Tags"
+                            multiple
+                        ></v-autocomplete>
+                      </v-col>
+                    </v-row>
+                  </v-container>
+                </v-card-text>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn
+                      color="error"
+                      text
+                      @click="close"
                   >
-                    <template v-slot:no-data>
-                      <v-list-item>
-                        <v-icon color="green">mdi-arrow-right-thick</v-icon>
-                        <span class="subheading">สร้าง</span>&nbsp;&nbsp;
-                        <v-chip
-                            style="color: white"
-                            color="pink lighten-2"
-                            label
-                            small
-                        >
-                          [[ searchTag ]]
-                        </v-chip>
-                      </v-list-item>
-                    </template>
-                    <template v-slot:selection="{ attrs, item, parent, selected, index}">
-                      <v-chip
-                          v-if="index < 2"
-                          v-if="item === Object(item)"
-                          v-bind="attrs"
-                          color="pink lighten-2"
-                          :input-value="selected"
-                          label
-                          small
-                          close
-                          close-icon="mdi-delete"
-                          @click:close="parent.selectItem(item)"
-                      >
+                    ยกเลิก
+                  </v-btn>
+                  <v-btn
+                      color="success"
+                      text
+                      @click="save"
+                      :loading="!spinButton"
+                  >
+                    บันทึก
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+
+            <v-dialog v-model="dialogDelete" max-width="500px">
+              <v-card>
+                <v-card-title class="text-h5">คุณแน่ใจว่าจะลบข้อมูล ?</v-card-title>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn color="success" text @click="closeDelete">ยกเลิก</v-btn>
+                  <v-btn color="error" text @click="deleteItemConfirm"
+                         :loading="!spinButton">ตกลง
+                  </v-btn>
+                  <v-spacer></v-spacer>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+
+            &nbsp;
+            <v-btn
+                color="indigo accent-1"
+                class="mb-2"
+                :hidden="!btnImport"
+                @click="moveImport"
+                :loading="spinImport"
+            >
+              <v-icon left>mdi-application-import</v-icon>
+              Imports
+            </v-btn>
+
+            <v-spacer></v-spacer>
+
+            <div class="small" style="margin-right: 20px">
+              <v-text-field
+                  :loading="!spinTable"
+                  v-model="search"
+                  append-icon="mdi-magnify"
+                  label="Search"
+                  single-line
+                  hide-details
+              >
+              </v-text-field>
+            </div>
+
+          </v-toolbar>
+
+
+          <v-toolbar flat>
+
+
+            <v-spacer></v-spacer>
+
+            <!-- tag start -->
+            <v-btn
+                elevation="3"
+                :loading="!spinTag"
+                :disabled="!btnTag"
+                small
+                color="#FF648D"
+                dark
+                @click="tagTransaction(selected)"
+            ><i class="fas fa-user-tag"></i>
+              Tag Customers
+            </v-btn>
+
+            <div class="small" style="margin-left: 10px; margin-top: 23px; margin-right: 20px">
+              <v-combobox
+                  :loading="!spinTable"
+                  v-model="model"
+                  :filter="filter"
+                  :hide-no-data="!searchTag"
+                  :items="itemsTag"
+                  :search-input.sync="searchTag"
+                  hide-selected
+                  label="แท็ก"
+                  multiple
+                  dense
+                  small-chips
+
+              >
+                <template v-slot:no-data>
+                  <v-list-item>
+                    <v-icon color="green">mdi-arrow-right-thick</v-icon>
+                    <span class="subheading">สร้าง</span>&nbsp;&nbsp;
+                    <v-chip
+                        style="color: white"
+                        color="pink lighten-2"
+                        label
+                        small
+                    >
+                      [[ searchTag ]]
+                    </v-chip>
+                  </v-list-item>
+                </template>
+                <template v-slot:selection="{ attrs, item, parent, selected, index}">
+                  <v-chip
+                      v-if="index < 2"
+                      v-if="item === Object(item)"
+                      v-bind="attrs"
+                      color="pink lighten-2"
+                      :input-value="selected"
+                      label
+                      small
+                      close
+                      close-icon="mdi-delete"
+                      @click:close="parent.selectItem(item)"
+                  >
                       <span class="pr-2" style="color: white">
                         [[ item.text ]]
                       </span>
-                      </v-chip>
-                      <span v-if="index === 1"
-                            class="grey--text caption">(+[[ model.length - 1 ]] แท็กอื่นๆ)
+                  </v-chip>
+                  <span v-if="index === 1"
+                        class="grey--text caption">(+[[ model.length - 1 ]] แท็กอื่นๆ)
                     </span>
-                    </template>
+                </template>
 
-                    <template v-slot:item="{ index, item }">
-                      <v-text-field
-                          v-if="editingTag === item"
-                          v-model="editingTag.text"
-                          autofocus
-                          flat
-                          background-color="transparent"
-                          hide-details
-                          solo
-                          @keyup.enter="edit(index, item)"
-                      ></v-text-field>
-                      <v-chip
-                          v-else
-                          color="pink lighten-2"
-                          dark
-                          label
-                          small
-                      >
-                        [[ item.text ]]
-                      </v-chip>
-                      <v-spacer></v-spacer>
-                      <v-list-item-action @click.stop>
-                        <v-row>
-                          <v-col>
-                            <v-btn
-                                icon
-                                @click.stop.prevent="edit(index, item)"
-                            >
-                              <v-icon color="teal">[[ editingTag !== item ? 'mdi-pencil' : 'mdi-check' ]]</v-icon>
-                            </v-btn>
-                          </v-col>
-                          <v-col>
-                            <v-btn
-                                icon
-                                @click.stop.prevent="toRemove(index, item)"
-                            >
-                              <v-icon color="red">mdi-delete</v-icon>
-                            </v-btn>
-                          </v-col>
-                        </v-row>
-                      </v-list-item-action>
-                    </template>
-                  </v-combobox>
+                <template v-slot:item="{ index, item }">
+                  <v-text-field
+                      v-if="editingTag === item"
+                      v-model="editingTag.text"
+                      autofocus
+                      flat
+                      background-color="transparent"
+                      hide-details
+                      solo
+                      @keyup.enter="edit(index, item)"
+                  ></v-text-field>
+                  <v-chip
+                      v-else
+                      color="pink lighten-2"
+                      dark
+                      label
+                      small
+                  >
+                    [[ item.text ]]
+                  </v-chip>
+                  <v-spacer></v-spacer>
+                  <v-list-item-action @click.stop>
+                    <v-row>
+                      <v-col>
+                        <v-btn
+                            icon
+                            @click.stop.prevent="edit(index, item)"
+                        >
+                          <v-icon color="teal">[[ editingTag !== item ? 'mdi-pencil' : 'mdi-check' ]]</v-icon>
+                        </v-btn>
+                      </v-col>
+                      <v-col>
+                        <v-btn
+                            icon
+                            @click.stop.prevent="toRemove(index, item)"
+                        >
+                          <v-icon color="red">mdi-delete</v-icon>
+                        </v-btn>
+                      </v-col>
+                    </v-row>
+                  </v-list-item-action>
+                </template>
+              </v-combobox>
 
-                </div>
-
-
-              </v-toolbar>
+            </div>
 
 
-              <!--tag end-->
+            <!--tag end-->
 
 
-            </template>
-
-            <template v-slot:item.tag="{item}">
-              <v-chip v-for="i in item.tag" :key="i.length">
-                #[[i ]]
-              </v-chip>
-            </template>
-
-            <template v-slot:item.name="{item}">
-              <div style="margin-top: 15px; margin-bottom: 15px">
-                <v-row>
-                  <v-col>
-                    <strong>[[item.name ]]</strong>
-                    <span>[[item.email ]]</span>
-                    <span>[[item.tel ]]</span>
-                  </v-col>
-                </v-row>
-              </div>
-            </template>
-
-            <template v-slot:item.product="{item}">
-              <v-chip class="ma-2" :color="colorProduct(item.product)" label>
-                [[item.product ]]
-              </v-chip>
-            </template>
-
-            <template v-slot:item.message="{item}">
-              <v-list-group
-                  color="#7A8FC0"
-                  v-if="item.message"
-                  :value="false"
-                  prepend-icon="mdi-message"
-              >
-                <v-list-item-content>
-                  [[item.message]]
-                </v-list-item-content>
-              </v-list-group>
-              <div v-else></div>
-            </template>
-
-            <template v-slot:item.channel="{item}">
-              <v-chip outlined>
-                [[item.channel ]]
-              </v-chip>
-            </template>
-
-            <template v-slot:item.date="{item}">
-              [[ item.date ]]
-              <v-divider></v-divider>
-              [[ item.time ]]
-            </template>
-
-            <template v-slot:item.actions="{item}">
-              <v-icon small class="mr-2" color="light-blue lighten-1" @click="editItem(item)">
-                mdi-pencil
-              </v-icon>
-              <v-icon small color="red" @click="deleteItem(item)">
-                mdi-delete
-              </v-icon>
-            </template>
-
-            <template v-slot:no-data>
-              <v-btn
-                  color="green accent-1"
-                  @click="initialize"
-              >
-                Reset
-              </v-btn>
-            </template>
-          </v-data-table>
-      </v-card>
+          </v-toolbar>
 
 
-      <v-snackbar
-          dark
-          :color="colorSb"
-          v-model="snackbar"
-          :timeout="timeout"
-      >
-        [[text ]]
+        </template>
 
-        <template v-slot:action="{ attrs }">
-          <v-btn
-              dark
-              text
-              v-bind="attrs"
-              @click="snackbar = false"
+        <template v-slot:item.tag="{item}">
+          <v-chip v-for="i in item.tag" :key="i.length">
+            #[[i ]]
+          </v-chip>
+        </template>
+
+        <template v-slot:item.name="{item}">
+          <div style="margin-top: 15px; margin-bottom: 15px">
+            <v-row>
+              <v-col>
+                <strong>[[item.name ]]</strong>
+                <span>[[item.email ]]</span>
+                <span>[[item.tel ]]</span>
+              </v-col>
+            </v-row>
+          </div>
+        </template>
+
+        <template v-slot:item.product="{item}">
+          <v-chip class="ma-2" :color="colorProduct(item.product)" label>
+            <div v-if="item.product === 'Construction'">
+              <strong style="color: green">[[item.product]]</strong>
+            </div>
+
+            <div v-else-if="item.product === 'RealEstate'">
+              <strong style="color: blue">[[item.product]]</strong>
+            </div>
+
+            <div v-else-if="item.product === 'Project Planning'">
+              <strong style="color: deeppink">[[item.product]]</strong>
+            </div>
+
+            <div v-else>
+              <strong>[[item.product]]</strong>
+            </div>
+          </v-chip>
+        </template>
+
+        <template v-slot:item.message="{item}">
+          <v-list-group
+              color="#7A8FC0"
+              v-if="item.message"
+              :value="false"
+              prepend-icon="mdi-message"
           >
-            ปิด
+            <v-list-item-content>
+              [[item.message]]
+            </v-list-item-content>
+          </v-list-group>
+          <div v-else></div>
+        </template>
+
+        <template v-slot:item.channel="{item}">
+          <div v-if="item.channel === 'Contact'">
+            <v-chip outlined color="blue darken-2">
+              [[item.channel ]]
+            </v-chip>
+          </div>
+
+          <div v-else-if="item.channel === 'GetDemo'">
+            <v-chip outlined color="orange darken-1">
+              [[item.channel ]]
+            </v-chip>
+          </div>
+
+          <div v-else-if="item.channel === 'LINE'">
+            <v-chip outlined color="green accent-2">
+              [[item.channel ]]
+            </v-chip>
+          </div>
+
+          <div v-else>
+            <v-chip outlined>
+              [[item.channel ]]
+            </v-chip>
+          </div>
+        </template>
+
+        <template v-slot:item.date="{item}">
+          [[ item.date ]]
+          <v-divider></v-divider>
+          [[ item.time ]]
+        </template>
+
+        <template v-slot:item.actions="{item}">
+          <v-icon small class="mr-2" color="light-blue lighten-1" @click="editItem(item)">
+            mdi-pencil
+          </v-icon>
+          <v-icon small color="red" @click="deleteItem(item)">
+            mdi-delete
+          </v-icon>
+        </template>
+
+        <template v-slot:no-data>
+          <v-btn
+              color="green accent-1"
+              @click="initialize"
+          >
+            Reset
           </v-btn>
         </template>
-      </v-snackbar>
+      </v-data-table>
+    </v-card>
 
 
-    </div>
+    <v-snackbar
+        dark
+        :color="colorSb"
+        v-model="snackbar"
+        :timeout="timeout"
+    >
+      [[text ]]
+
+      <template v-slot:action="{ attrs }">
+        <v-btn
+            dark
+            text
+            v-bind="attrs"
+            @click="snackbar = false"
+        >
+          ปิด
+        </v-btn>
+      </template>
+    </v-snackbar>
+
+
+  </div>
   {% block script %}
     <script src="/static/js/customers.js"></script>
   {% endblock %}
