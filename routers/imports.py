@@ -5,6 +5,7 @@ from db import MongoDB
 from object_str import CutId
 from bson import ObjectId
 from models.transaction import Transaction
+from modules.SortingDateTime import SortingDate
 import os
 
 client = os.environ.get('MONGODB_URI')
@@ -54,3 +55,11 @@ async def import_put(
 async def import_delete(id: Optional[str] = Path(None)):
     db.delete_one(collection=collection, query={'id': id})
     return {'message': 'success'}
+
+
+@router.get('/m/sorting/')
+async def import_sorting(start: Optional[str] = None, end: Optional[str] = None):
+    sorting_date = SortingDate(collection=collection, after_start_date=start, before_end_date=end)
+    data = sorting_date.createDataFrame()
+    data = data.to_dict('records')
+    return data
