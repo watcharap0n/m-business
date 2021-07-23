@@ -236,6 +236,7 @@ new Vue({
                 })
         },
         async moveImport() {
+
             if (this.selected.length > 0) {
                 this.spinImport = true
                 const path = '/api/move/customer'
