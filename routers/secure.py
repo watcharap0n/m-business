@@ -4,6 +4,7 @@ from firebase_admin import auth
 from environ.config_db import Config_firebase
 from datetime import timedelta
 from fastapi.responses import RedirectResponse
+from fastapi.responses import JSONResponse
 # from environ.client_environ import set_firebase, set_authentication
 from environ.heroku_environ import set_firebase, set_authentication
 import os
@@ -44,7 +45,6 @@ async def register(
 
 @router.post('/login')
 async def login(
-        response: Response,
         email: Optional[str] = Form(None),
         password: Optional[str] = Form(None),
         remember: Optional[list] = Form(None),
@@ -53,22 +53,26 @@ async def login(
         user = pb.sign_in_with_email_and_password(email, password)
         check_verify = auth.get_user_by_email(user['email'])
         if check_verify.email_verified:
-            if remember == ['remember']:
+            print(remember)
+            if len(remember) > 0:
+                print(remember)
                 expires_token = 60 * 60 * 1
                 expires_remember = 60 * 60 * 24 * 5
                 auth_cookie = auth.create_session_cookie(id_token=user['idToken'], expires_in=timedelta(hours=1))
-                response.set_cookie(key='access_token', value=str(auth_cookie), expires=expires_token,
-                                    )
+                content = {'url': '/customers', 'status': True, 'detail': 'login success'}
+                response = JSONResponse(content=content)
+                response.set_cookie(key='access_token', value=str(auth_cookie), expires=expires_token)
                 response.set_cookie(key='hash_email', value=str(email), expires=expires_remember)
                 response.set_cookie(key='hash_password', value=str(password), expires=expires_remember)
                 response.set_cookie(key='remember', value='remember', expires=expires_remember)
-                return {'url': '/customers', 'status': True, 'detail': 'login success'}
+                return response
             else:
                 expires_token = 60 * 60 * 1
                 auth_cookie = auth.create_session_cookie(id_token=user['idToken'], expires_in=timedelta(hours=1))
-                response.set_cookie(key='access_token', value=str(auth_cookie), expires=expires_token,
-                                    )
-                return {'url': '/customers', 'status': True, 'detail': 'login success'}
+                content = {'url': '/customers', 'status': True, 'detail': 'login success'}
+                response = JSONResponse(content=content)
+                response.set_cookie(key='access_token', value=str(auth_cookie), expires=expires_token)
+                return response
         elif not check_verify.email_verified:
             pb.send_email_verification(user['idToken'])
             return {'status': False, 'detail': 'email verification'}
@@ -116,4 +120,3 @@ async def remember_cookie(request: Request):
     remember = request.cookies.get('remember')
     data = {'email': email, 'password': password, 'remember': remember}
     return data
-
