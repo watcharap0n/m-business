@@ -255,7 +255,7 @@
                     small
                     color="#FF648D"
                     dark
-                    @click="tagTransaction(selected)"
+                    @click="tagTransaction(selectedCustomers)"
                 ><i class="fas fa-user-tag"></i>
                 </v-btn>
 

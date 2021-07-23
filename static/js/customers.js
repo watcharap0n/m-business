@@ -173,7 +173,7 @@ new Vue({
                 }
                 return v
             })
-            if (this.model.length > 0 && this.selected.length > 0) {
+            if (this.model.length > 0 && this.selectedCustomers.length > 0) {
                 this.btnTag = true
             } else if (this.model.length === 0) {
                 this.btnTag = false
@@ -210,7 +210,7 @@ new Vue({
         async initialize() {
             this.spinTable = false
             const path = '/api/customer'
-           await axios.get(path)
+            await axios.get(path)
                 .then((res) => {
                     this.spinTable = true;
                     this.transaction = res.data;
@@ -224,7 +224,7 @@ new Vue({
         async APIImport() {
             this.spinTable = false
             const path = '/api/import'
-           await axios.get(path)
+            await axios.get(path)
                 .then((res) => {
                     this.spinTable = true;
                     this.transaction = res.data;
@@ -264,13 +264,13 @@ new Vue({
 
             }
         },
-      async changeTransaction(data) {
+        async changeTransaction(data) {
             if (data === 'imports') {
-               await this.APIImport()
+                await this.APIImport()
                 // this.selected = []
                 // this.model = []
             } else if (data === 'customers') {
-               await this.initialize()
+                await this.initialize()
             }
         },
         colorProduct(product) {
