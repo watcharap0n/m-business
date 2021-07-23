@@ -30,7 +30,6 @@
 
 
         <!--     start table     -->
-[[selectedCustomers]]
           <v-data-table v-model="selectedCustomers" :loading="!spinTable" show-select multi-sort :search="search"
                         :headers="headers"
                         loading-text="Loading... Please wait"
