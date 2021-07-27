@@ -71,6 +71,7 @@ def key_model_transaction(item: dict, channel: str) -> dict:
     if item['product'] == 'Mango ERP (Construction)': item['product'] = 'Construction'
     if item['product'] == 'Mango ERP (Real Estate)': item['product'] = 'RealEstate'
     if item['product'] == 'Pusit (Consulting)': item['product'] = 'Consulting'
+    if item['company'] == 'google': item['tag'] = ['spam']
     return item
 
 

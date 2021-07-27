@@ -388,6 +388,9 @@ new Vue({
             if (product === 'Project Planning') {
                 return 'pink lighten-4'
             }
+            if (product === 'Consulting'){
+                return 'yellow lighten-4'
+            }
         }
         ,
         async addTransaction(data) {

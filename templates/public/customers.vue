@@ -250,6 +250,10 @@
               <strong style="color: deeppink">[[item.product]]</strong>
             </div>
 
+            <div v-else-if="item.product === 'Consulting'">
+              <strong style="color: black">[[item.product]]</strong>
+            </div>
+
             <div v-else>
               <strong>[[item.product]]</strong>
             </div>
