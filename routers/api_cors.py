@@ -33,6 +33,7 @@ def condition_message(channel, date, time, company, name, tel, email, product,
                                 email=email, product=product, message='ไม่มีข้อความ'))
 
 
+# LINE
 @router.post('/cors_mango', response_model=Transaction)
 async def cors_mango(item: Transaction):
     tz = pytz.timezone('Asia/Bangkok')
@@ -67,9 +68,13 @@ def key_model_transaction(item: dict, channel: str) -> dict:
     item['username'] = None
     item['uid'] = None
     item['tag'] = []
+    if item['product'] == 'Mango ERP (Construction)': item['product'] = 'Construction'
+    if item['product'] == 'Mango ERP (Real Estate)': item['product'] = 'RealEstate'
+    if item['product'] == 'Mango ERP (Construction)': item['product'] = 'Consulting'
     return item
 
 
+# GET DEMO
 @router.post('/get_demo', status_code=201)
 async def get_demo(item: Optional[dict] = Body(None)):
     tz = pytz.timezone('Asia/Bangkok')
@@ -81,6 +86,7 @@ async def get_demo(item: Optional[dict] = Body(None)):
     item["id"] = key
     item = key_model_transaction(item, 'GetDemo')
     db.insert_one(collection=collection, data=item)
+
     name = item['name']
     product = item['product']
     tel = item['tel']
@@ -98,6 +104,7 @@ async def get_demo(item: Optional[dict] = Body(None)):
     return item
 
 
+# CONTACT
 @router.post('/contact', status_code=201)
 async def contact(item: Optional[dict] = Body(None)):
     tz = pytz.timezone('Asia/Bangkok')
@@ -115,6 +122,7 @@ async def contact(item: Optional[dict] = Body(None)):
     del item['contact_email_div']
     item = key_model_transaction(item, 'Contact')
     db.insert_one(collection=collection, data=item)
+
     name = item['name']
     product = item['product']
     tel = item['tel']

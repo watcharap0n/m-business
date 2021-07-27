@@ -163,7 +163,7 @@ async def customers(
 ):
     file = os.path.join('static', 'excels/customers.xlsx')
     return FileResponse(file, media_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                        filename='customers.xlsx')
+                        filename='ข้อมูลลูกค้า.xlsx')
 
 
 if __name__ == '__main__':

@@ -45,6 +45,7 @@
             color="green darken-1"
             text
             type="submit"
+            :loading="!spinExcel"
             :disabled="!btnExcel"
         >
           ตกลง

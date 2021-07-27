@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Path, HTTPException
+from fastapi import APIRouter, Path, Body
 from typing import Optional
 import datetime
 from db import MongoDB
@@ -6,6 +6,8 @@ from object_str import CutId
 from bson import ObjectId
 from models.transaction import Transaction
 from modules.SortingDateTime import SortingDate
+from modules.Export_excel import ExportExcel
+from starlette.responses import FileResponse
 import os
 
 client = os.environ.get('MONGODB_URI')
@@ -63,3 +65,12 @@ async def import_sorting(start: Optional[str] = None, end: Optional[str] = None)
     data = sorting_date.createDataFrame()
     data = data.to_dict('records')
     return data
+
+
+@router.post('/datafile/import/excel')
+async def customers_excel(id: Optional[list] = Body([])):
+    excel = ExportExcel(db, collection, id).excel()
+    excel.save()
+    file = os.path.join('static', 'excels/customers.xlsx')
+    return FileResponse(file, media_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                        filename='imports.xlsx')

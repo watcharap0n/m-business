@@ -38,7 +38,7 @@ class SortingDate:
         self.location_data(df=df, key='channel', value='contact', result='Contact')
         self.location_data(df=df, key='product', value='Mango ERP (Construction)', result='Construction')
         self.location_data(df=df, key='product', value='Mango ERP (Real Estate)', result='RealEstate')
-        self.location_data(df=df, key='product', value='Pusit (Consulting)', result='Contact')
+        self.location_data(df=df, key='product', value='Pusit (Consulting)', result='Consulting')
         df1 = df.reset_index()[['date']]
         df1['year'] = [df1.iloc[i, 0].year for i in range(len(df1))]
         df1['month'] = [df1.iloc[i, 0].month for i in range(len(df1))]

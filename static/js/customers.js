@@ -13,7 +13,7 @@ new Vue({
         // excel
         dialogExcel: false,
         btnExcel: true,
-
+        spinExcel: true,
 
         // auth
         userAuth: {
@@ -244,17 +244,28 @@ new Vue({
             selected.forEach((v) => {
                 data_id.push(v.id)
             })
-            const path = '/api/datafile/excel'
+            this.spinExcel = false
+            if (this.href === 'customer') {
+                this.exportExcel('/api/datafile/customer/excel', data_id)
+            }
+            if (this.href === 'import') {
+                this.exportExcel('/api/datafile/import/excel', data_id)
+            }
+        },
+
+        exportExcel(path, data_id) {
             axios.post(path, data_id)
                 .then((res) => {
+                    this.spinExcel = true
                     console.log(res.data)
                 })
                 .catch
                 ((err) => {
+                    this.spinExcel = true
                     console.error(err)
                 })
-        }
-        ,
+        },
+
         // datetime
         formatDate(date) {
             if (!date) return null

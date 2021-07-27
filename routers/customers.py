@@ -82,7 +82,7 @@ async def customer_sorting(item: Optional[list] = None):
     return data
 
 
-@router.post('/datafile/excel')
+@router.post('/datafile/customer/excel')
 async def customers_excel(id: Optional[list] = Body([])):
     excel = ExportExcel(db, collection, id).excel()
     excel.save()
