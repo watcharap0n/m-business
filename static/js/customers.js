@@ -1,9 +1,20 @@
 new Vue({
     el: '#app',
     vuetify: new Vuetify(),
-    data: {
+    data: vm => ({
+        // datetime
+        date: [],
+        dateFormatted: vm.formatDate((new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)),
+        menu1: false,
+        dialogDate: false,
+
         loaderSpin: true,
         loaderData: false,
+
+        // excel
+        dialogExcel: false,
+        btnExcel: true,
+
 
         // auth
         userAuth: {
@@ -18,58 +29,59 @@ new Vue({
         page: 0,
         navigation: [
             {
-                header: 'Customers',
+                header: 'ข้อมูลลูกค้า',
                 href: 'customers',
                 icon: 'mdi-account-supervisor-circle'
             },
             {
-                header: 'Imports',
+                header: 'นำเข้า',
                 href: 'imports',
                 icon: 'mdi-import'
             },
         ],
         headers: [
             {
-                text: 'Actions',
+                text: 'แก้ไข/ลบ',
                 value: 'actions',
+                width: 80,
                 sortable: false,
             },
             {
-                text: 'Tag',
+                text: 'แท็ก',
                 value: 'tag',
             },
             {
-                text: 'Product',
+                text: 'ผลิตภัณฑ์',
                 value: 'product',
                 align: 'start'
             },
             {
-                text: 'User Info',
+                text: 'ข้อมูลลูกค้า',
                 value: 'name',
                 align: 'center'
             },
             {
-                text: 'Company',
+                text: 'บริษัท',
                 value: 'company',
             },
             {
-                text: 'Message',
+                text: 'ข้อความ',
                 value: 'message'
             },
             {
-                text: 'Channel',
+                text: 'ช่องทาง',
                 value: 'channel'
             },
             {
-                text: 'Profile',
+                text: 'โปรไฟล์',
                 value: 'profile'
             },
             {
-                text: 'Assign',
+                text: 'คนนำเข้า',
                 value: 'username'
             },
             {
-                text: 'Data/Time',
+                text: 'วัน/เวลา',
                 value: 'date',
                 align: 'center',
             },
@@ -156,7 +168,7 @@ new Vue({
             {text: 'DataTable', icon: 'mdi-database'},
             {text: 'Intents', icon: 'mdi-account'},
         ],
-    },
+    }),
 
 
     watch: {
@@ -179,14 +191,15 @@ new Vue({
                 this.btnTag = false
             }
         },
-        selected(){
-            if (this.selected.length > 0 && this.model.length > 0){
+        selected() {
+            if (this.selected.length > 0 && this.model.length > 0) {
                 this.btnTag = true
-            }
-            else if (this.selected.length === 0 || this.model.length === 0){
+            } else if (this.selected.length === 0 || this.model.length === 0) {
                 this.btnTag = false
             }
+
         }
+
     },
 
     beforeCreate() {
@@ -201,18 +214,87 @@ new Vue({
                 user.email = res.data.email
                 user.uid = res.data.uid
             })
-    },
+    }
+    ,
     async created() {
         await this.initialize();
         await this.getTags();
-    },
+    }
+    ,
 
     computed: {
         formTitle() {
             return this.editedIndex === -1 ? 'New Customer' : 'Edit Customer'
-        },
-    },
+        }
+        ,
+        dateRangeText() {
+            return this.date.join(' ~ ')
+        }
+        ,
+    }
+    ,
     methods: {
+        // excel
+        openExcel(selected) {
+            if (selected.length === 0) {
+                this.btnExcel = false
+            } else if (selected.length > 0) {
+                this.btnExcel = true
+            }
+            let data_id = []
+            selected.forEach((v) => {
+                data_id.push(v.id)
+            })
+            const path = '/api/datafile/excel'
+            axios.post(path, data_id)
+                .then((res) => {
+                    console.log(res.data)
+                })
+                .catch
+                ((err) => {
+                    console.error(err)
+                })
+        }
+        ,
+        // datetime
+        formatDate(date) {
+            if (!date) return null
+
+            const [year, month, day] = date.split('-')
+            return `${day}/${month}/${year}`
+        }
+        ,
+        parseDate(date) {
+            if (!date) return null
+
+            const [day, month, year] = date.split('/')
+            return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
+        }
+        ,
+
+        tableSorting() {
+            if (this.date.length === 0) {
+                console.error('error')
+            } else {
+                const path = '/api/c/sorting'
+                this.spinTable = false
+                axios.post(path, this.date)
+                    .then((res) => {
+                        this.spinTable = true
+                        this.date = []
+                        this.transaction = res.data
+                    })
+                    .catch((err) => {
+                        this.spinTable = true
+                        this.date = []
+                        console.error(err)
+                    })
+                this.dialogDate = false
+            }
+        }
+        ,
+
+
         // table
         async initialize() {
             this.spinTable = false
@@ -227,7 +309,8 @@ new Vue({
                 .then((err) => {
                     console.log(err)
                 })
-        },
+        }
+        ,
         async APIImport() {
             this.spinTable = false
             const path = '/api/import'
@@ -241,7 +324,8 @@ new Vue({
                 .then((err) => {
                     console.log(err)
                 })
-        },
+        }
+        ,
         async moveImport() {
 
             if (this.selected.length > 0) {
@@ -270,7 +354,8 @@ new Vue({
                 this.snackbar = true
 
             }
-        },
+        }
+        ,
         async changeTransaction(data) {
             if (data === 'imports') {
                 await this.APIImport()
@@ -281,7 +366,8 @@ new Vue({
                 this.selected = []
                 this.model = []
             }
-        },
+        }
+        ,
         colorProduct(product) {
             if (product === 'Construction') {
                 return 'green accent-1'
@@ -292,7 +378,8 @@ new Vue({
             if (product === 'Project Planning') {
                 return 'pink lighten-4'
             }
-        },
+        }
+        ,
         async addTransaction(data) {
             let href = this.href
             if (href === 'customer')
@@ -312,7 +399,8 @@ new Vue({
                 .catch((err) => {
                     console.log(err);
                 })
-        },
+        }
+        ,
         async editTransaction(data, id) {
             let href = this.href
             if (href === 'customer')
@@ -329,7 +417,8 @@ new Vue({
                 .catch((err) => {
                     console.log(err);
                 })
-        },
+        }
+        ,
         async deleteTransaction(id) {
             let href = this.href
             if (href === 'customer')
@@ -348,37 +437,43 @@ new Vue({
                 .catch((err) => {
                     console.log(err);
                 })
-        },
+        }
+        ,
         editItem(item) {
             this.editedIndex = this.transaction.indexOf(item)
             this.editedItem = Object.assign({}, item)
             this.dialogCustomer = true;
-        },
+        }
+        ,
         deleteItem(item) {
             this.editedIndex = this.transaction.indexOf(item)
             this.editedItem = Object.assign({}, item)
             this.dialogDelete = true
-        },
+        }
+        ,
         async deleteItemConfirm() {
             this.spinButton = false;
             await this.deleteTransaction(this.editedItem.id);
             this.transaction.splice(this.editedIndex, 1);
             this.closeDelete()
-        },
+        }
+        ,
         close() {
             this.dialogCustomer = false
             this.$nextTick(() => {
                 this.editedItem = Object.assign({}, this.defaultItem)
                 this.editedIndex = -1
             })
-        },
+        }
+        ,
         closeDelete() {
             this.dialogDelete = false
             this.$nextTick(() => {
                 this.editedItem = Object.assign({}, this.defaultItem)
                 this.editedIndex = -1
             })
-        },
+        }
+        ,
         async save() {
             if (this.editedIndex > -1) {
                 this.spinButton = false;
@@ -389,7 +484,8 @@ new Vue({
                 await this.addTransaction(this.editedItem);
             }
             this.close()
-        },
+        }
+        ,
 
 
         // tags
@@ -402,7 +498,8 @@ new Vue({
                 .catch((err) => {
                     console.error(err)
                 })
-        },
+        }
+        ,
         filter(item, queryText, itemText) {
             const hasValue = val => val != null ? val : ''
             const text = hasValue(itemText)
@@ -410,7 +507,8 @@ new Vue({
             return text.toString()
                 .toLowerCase()
                 .indexOf(query.toString().toLowerCase()) > -1
-        },
+        }
+        ,
         edit(index, item) {
             if (!this.editingTag) {
                 this.editingTag = item
@@ -421,7 +519,8 @@ new Vue({
                 this.editingTag = null
                 this.editingIndexTag = -1
             }
-        },
+        }
+        ,
         addTag(item) {
             const path = `/api/tag?tag=${item.text}`
             axios.get(path)
@@ -432,7 +531,8 @@ new Vue({
                 .catch((err) => {
                     console.error(err)
                 })
-        },
+        }
+        ,
         setTag(id, item) {
             const path = `/api/tag/${item}?id-query=${id}`;
             axios.put(path)
@@ -442,11 +542,13 @@ new Vue({
                 .catch((error) => {
                     console.error(error)
                 })
-        },
+        }
+        ,
         toRemove(index, item) {
             this.itemsTag.splice(this.itemsTag.indexOf(item), 1)
             this.removeTag(item.id)
-        },
+        }
+        ,
         removeTag(id) {
             console.log(id)
             const path = `/api/tag?id-query=${id}`;
@@ -458,7 +560,8 @@ new Vue({
                 .catch((error) => {
                     console.error(error)
                 })
-        },
+        }
+        ,
         tagTransaction(selected) {
             this.spinTag = false
             let data = {id: selected, tag: this.model, href: this.href}
@@ -471,10 +574,12 @@ new Vue({
                 .catch((err) => {
                     console.error(err)
                 })
-        },
+        }
+        ,
         logout() {
             return window.location = '/secure/logout'
-        },
+        }
+        ,
 
         //appBar
         redirectPage(item) {
@@ -483,8 +588,10 @@ new Vue({
                 window.location = '/customers'
             if (item.text === 'Intents')
                 window.location = '/intents'
-        },
+        }
+        ,
 
-    },
+    }
+    ,
     delimiters: ["[[", "]]"]
 })

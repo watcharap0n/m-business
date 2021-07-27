@@ -1,10 +1,12 @@
 from fastapi import APIRouter, Path, Body
+from starlette.responses import FileResponse
 from typing import Optional
 import datetime
 from db import MongoDB
 from object_str import CutId
 from bson import ObjectId
 from models.transaction import Transaction
+from modules.Export_excel import ExportExcel
 from modules.SortingDateTime import SortingDate
 import os
 
@@ -71,9 +73,21 @@ async def move_customer(items: Optional[list] = Body(None)):
     return {'message': 'success'}
 
 
-@router.get('/c/sorting/')
-async def customer_sorting(start: Optional[str] = None, end: Optional[str] = None):
-    sorting_date = SortingDate(collection=collection, after_start_date=start, before_end_date=end)
+@router.post('/c/sorting/')
+async def customer_sorting(item: Optional[list] = None):
+    print(item)
+    sorting_date = SortingDate(collection=collection, after_start_date=item[0], before_end_date=item[1])
     data = sorting_date.createDataFrame()
     data = data.to_dict('records')
     return data
+
+
+@router.post('/datafile/excel')
+async def customers_excel(id: Optional[list] = Body([])):
+    excel = ExportExcel(db, collection, id).excel()
+    excel.save()
+    file = os.path.join('static', 'excels/customers.xlsx')
+    return FileResponse(file, media_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                        filename='customers.xlsx')
+
+

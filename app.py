@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Request, Depends
+from starlette.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.middleware.cors import CORSMiddleware
@@ -155,6 +156,14 @@ async def websocket_endpoint(websocket: WebSocket):
         data = await websocket.receive_text()
         user_dict['user'] = data
         await websocket.send_json(user_dict)
+
+
+@app.post('/customers', tags=['Page'])
+async def customers(
+):
+    file = os.path.join('static', 'excels/customers.xlsx')
+    return FileResponse(file, media_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                        filename='customers.xlsx')
 
 
 if __name__ == '__main__':

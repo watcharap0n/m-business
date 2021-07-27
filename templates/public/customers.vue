@@ -43,166 +43,8 @@
 
           <v-toolbar flat>
 
-            <v-dialog
-                persistent
-                v-model="dialogCustomer"
-                max-width="650"
-            >
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn
-                    style="margin-left: 10px"
-                    color="green accent-1"
-                    style="color: rgb(59, 212, 160)"
-                    v-bind="attrs"
-                    v-on="on"
-                >
-                  <v-icon left>mdi-account-circle</v-icon>
-                  Add Customer
-                </v-btn>
-              </template>
-              <v-card>
-                <v-toolbar class="elevation-1" flat color="green accent-1">
-                  <v-card-title>
-                    <v-icon medium style="margin-right: 10px">mdi-account-circle
-                    </v-icon>
-                    <h3>[[ formTitle ]]</h3>
-                  </v-card-title>
-                </v-toolbar>
-                <v-card-text>
-                  <v-container>
-                    <v-row>
-                      <v-col
-                          cols="12"
-                          sm="6"
-                          md="4"
-                      >
-                        <v-text-field
-                            prepend-inner-icon="mdi-account"
-                            v-model="editedItem.name"
-                            label="Name"
-                            outlined
-                            dense
-                        ></v-text-field>
-                      </v-col>
-                      <v-col
-                          cols="12"
-                          sm="6"
-                          md="4"
-                      >
-                        <v-select
-                            prepend-inner-icon="mdi-post-outline"
-                            v-model="editedItem.product"
-                            :items="productMango"
-                            label="Product"
-                            outlined
-                            dense
-                        ></v-select>
-                      </v-col>
-                      <v-col
-                          cols="12"
-                          sm="6"
-                          md="4"
-                      >
-                        <v-text-field
-                            v-model="editedItem.email"
-                            label="Email"
-                            prepend-inner-icon="mdi-email"
-                            outlined
-                            dense
-                        ></v-text-field>
-                      </v-col>
-                      <v-col
-                          cols="12"
-                          sm="6"
-                          md="4"
-                      >
-                        <v-text-field
-                            v-model="editedItem.tel"
-                            label="Tel"
-                            prepend-inner-icon="mdi-card-account-phone"
-                            outlined
-                            dense
-                        ></v-text-field>
-                      </v-col>
-                      <v-col
-                          cols="12"
-                          sm="6"
-                          md="4"
-                      >
-                        <v-text-field
-                            prepend-inner-icon="mdi-office-building"
-                            v-model="editedItem.company"
-                            label="Company"
-                            outlined
-                            dense
-                        ></v-text-field>
-                      </v-col>
-                      <v-col
-                          cols="12"
-                          sm="6"
-                          md="4"
-                      >
-                        <v-text-field
-                            v-model="editedItem.channel"
-                            prepend-inner-icon="mdi-access-point-check"
-                            label="Channel"
-                            outlined
-                            dense
-                        ></v-text-field>
-                      </v-col>
-                      <v-col
-                          cols="12"
-                          sm="12"
-                          md="12"
-                      >
-                        <v-textarea
-                            prepend-inner-icon="mdi-android-messages"
-                            v-model="editedItem.message"
-                            label="Message"
-                            outlined
-                            dense
-                        ></v-textarea>
-                      </v-col>
-                      <v-col
-                          cols="12"
-                          sm="12"
-                          md="12"
-                      >
-                        <v-autocomplete
-                            prepend-inner-icon="mdi-tag"
-                            v-model="editedItem.tag"
-                            :items="itemsTag"
-                            outlined
-                            dense
-                            chips
-                            small-chips
-                            label="Tags"
-                            multiple
-                        ></v-autocomplete>
-                      </v-col>
-                    </v-row>
-                  </v-container>
-                </v-card-text>
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn
-                      color="error"
-                      text
-                      @click="close"
-                  >
-                    ยกเลิก
-                  </v-btn>
-                  <v-btn
-                      color="success"
-                      text
-                      @click="save"
-                      :loading="!spinButton"
-                  >
-                    บันทึก
-                  </v-btn>
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
+            {% include "public/extends/customers/addCustomer.vue" %}
+
 
             <v-dialog v-model="dialogDelete" max-width="500px">
               <v-card>
@@ -220,14 +62,14 @@
 
             &nbsp;
             <v-btn
-                color="indigo accent-1"
-                class="mb-2"
+                dark
+                color="pink lighten-2"
                 :hidden="!btnImport"
                 @click="moveImport"
                 :loading="spinImport"
             >
               <v-icon left>mdi-application-import</v-icon>
-              Imports
+              นำเข้า
             </v-btn>
 
             <v-spacer></v-spacer>
@@ -249,6 +91,11 @@
 
           <v-toolbar flat>
 
+            {% include "public/extends/customers/sorting.vue" %}
+
+
+            {% include "public/extends/customers/excel.vue" %}
+
 
             <v-spacer></v-spacer>
 
@@ -265,7 +112,7 @@
               Tag Customers
             </v-btn>
 
-            <div class="small" style="margin-left: 10px; margin-top: 23px; margin-right: 20px">
+            <div class="small" style="margin-left: 10px; margin-right: 20px">
               <v-combobox
                   :loading="!spinTable"
                   v-model="model"

@@ -20,10 +20,11 @@ class SortingDate:
 
     """
 
-    def __init__(self, collection, after_start_date, before_end_date):
+    def __init__(self, collection, after_start_date, before_end_date, channel=None):
         self.colletion = collection
         self.after_start_date = after_start_date
         self.before_end_date = before_end_date
+        self.channel = channel
 
     @staticmethod
     def location_data(df, key, value, result):
@@ -55,7 +56,15 @@ class SortingDate:
         dfs.drop(['index'], axis=1)
         after_start_date = dfs['date'] >= self.after_start_date
         before_end_date = dfs['date'] <= self.before_end_date
+        # if channel:
+        #     and_datetime_channel = after_start_date & before_end_date & channel
+        #     filtered_ = dfs.loc[and_datetime_channel]
+        #     filtered_['date'] = filtered_['date'].dt.strftime('%d/%m/%Y')
+        #     return filtered_
+        # else:
         between_two_dates = after_start_date & before_end_date
         filtered_dates = dfs.loc[between_two_dates]
         filtered_dates['date'] = filtered_dates['date'].dt.strftime('%d/%m/%Y')
         return filtered_dates
+
+
