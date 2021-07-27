@@ -1,10 +1,9 @@
 new Vue({
     el: '#app',
     vuetify: new Vuetify(),
-    data: vm => ({
+    data: {
         // datetime
         date: [],
-        dateFormatted: vm.formatDate((new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)),
         menu1: false,
         dialogDate: false,
 
@@ -168,7 +167,7 @@ new Vue({
             {text: 'DataTable', icon: 'mdi-database'},
             {text: 'Intents', icon: 'mdi-account'},
         ],
-    }),
+    },
 
 
     watch: {

@@ -94,7 +94,7 @@
             {% include "public/extends/customers/sorting.vue" %}
 
 
-            {% include "public/extends/customers/excel.vue" %}
+            {% include "public/extends/customers/excelData.vue" %}
 
 
             <v-spacer></v-spacer>
