@@ -70,7 +70,7 @@ def key_model_transaction(item: dict, channel: str) -> dict:
     item['tag'] = []
     if item['product'] == 'Mango ERP (Construction)': item['product'] = 'Construction'
     if item['product'] == 'Mango ERP (Real Estate)': item['product'] = 'RealEstate'
-    if item['product'] == 'Mango ERP (Construction)': item['product'] = 'Consulting'
+    if item['product'] == 'Pusit (Consulting)': item['product'] = 'Consulting'
     return item
 
 
