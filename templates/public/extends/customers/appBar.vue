@@ -16,7 +16,7 @@
         <v-subheader>Menu Pages</v-subheader>
         <v-list-item-group
             v-model="selectedList"
-            color="green"
+            color="pink lighten-2"
         >
           <v-list-item
               v-for="(item, i) in itemsAppbar"

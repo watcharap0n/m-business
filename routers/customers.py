@@ -6,8 +6,7 @@ from db import MongoDB
 from object_str import CutId
 from bson import ObjectId
 from models.transaction import Transaction
-from modules.Export_excel import ExportExcel
-from modules.SortingDateTime import SortingDate
+from modules.pandasModules import DataColumnFilter
 import os
 
 router = APIRouter()
@@ -74,20 +73,22 @@ async def move_customer(items: Optional[list] = Body(None)):
 
 
 @router.post('/c/sorting/')
-async def customer_sorting(item: Optional[list] = None):
+async def customer_sorting(item: Optional[dict] = Body(None)):
+    product = item['product']
+    channel = item['channel']
+    date = item['date']
     print(item)
-    sorting_date = SortingDate(collection=collection, after_start_date=item[0], before_end_date=item[1])
-    data = sorting_date.createDataFrame()
+    sorting = DataColumnFilter(collection=collection, after_start_date=date[0], before_end_date=date[1], database=db,
+                               product=product, channel=channel)
+    data = sorting.sorting_data()
     data = data.to_dict('records')
     return data
 
 
 @router.post('/datafile/customer/excel')
 async def customers_excel(id: Optional[list] = Body([])):
-    excel = ExportExcel(db, collection, id).excel()
-    excel.save()
+    excel = DataColumnFilter(id=id, database=db, collection=collection)
+    excel.export_excel().save()
     file = os.path.join('static', 'excels/customers.xlsx')
     return FileResponse(file, media_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
                         filename='customers.xlsx')
-
-

@@ -17,11 +17,11 @@
   </template>
 
   <v-card>
-    <v-toolbar class="elevation-1" flat color="green accent-1">
+    <v-toolbar class="elevation-1" flat color="pink lighten-2" dark>
       <v-card-title>
         <v-icon medium style="margin-right: 10px">mdi-account-circle
         </v-icon>
-        <h3>[[ formTitle ]]</h3>
+        <h4>[[ formTitle ]]</h4>
       </v-card-title>
     </v-toolbar>
     <v-card-text>
@@ -37,6 +37,7 @@
                 v-model="editedItem.name"
                 label="Name"
                 outlined
+                color="pink lighten-2"
                 dense
             ></v-text-field>
           </v-col>
@@ -48,6 +49,7 @@
             <v-select
                 prepend-inner-icon="mdi-post-outline"
                 v-model="editedItem.product"
+                color="pink lighten-2"
                 :items="productMango"
                 label="Product"
                 outlined
@@ -62,6 +64,7 @@
             <v-text-field
                 v-model="editedItem.email"
                 label="Email"
+                color="pink lighten-2"
                 prepend-inner-icon="mdi-email"
                 outlined
                 dense
@@ -75,6 +78,7 @@
             <v-text-field
                 v-model="editedItem.tel"
                 label="Tel"
+                color="pink lighten-2"
                 prepend-inner-icon="mdi-card-account-phone"
                 outlined
                 dense
@@ -89,6 +93,7 @@
                 prepend-inner-icon="mdi-office-building"
                 v-model="editedItem.company"
                 label="Company"
+                color="pink lighten-2"
                 outlined
                 dense
             ></v-text-field>
@@ -102,6 +107,7 @@
                 v-model="editedItem.channel"
                 prepend-inner-icon="mdi-access-point-check"
                 label="Channel"
+                color="pink lighten-2"
                 outlined
                 dense
             ></v-text-field>
@@ -115,6 +121,7 @@
                 prepend-inner-icon="mdi-android-messages"
                 v-model="editedItem.message"
                 label="Message"
+                color="pink lighten-2"
                 outlined
                 dense
             ></v-textarea>
@@ -129,6 +136,7 @@
                 v-model="editedItem.tag"
                 :items="itemsTag"
                 outlined
+                color="pink lighten-2"
                 dense
                 chips
                 small-chips

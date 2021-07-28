@@ -13,7 +13,7 @@ new Vue({
         // excel
         dialogExcel: false,
         btnExcel: true,
-        spinExcel: true,
+        spinExcel: false,
 
         // auth
         userAuth: {
@@ -122,6 +122,7 @@ new Vue({
             username: '',
             uid: '',
         },
+        valid: true,
         search: '',
         transaction: [],
         selected: [],
@@ -140,6 +141,10 @@ new Vue({
         path: '',
         href: '',
         isProfile: false,
+        selectedProduct: '',
+        selectedChannel: '',
+        products: ['Construction', 'RealEstate', 'Project Planing', 'Other', 'Consulting'],
+        channels: ['LINE', 'GetDemo', 'Contact', 'Facebook'],
         productMango: ['RealEstate', 'Construction', 'BI Dashboard', 'Project Planning', 'CSM', 'QCM', 'Maintenance', 'Rental', 'MRP'],
 
         // tags
@@ -150,6 +155,7 @@ new Vue({
         model: [],
         btnTag: false,
         spinTag: true,
+
 
         sheet: false,
         tiles: [
@@ -171,6 +177,11 @@ new Vue({
 
 
     watch: {
+        date(val){
+            if (this.date.length > 0){
+                this.$refs.form.reset()
+            }
+        },
         model(val, prev) {
             if (val.length === prev.length) return
             this.model = val.map(v => {
@@ -213,51 +224,47 @@ new Vue({
                 user.email = res.data.email
                 user.uid = res.data.uid
             })
-    }
-    ,
+    },
     async created() {
         await this.initialize();
         await this.getTags();
-    }
-    ,
+    },
 
     computed: {
         formTitle() {
-            return this.editedIndex === -1 ? 'New Customer' : 'Edit Customer'
-        }
-        ,
+            return this.editedIndex === -1 ? 'เพิ่มข้อมูล' : 'แก้ไขข้อมูล'
+        },
         dateRangeText() {
             return this.date.join(' ~ ')
-        }
-        ,
-    }
-    ,
+        },
+    },
     methods: {
         // excel
         openExcel(selected) {
             if (selected.length === 0) {
                 this.btnExcel = false
+                this.spinExcel = true
             } else if (selected.length > 0) {
                 this.btnExcel = true
-            }
-            let data_id = []
-            selected.forEach((v) => {
-                data_id.push(v.id)
-            })
-            this.spinExcel = false
-            if (this.href === 'customer') {
-                this.exportExcel('/api/datafile/customer/excel', data_id)
-            }
-            if (this.href === 'import') {
-                this.exportExcel('/api/datafile/import/excel', data_id)
+                let data_id = []
+                selected.forEach((v) => {
+                    data_id.push(v.id)
+                })
+                this.spinExcel = false
+                if (this.href === 'customer') {
+                    this.exportExcel('/api/datafile/customer/excel', data_id)
+                }
+                if (this.href === 'import') {
+                    this.exportExcel('/api/datafile/import/excel', data_id)
+                }
             }
         },
 
         exportExcel(path, data_id) {
             axios.post(path, data_id)
                 .then((res) => {
+                    console.log('excel is already')
                     this.spinExcel = true
-                    console.log(res.data)
                 })
                 .catch
                 ((err) => {
@@ -267,42 +274,43 @@ new Vue({
         },
 
         // datetime
-        formatDate(date) {
-            if (!date) return null
-
-            const [year, month, day] = date.split('-')
-            return `${day}/${month}/${year}`
-        }
-        ,
-        parseDate(date) {
-            if (!date) return null
-
-            const [day, month, year] = date.split('/')
-            return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
-        }
-        ,
 
         tableSorting() {
-            if (this.date.length === 0) {
-                console.error('error')
+            if (this.date.length === 0 && !this.selectedChannel && !this.selectedProduct) {
+                this.$refs.form.validate()
             } else {
-                const path = '/api/c/sorting'
-                this.spinTable = false
-                axios.post(path, this.date)
-                    .then((res) => {
-                        this.spinTable = true
-                        this.date = []
-                        this.transaction = res.data
-                    })
-                    .catch((err) => {
-                        this.spinTable = true
-                        this.date = []
-                        console.error(err)
-                    })
+                let dict = {
+                    date: this.date,
+                    channel: this.selectedChannel,
+                    product: this.selectedProduct
+                }
+                if (this.href === 'customer') {
+                    this.sendSorting('/api/c/sorting', dict)
+                }
+                if (this.href === 'import') {
+                    this.sendSorting('/api/m/sorting', dict)
+                }
+                this.$refs.form.reset()
                 this.dialogDate = false
             }
-        }
-        ,
+        },
+
+        sendSorting(path, data) {
+            this.spinTable = false
+            axios.post(path, data)
+                .then((res) => {
+                    this.$refs.form.reset()
+                    this.spinTable = true
+                    this.date = []
+                    this.transaction = res.data
+                })
+                .catch((err) => {
+                    this.$refs.form.reset()
+                    this.spinTable = true
+                    this.date = []
+                    console.error(err)
+                })
+        },
 
 
         // table
@@ -319,8 +327,7 @@ new Vue({
                 .then((err) => {
                     console.log(err)
                 })
-        }
-        ,
+        },
         async APIImport() {
             this.spinTable = false
             const path = '/api/import'
@@ -334,8 +341,7 @@ new Vue({
                 .then((err) => {
                     console.log(err)
                 })
-        }
-        ,
+        },
         async moveImport() {
 
             if (this.selected.length > 0) {
@@ -364,8 +370,7 @@ new Vue({
                 this.snackbar = true
 
             }
-        }
-        ,
+        },
         async changeTransaction(data) {
             if (data === 'imports') {
                 await this.APIImport()
@@ -376,8 +381,7 @@ new Vue({
                 this.selected = []
                 this.model = []
             }
-        }
-        ,
+        },
         colorProduct(product) {
             if (product === 'Construction') {
                 return 'green accent-1'
@@ -388,11 +392,10 @@ new Vue({
             if (product === 'Project Planning') {
                 return 'pink lighten-4'
             }
-            if (product === 'Consulting'){
+            if (product === 'Consulting') {
                 return 'yellow lighten-4'
             }
-        }
-        ,
+        },
         async addTransaction(data) {
             let href = this.href
             if (href === 'customer')
@@ -412,8 +415,7 @@ new Vue({
                 .catch((err) => {
                     console.log(err);
                 })
-        }
-        ,
+        },
         async editTransaction(data, id) {
             let href = this.href
             if (href === 'customer')
@@ -442,7 +444,6 @@ new Vue({
                 .then((res) => {
                     this.selected = []
                     this.spinButton = true;
-                    console.log(res.data);
                     this.colorSb = 'red'
                     this.text = `คุณได้ลบข้อมูล ${this.editedItem.name}`
                     this.snackbar = true

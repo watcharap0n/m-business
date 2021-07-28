@@ -1,7 +1,7 @@
 <v-dialog
     v-model="dialogExcel"
     persistent
-    max-width="290"
+    max-width="300"
 >
   <template v-slot:activator="{ on, attrs }">
     <v-btn

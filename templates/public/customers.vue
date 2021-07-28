@@ -76,10 +76,11 @@
 
             <div class="small" style="margin-right: 20px">
               <v-text-field
+                  color="pink lighten-2"
                   :loading="!spinTable"
                   v-model="search"
                   append-icon="mdi-magnify"
-                  label="Search"
+                  label="ค้นหา"
                   single-line
                   hide-details
               >
@@ -94,7 +95,7 @@
             {% include "public/extends/customers/sorting.vue" %}
 
 
-            {% include "public/extends/customers/excelData.vue" %}
+            {% include "public/extends/customers/excel.vue" %}
 
 
             <v-spacer></v-spacer>
@@ -122,6 +123,7 @@
                   :search-input.sync="searchTag"
                   hide-selected
                   label="แท็ก"
+                  color="pink lighten-2"
                   multiple
                   dense
                   small-chips
@@ -282,13 +284,13 @@
           </div>
 
           <div v-else-if="item.channel === 'GetDemo'">
-            <v-chip outlined color="orange darken-1">
+            <v-chip outlined color="pink lighten-2">
               [[item.channel ]]
             </v-chip>
           </div>
 
           <div v-else-if="item.channel === 'LINE'">
-            <v-chip outlined color="green accent-2">
+            <v-chip outlined color="green accent-4">
               [[item.channel ]]
             </v-chip>
           </div>
@@ -307,7 +309,7 @@
         </template>
 
         <template v-slot:item.actions="{item}">
-          <v-icon small class="mr-2" color="light-blue lighten-1" @click="editItem(item)">
+          <v-icon small class="mr-2" color="green lighten-2" @click="editItem(item)">
             mdi-pencil
           </v-icon>
           <v-icon small color="red" @click="deleteItem(item)">

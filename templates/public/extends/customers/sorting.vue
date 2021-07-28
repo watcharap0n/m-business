@@ -20,56 +20,78 @@
 
   <v-card>
     <v-card-title class="headline grey lighten-2">
-      Month
+      Data information
     </v-card-title>
 
     <v-card-text>
-      <v-row>
-        <v-col cols="12">
-          <v-menu
-              ref="menu1"
-              v-model="menu1"
-              :close-on-content-click="false"
-              transition="scale-transition"
-              offset-y
-              max-width="290px"
-              min-width="auto"
-          >
-            <template v-slot:activator="{ on, attrs }">
-              <v-text-field
-                  v-model="dateRangeText"
-                  label="Date"
-                  hint="YYYY/MM/DD format"
-                  persistent-hint
-                  prepend-icon="mdi-calendar"
-                  v-bind="attrs"
-                  v-on="on"
-              ></v-text-field>
-            </template>
-            <v-date-picker
-                v-model="date"
-                range
+      <v-form ref="form"
+              v-model="valid">
+        <v-row>
+          <v-col cols="12">
+            <v-menu
+                ref="menu1"
+                v-model="menu1"
+                :close-on-content-click="false"
+                transition="scale-transition"
+                offset-y
+                max-width="290px"
+                min-width="auto"
             >
-              <v-spacer></v-spacer>
-              <v-btn
-                  text
-                  color="primary"
-                  @click="menu1 = false"
+              <template v-slot:activator="{ on, attrs }">
+                <v-text-field
+                    :rules="[v => !!v || 'ไม่มีข้อมูลในการจัดเรียง']"
+                    v-model="dateRangeText"
+                    label="Date"
+                    hint="YYYY/MM/DD format"
+                    persistent-hint
+                    prepend-icon="mdi-calendar"
+                    v-bind="attrs"
+                    v-on="on"
+                ></v-text-field>
+              </template>
+              <v-date-picker
+                  v-model="date"
+                  range
+                  color="pink lighten-2"
               >
-                ยกเลิก
-              </v-btn>
-              <v-btn
-                  text
-                  color="primary"
-                  @click="$refs.menu1.save(date)"
-              >
-                ตกลง
-              </v-btn>
-            </v-date-picker>
-          </v-menu>
-        </v-col>
-      </v-row>
-
+                <v-spacer></v-spacer>
+                <v-btn
+                    text
+                    color="error"
+                    @click="menu1 = false"
+                >
+                  ยกเลิก
+                </v-btn>
+                <v-btn
+                    text
+                    color="success"
+                    @click="$refs.menu1.save(date)"
+                >
+                  ตกลง
+                </v-btn>
+              </v-date-picker>
+            </v-menu>
+          </v-col>
+          <v-col cols="12">
+            <v-select
+                :rules="[v => !!v || 'ไม่มีข้อมูลในการจัดเรียง']"
+                color="pink lighten-2"
+                :items="products"
+                v-model="selectedProduct"
+                label="Products"
+            ></v-select>
+          </v-col>
+          <v-col cols="12">
+            <v-select
+                :rules="[v => !!v || 'ไม่มีข้อมูลในการจัดเรียง']"
+                color="pink lighten-2"
+                v-model="selectedChannel"
+                :items="channels"
+                label="Channels"
+            ></v-select>
+          </v-col>
+        </v-row>
+      </v-form>
     </v-card-text>
     <v-divider></v-divider>
 
@@ -83,7 +105,7 @@
         ยกเลิก
       </v-btn>
       <v-btn
-          color="primary"
+          color="success"
           text
           @click="tableSorting"
       >

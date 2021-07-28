@@ -5,8 +5,7 @@ from db import MongoDB
 from object_str import CutId
 from bson import ObjectId
 from models.transaction import Transaction
-from modules.SortingDateTime import SortingDate
-from modules.Export_excel import ExportExcel
+from modules.pandasModules import DataColumnFilter
 from starlette.responses import FileResponse
 import os
 
@@ -59,18 +58,22 @@ async def import_delete(id: Optional[str] = Path(None)):
     return {'message': 'success'}
 
 
-@router.get('/m/sorting/')
-async def import_sorting(start: Optional[str] = None, end: Optional[str] = None):
-    sorting_date = SortingDate(collection=collection, after_start_date=start, before_end_date=end)
-    data = sorting_date.createDataFrame()
+@router.post('/m/sorting/')
+async def import_sorting(item: Optional[dict] = Body(None)):
+    product = item['product']
+    channel = item['channel']
+    date = item['date']
+    sorting = DataColumnFilter(collection=collection, after_start_date=date[0], before_end_date=date[1], database=db,
+                               product=product, channel=channel)
+    data = sorting.sorting_data()
     data = data.to_dict('records')
     return data
 
 
 @router.post('/datafile/import/excel')
 async def customers_excel(id: Optional[list] = Body([])):
-    excel = ExportExcel(db, collection, id).excel()
-    excel.save()
+    excel = DataColumnFilter(id=id, database=db, collection=collection)
+    excel.export_excel().save()
     file = os.path.join('static', 'excels/customers.xlsx')
     return FileResponse(file, media_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
                         filename='imports.xlsx')

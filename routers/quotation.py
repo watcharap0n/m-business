@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Body
+from fastapi import APIRouter, HTTPException
 from models.transaction import Transaction
 from bson import ObjectId
 from db import MongoDB
