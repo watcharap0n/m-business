@@ -102,6 +102,7 @@
                 style="margin-bottom: 10px"
                 elevation="3"
                 :disabled="!btnDelete"
+                :loading="!spinDelete"
                 small
                 color="#FF648D"
                 dark
