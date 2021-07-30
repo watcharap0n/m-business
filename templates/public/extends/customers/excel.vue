@@ -47,6 +47,7 @@
             type="submit"
             :loading="!spinExcel"
             :disabled="!btnExcel"
+            @click="dialogExcel = false"
         >
           ตกลง
         </v-btn>
