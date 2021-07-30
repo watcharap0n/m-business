@@ -107,7 +107,7 @@
                 color="#FF648D"
                 dark
                 @click="sendDeleteMultiple"
-            ><i class="fas fa-user-tag"></i>
+            ><i class="fas fa-trash-alt"></i>
               ลบข้อมูล
             </v-btn>
 
@@ -255,8 +255,9 @@
                     prepend-icon="mdi-card-account-details-outline"
                 >
                   <v-list-item-content>
-                    <span> <strong>เลขที่บัตรประชาชน</strong> [[item.person_id]]</span>
-                    <span> <strong>เลขที่เสียภาษี</strong> [[item.tax_id]]</span>
+                    <span v-if="item.person_id"> <strong>เลขที่บัตรประชาชน</strong> [[item.person_id]]</span>
+                    <span v-if="item.tax_id"> <strong>เลขที่เสียภาษี</strong> [[item.tax_id]]</span>
+                    
                   </v-list-item-content>
                 </v-list-group>
                 <div v-else></div>
