@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from typing import Optional
+from typing import Optional, List
 
 CUSTOMER = 'CUSTOMER'
 
@@ -7,6 +7,8 @@ CUSTOMER = 'CUSTOMER'
 # data transaction of table customers
 class Transaction(BaseModel):
     id: Optional[str] = Field(None, example='id MongoDb (string)')
+    person_id: Optional[str] = Field(None, example='person_id (string)')
+    tax_id: Optional[str] = Field(None, example='tax_id (string)')
     name: Optional[str] = Field(None, example=f'{CUSTOMER} Name (string)')
     email: Optional[str] = Field(None, example=f'{CUSTOMER} Email (string)')
     company: Optional[str] = Field(None, example=f'{CUSTOMER} Company (string)')
@@ -21,6 +23,7 @@ class Transaction(BaseModel):
     channel: Optional[str] = Field(None, example='Get Channel LINE or Facebook')
     username: Optional[str] = None
     uid: Optional[str] = None
-    tag: Optional[list] = []
+    tag: Optional[List] = None
     date: Optional[str] = None
     time: Optional[str] = None
+

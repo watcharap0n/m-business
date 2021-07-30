@@ -211,14 +211,10 @@
 
             </div>
 
-
-            <!--tag end-->
-
-
           </v-toolbar>
-
-
         </template>
+
+        <!--tag end-->
 
         <template v-slot:item.tag="{item}">
           <v-chip v-for="i in item.tag" :key="i.length">
@@ -233,6 +229,21 @@
                 <strong>[[item.name ]]</strong>
                 <span>[[item.email ]]</span>
                 <span>[[item.tel ]]</span>
+
+                <v-list-group
+                    dense
+                    color="red lighten-2"
+                    v-if="item.person_id || item.tax_id"
+                    :value="false"
+                    prepend-icon="mdi-card-account-details-outline"
+                >
+                  <v-list-item-content>
+                   <span> <strong>เลขที่บัตรประชาชน</strong> [[item.person_id]]</span>
+                    <span> <strong>เลขที่เสียภาษี</strong> [[item.tax_id]]</span>
+                  </v-list-item-content>
+                </v-list-group>
+                <div v-else></div>
+
               </v-col>
             </v-row>
           </div>

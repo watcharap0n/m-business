@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field
-from typing import Optional
+from typing import Optional, List
 
 
 class Customers_id(BaseModel):
-    id: Optional[list] = Field(None, example='id MongoDb (Array)')
+    id: Optional[List] = Field(None, example='id MongoDb (Array)')

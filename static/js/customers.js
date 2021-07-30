@@ -88,6 +88,8 @@ new Vue({
         ],
         editedItem: {
             id: '',
+            person_id: '',
+            tax_id: '',
             name: '',
             tag: [],
             product: '',
@@ -106,6 +108,8 @@ new Vue({
         },
         defaultItem: {
             id: '',
+            person_id: '',
+            tax_id: '',
             name: '',
             tag: [],
             product: '',
@@ -177,8 +181,8 @@ new Vue({
 
 
     watch: {
-        date(val){
-            if (this.date.length > 0){
+        date(val) {
+            if (this.date.length > 0) {
                 this.$refs.form.reset()
             }
         },
@@ -324,7 +328,7 @@ new Vue({
                     this.href = 'customer'
                     this.btnImport = false
                 })
-                .then((err) => {
+                .catch((err) => {
                     console.log(err)
                 })
         },
@@ -338,7 +342,7 @@ new Vue({
                     this.href = 'import'
                     this.btnImport = true
                 })
-                .then((err) => {
+                .catch((err) => {
                     console.log(err)
                 })
         },
@@ -402,8 +406,8 @@ new Vue({
                 this.path = '/api/customer'
             if (href === 'import')
                 this.path = '/api/import'
-            this.editedItem.uid = this.userAuth.uid
-            this.editedItem.username = this.userAuth.name
+            data.uid = this.userAuth.uid
+            data.username = this.userAuth.name
             await axios.post(this.path, data)
                 .then((res) => {
                     this.spinButton = true;
@@ -413,6 +417,7 @@ new Vue({
                     this.snackbar = true
                 })
                 .catch((err) => {
+                    this.spinButton = true;
                     console.log(err);
                 })
         },
@@ -422,6 +427,9 @@ new Vue({
                 this.path = `/api/customer/${id}`
             if (href === 'import')
                 this.path = `/api/import/${id}`
+            if (!data.tag){
+                data.tag = []
+            }
             await axios.put(this.path, data)
                 .then(() => {
                     this.spinButton = true;
@@ -430,6 +438,7 @@ new Vue({
                     this.snackbar = true
                 })
                 .catch((err) => {
+                    this.spinButton = true;
                     console.log(err);
                 })
         }
@@ -449,6 +458,7 @@ new Vue({
                     this.snackbar = true
                 })
                 .catch((err) => {
+                    this.spinButton = true;
                     console.log(err);
                 })
         }

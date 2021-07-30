@@ -35,7 +35,7 @@
             <v-text-field
                 prepend-inner-icon="mdi-account"
                 v-model="editedItem.name"
-                label="Name"
+                label="ชื่อ"
                 outlined
                 color="pink lighten-2"
                 dense
@@ -51,7 +51,7 @@
                 v-model="editedItem.product"
                 color="pink lighten-2"
                 :items="productMango"
-                label="Product"
+                label="ผลิตภัณฑ์"
                 outlined
                 dense
             ></v-select>
@@ -63,13 +63,48 @@
           >
             <v-text-field
                 v-model="editedItem.email"
-                label="Email"
+                label="อีเมล"
                 color="pink lighten-2"
                 prepend-inner-icon="mdi-email"
                 outlined
                 dense
             ></v-text-field>
           </v-col>
+
+            <v-col
+                cols="12"
+                sm="6"
+                md="6"
+            >
+
+              <v-text-field
+                  v-model="editedItem.person_id"
+                  label="เลขที่บัตรประชาชน"
+                  color="pink lighten-2"
+                  prepend-inner-icon="mdi-account-outline"
+                  outlined
+                  dense
+              ></v-text-field>
+
+            </v-col>
+
+            <v-col
+                cols="12"
+                sm="6"
+                md="6"
+            >
+
+              <v-text-field
+                  v-model="editedItem.tax_id"
+                  label="เลขที่เสียภาษี"
+                  color="pink lighten-2"
+                  prepend-inner-icon="mdi-account-box"
+                  outlined
+                  dense
+              ></v-text-field>
+
+            </v-col>
+
           <v-col
               cols="12"
               sm="6"
@@ -77,7 +112,7 @@
           >
             <v-text-field
                 v-model="editedItem.tel"
-                label="Tel"
+                label="เบอร์ติดต่อ"
                 color="pink lighten-2"
                 prepend-inner-icon="mdi-card-account-phone"
                 outlined
@@ -92,7 +127,7 @@
             <v-text-field
                 prepend-inner-icon="mdi-office-building"
                 v-model="editedItem.company"
-                label="Company"
+                label="บริษัท"
                 color="pink lighten-2"
                 outlined
                 dense
@@ -106,7 +141,7 @@
             <v-text-field
                 v-model="editedItem.channel"
                 prepend-inner-icon="mdi-access-point-check"
-                label="Channel"
+                label="ช่องทาง"
                 color="pink lighten-2"
                 outlined
                 dense
@@ -120,7 +155,7 @@
             <v-textarea
                 prepend-inner-icon="mdi-android-messages"
                 v-model="editedItem.message"
-                label="Message"
+                label="ข้อความ"
                 color="pink lighten-2"
                 outlined
                 dense
@@ -140,7 +175,7 @@
                 dense
                 chips
                 small-chips
-                label="Tags"
+                label="แท็ก"
                 multiple
             ></v-autocomplete>
           </v-col>
