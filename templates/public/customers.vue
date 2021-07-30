@@ -97,11 +97,27 @@
 
             {% include "public/extends/customers/excel.vue" %}
 
+            &nbsp;
+            <v-btn
+                style="margin-bottom: 10px"
+                elevation="3"
+                :disabled="!btnDelete"
+                small
+                color="#FF648D"
+                dark
+                @click="sendDeleteMultiple"
+            ><i class="fas fa-user-tag"></i>
+              ลบข้อมูล
+            </v-btn>
+
 
             <v-spacer></v-spacer>
 
             <!-- tag start -->
+
+
             <v-btn
+                style="margin-bottom: 20px"
                 elevation="3"
                 :loading="!spinTag"
                 :disabled="!btnTag"
@@ -110,7 +126,7 @@
                 dark
                 @click="tagTransaction(selected)"
             ><i class="fas fa-user-tag"></i>
-              Tag Customers
+              ติดแท็ก
             </v-btn>
 
             <div class="small" style="margin-left: 10px; margin-right: 20px">
@@ -238,7 +254,7 @@
                     prepend-icon="mdi-card-account-details-outline"
                 >
                   <v-list-item-content>
-                   <span> <strong>เลขที่บัตรประชาชน</strong> [[item.person_id]]</span>
+                    <span> <strong>เลขที่บัตรประชาชน</strong> [[item.person_id]]</span>
                     <span> <strong>เลขที่เสียภาษี</strong> [[item.tax_id]]</span>
                   </v-list-item-content>
                 </v-list-group>

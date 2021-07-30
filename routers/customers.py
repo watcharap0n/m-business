@@ -53,8 +53,15 @@ async def customers_put(
 
 
 @router.delete('/customer/{id}', status_code=204)
-async def customers_delete(id: Optional[str] = Path(None)):
+async def customer_delete(id: Optional[str] = Path(None)):
     db.delete_one(collection=collection, query={'id': id})
+    return {'message': 'success'}
+
+
+@router.post('/customer/delete/multiple', status_code=204)
+async def customers_delete(items: Optional[list] = Body(...)):
+    for i in items:
+        db.delete_one(collection=collection, query={'id': i['id']})
     return {'message': 'success'}
 
 

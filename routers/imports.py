@@ -58,6 +58,13 @@ async def import_delete(id: Optional[str] = Path(None)):
     return {'message': 'success'}
 
 
+@router.post('/import/delete/multiple', status_code=204)
+async def customers_delete(items: Optional[list] = Body(...)):
+    for i in items:
+        db.delete_one(collection=collection, query={'id': i['id']})
+    return {'message': 'success'}
+
+
 @router.post('/m/sorting/')
 async def import_sorting(item: Optional[dict] = Body(None)):
     product = item['product']

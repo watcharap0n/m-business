@@ -158,8 +158,9 @@ new Vue({
         colorsTag: 'pink',
         model: [],
         btnTag: false,
+        btnDelete: false,
+        spinDelete: true,
         spinTag: true,
-
 
         sheet: false,
         tiles: [
@@ -211,7 +212,11 @@ new Vue({
             } else if (this.selected.length === 0 || this.model.length === 0) {
                 this.btnTag = false
             }
-
+            if (this.selected.length > 0) {
+                this.btnDelete = true
+            } else if (this.selected.length === 0) {
+                this.btnDelete = false
+            }
         }
 
     },
@@ -347,7 +352,6 @@ new Vue({
                 })
         },
         async moveImport() {
-
             if (this.selected.length > 0) {
                 this.spinImport = true
                 const path = '/api/move/customer'
@@ -385,6 +389,30 @@ new Vue({
                 this.selected = []
                 this.model = []
             }
+        },
+        sendDeleteMultiple() {
+            if (this.href === 'customer') {
+                this.deleteMultiple('/api/customer/delete/multiple', this.selected)
+            } else if (this.href === 'import') {
+                this.deleteMultiple('/api/import/delete/multiple', this.selected)
+            }
+        },
+        deleteMultiple(path, selected) {
+            this.spinDelete = false
+            axios.post(path, selected)
+                .then((res) => {
+                    this.selected.forEach((data) => {
+                        this.transaction.splice(this.transaction.indexOf(data), 1)
+                    })
+                    this.spinDelete = true
+                    this.selected = []
+                    console.log(res.data)
+                })
+                .catch((err) => {
+                    this.spinDelete = true
+                    this.selected = []
+                    console.error(err)
+                })
         },
         colorProduct(product) {
             if (product === 'Construction') {
@@ -427,7 +455,7 @@ new Vue({
                 this.path = `/api/customer/${id}`
             if (href === 'import')
                 this.path = `/api/import/${id}`
-            if (!data.tag){
+            if (!data.tag) {
                 data.tag = []
             }
             await axios.put(this.path, data)
