@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Form, Request, UploadFile, File, Response, HTTPException
+from fastapi import APIRouter, Form, Request, UploadFile, File,  HTTPException
 from typing import Optional
 from firebase_admin import auth
 from environ.config_db import Config_firebase
