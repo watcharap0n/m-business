@@ -34,7 +34,7 @@
                     :headers="headers"
                     loading-text="Loading... Please wait"
                     class="elevation-5 rounded-xl"
-                    height="700"
+                    height="600"
                     :items="transaction">
 
         <!--       slot TOP         -->
