@@ -1,1 +1,1 @@
-web: uvicorn app:app --host 0.0.0.0 --port $PORT --workers 3 --timeout-keep-alive 90
+web: uvicorn app:app --host 0.0.0.0 --port $PORT --workers 3 --timeout-keep-alive 50
