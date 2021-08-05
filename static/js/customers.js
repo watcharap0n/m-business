@@ -55,9 +55,15 @@ new Vue({
                 align: 'start'
             },
             {
+                text: 'อื่นๆ',
+                value: 'other',
+                align: "center"
+            },
+            {
                 text: 'ข้อมูลลูกค้า',
                 value: 'name',
-                align: 'center'
+                align: 'center',
+                width: 80
             },
             {
                 text: 'บริษัท',
