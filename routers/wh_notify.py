@@ -4,7 +4,7 @@ from linebot.exceptions import InvalidSignatureError
 from linebot.models import StickerSendMessage, TextSendMessage, TextMessage, MessageEvent
 from random import randint
 from typing import Optional
-from db import MongoDB
+from config.db import MongoDB
 import json
 import os
 
@@ -13,13 +13,14 @@ router = APIRouter()
 line_bot_api_notify = LineBotApi(os.environ['line_bot_api'])
 handler_notify = WebhookHandler(os.environ['handler'])
 
-
+# client = 'mongodb://127.0.0.1:27017'
 client = os.environ.get('MONGODB_URI')
 db = MongoDB(database_name='Mango', uri=client)
 collection = 'line_bot_notify'
 
-# client = 'mongodb://127.0.0.1:27017'
+
 # from environ.client_environ import line_bot_api, handler
+#
 # line_bot_api_notify = LineBotApi(line_bot_api)
 # handler_notify = WebhookHandler(handler)
 

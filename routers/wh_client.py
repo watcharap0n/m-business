@@ -6,9 +6,9 @@ from machine_leanning.model_text_classifire import intent_model
 from models.token_line import TokenLINE
 from random import randint
 from bson import ObjectId
-from object_str import CutId
+from config.object_str import CutId
 from typing import Optional
-from db import MongoDB
+from config.db import MongoDB
 from numpy import random
 import uuid
 import json

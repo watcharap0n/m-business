@@ -1,8 +1,8 @@
 from fastapi import APIRouter, HTTPException
 from models.transaction import Transaction
 from bson import ObjectId
-from db import MongoDB
-from object_str import CutId
+from config.db import MongoDB
+from config.object_str import CutId
 import datetime
 import os
 

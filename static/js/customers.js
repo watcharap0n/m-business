@@ -600,13 +600,11 @@ new Vue({
                 .catch((error) => {
                     console.error(error)
                 })
-        }
-        ,
+        },
         toRemove(index, item) {
             this.itemsTag.splice(this.itemsTag.indexOf(item), 1)
             this.removeTag(item.id)
-        }
-        ,
+        },
         removeTag(id) {
             console.log(id)
             const path = `/api/tag?id-query=${id}`;
@@ -618,8 +616,7 @@ new Vue({
                 .catch((error) => {
                     console.error(error)
                 })
-        }
-        ,
+        },
         tagTransaction(selected) {
             this.spinTag = false
             let data = {id: selected, tag: this.model, href: this.href}

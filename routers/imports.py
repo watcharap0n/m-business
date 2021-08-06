@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Path, Body
 from typing import Optional
 import datetime
-from db import MongoDB
-from object_str import CutId
+from config.db import MongoDB
+from config.object_str import CutId
 from bson import ObjectId
 from models.transaction import Transaction
 from modules.pandasModules import DataColumnFilter

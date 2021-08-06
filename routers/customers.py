@@ -2,8 +2,8 @@ from fastapi import APIRouter, Path, Body
 from starlette.responses import FileResponse
 from typing import Optional
 import datetime
-from db import MongoDB
-from object_str import CutId
+from config.db import MongoDB
+from config.object_str import CutId
 from bson import ObjectId
 from models.transaction import Transaction
 from modules.pandasModules import DataColumnFilter
@@ -84,7 +84,6 @@ async def customer_sorting(item: Optional[dict] = Body(None)):
     product = item['product']
     channel = item['channel']
     date = item['date']
-    print(item)
     sorting = DataColumnFilter(collection=collection, after_start_date=date[0], before_end_date=date[1], database=db,
                                product=product, channel=channel)
     data = sorting.sorting_data()

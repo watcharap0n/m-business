@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Path, Query, Body, Response, Request
-from db import MongoDB
-from object_str import CutId
+from config.db import MongoDB
+from config.object_str import CutId
 from typing import Optional
 from bson import ObjectId
 import os

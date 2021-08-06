@@ -1,6 +1,7 @@
 import pandas as pd
 from typing import Any, Optional
-
+from datetime import datetime
+import numpy as np
 
 class DataColumnFilter:
     """
@@ -66,11 +67,19 @@ class DataColumnFilter:
             dfs = dfs.loc[dfs['channel'] == self.channel]
         if self.product:
             dfs = dfs.loc[dfs['product'] == self.product]
+
+        d = datetime.strptime(self.after_start_date, '%Y-%m-%d')
+        self.after_start_date = "{}-{}-{}".format(d.year, d.day, d.month)
+
+        d = datetime.strptime(self.before_end_date, '%Y-%m-%d')
+        self.before_end_date = "{}-{}-{}".format(d.year, d.day, d.month)
+
         after_start_date = dfs['date'] >= self.after_start_date
         before_end_date = dfs['date'] <= self.before_end_date
         between_two_dates = after_start_date & before_end_date
         filtered_dates = dfs.loc[between_two_dates]
         filtered_dates['date'] = filtered_dates['date'].dt.strftime('%d/%m/%Y')
+        filtered_dates = filtered_dates.replace(np.nan, '', regex=True)
         return filtered_dates
 
     def export_excel(self):

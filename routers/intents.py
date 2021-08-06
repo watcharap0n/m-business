@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Body
 from typing import Optional
-from db import MongoDB
+from config.db import MongoDB
 from bson import ObjectId
-from object_str import CutId
+from config.object_str import CutId
 from models.intent_bot import Intent
 import os
 
