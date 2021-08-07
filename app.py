@@ -20,10 +20,9 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 template = Jinja2Templates(directory="templates")
 
 origins = [
-    'https://572666a1f922.ngrok.io'
+    'https://572666a1f922.ngrok.io',
     "http://127.0.0.1:5000",
-    "https://mango-client.herokuapp.com",
-    "http://www.mangoconsultant.net"
+    "http://www.mangoconsultant.net",
 ]
 
 app.add_middleware(
