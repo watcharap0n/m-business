@@ -26,6 +26,7 @@ new Vue({
 
         // table
         page: 0,
+        hiddenAPI: true,
         navigation: [
             {
                 header: 'ข้อมูลลูกค้า',
@@ -37,6 +38,11 @@ new Vue({
                 href: 'imports',
                 icon: 'mdi-import'
             },
+            {
+                header: 'API',
+                href: 'api',
+                icon: 'mdi-api'
+            }
         ],
         headers: [
             {
@@ -184,6 +190,9 @@ new Vue({
             {text: 'DataTable', icon: 'mdi-database'},
             {text: 'Intents', icon: 'mdi-account'},
         ],
+
+        // btn or table hidden
+        btnHiddenAPI: true,
     },
 
 
@@ -248,6 +257,9 @@ new Vue({
     computed: {
         formTitle() {
             return this.editedIndex === -1 ? 'เพิ่มข้อมูล' : 'แก้ไขข้อมูล'
+        },
+        formBtnAPI(){
+            return this.btnHiddenAPI === true ? 'ตรวจสอบเข้า RE' : 'นำส่งเข้า RE'
         },
         dateRangeText() {
             return this.date.join(' ~ ')
@@ -327,9 +339,25 @@ new Vue({
                 })
         },
 
+        async ImportRE(selected) {
+            if (this.selected.length === 0) {
+                this.snackbar = true
+                this.text = `กรุณาเลือกข้อมูลเพื่อนำเข้า RE`
+                this.colorSb = 'red'
+            } else {
+                this.transaction = selected
+                this.btnHiddenAPI = false
+                this.btnDelete = false
+                this.page = 2
+                this.snackbar = true
+                this.text = `รายการทั้งหมด ${this.transaction.length} รายการ`
+                this.colorSb = 'primary'
+            }
+        },
 
         // table
         async initialize() {
+            this.btnHiddenAPI = true
             this.spinTable = false
             const path = '/api/customer'
             await axios.get(path)
@@ -344,6 +372,7 @@ new Vue({
                 })
         },
         async APIImport() {
+            this.btnHiddenAPI = true
             this.spinTable = false
             const path = '/api/import'
             await axios.get(path)
@@ -392,6 +421,10 @@ new Vue({
                 this.model = []
             } else if (data === 'customers') {
                 await this.initialize()
+                this.selected = []
+                this.model = []
+            } else if (data === 'api') {
+                this.transaction = []
                 this.selected = []
                 this.model = []
             }

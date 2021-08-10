@@ -9,6 +9,7 @@
         color="pink lighten-2"
         dark
         small
+        :hidden="!btnHiddenAPI"
         v-bind="attrs"
         v-on="on"
         @click="openExcel(selected)"

@@ -10,6 +10,7 @@
         dark
         v-bind="attrs"
         v-on="on"
+        :hidden="!btnHiddenAPI"
         small
     >
       <v-icon>

@@ -25,7 +25,6 @@
           </v-badge>
           <v-icon>[[v.icon]]</v-icon>
         </v-btn>
-
       </v-bottom-navigation>
 
 
@@ -45,6 +44,16 @@
 
             {% include "public/extends/customers/addCustomer.vue" %}
 
+            <v-btn
+                style="margin-left: 10px"
+                color="pink lighten-2"
+                dark
+                @click="ImportRE(selected)"
+            >
+              <v-icon left>mdi-api</v-icon>
+              [[ formBtnAPI ]]
+
+            </v-btn>
 
             <v-dialog v-model="dialogDelete" max-width="500px">
               <v-card>
@@ -129,7 +138,7 @@
               ติดแท็ก
             </v-btn>
 
-            <div class="small" style="margin-left: 10px; margin-right: 20px">
+            <div class="small" style="margin-left: 10px; margin-right: 20px" :hidden="!btnHiddenAPI">
               <v-combobox
                   :loading="!spinTable"
                   v-model="model"
@@ -233,8 +242,12 @@
         <!--tag end-->
 
         <template v-slot:item.tag="{item}">
-          <v-chip v-for="i in item.tag" :key="i.length">
-            #[[i ]]
+          <v-chip
+              dark
+              color="red"
+              class="ma-2"
+              v-for="i in item.tag" :key="i.length">
+            [[ i ]]
           </v-chip>
         </template>
 
@@ -256,7 +269,7 @@
                   <v-list-item-content>
                     <span v-if="item.person_id"> <strong>เลขที่บัตรประชาชน</strong> [[item.person_id]]</span>
                     <span v-if="item.tax_id"> <strong>เลขที่เสียภาษี</strong> [[item.tax_id]]</span>
-                    
+
                   </v-list-item-content>
                 </v-list-group>
                 <div v-else></div>

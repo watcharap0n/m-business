@@ -10,11 +10,13 @@
         v-bind="attrs"
         v-on="on"
         dark
+        :hidden="!btnHiddenAPI"
     >
       <v-icon left>mdi-account-circle</v-icon>
       เพิ่มข้อมูล
     </v-btn>
   </template>
+
 
   <v-card>
     <v-toolbar class="elevation-1" flat color="pink lighten-2" dark>
@@ -71,39 +73,39 @@
             ></v-text-field>
           </v-col>
 
-            <v-col
-                cols="12"
-                sm="6"
-                md="6"
-            >
+          <v-col
+              cols="12"
+              sm="6"
+              md="6"
+          >
 
-              <v-text-field
-                  v-model="editedItem.person_id"
-                  label="เลขที่บัตรประชาชน"
-                  color="pink lighten-2"
-                  prepend-inner-icon="mdi-account-outline"
-                  outlined
-                  dense
-              ></v-text-field>
+            <v-text-field
+                v-model="editedItem.person_id"
+                label="เลขที่บัตรประชาชน"
+                color="pink lighten-2"
+                prepend-inner-icon="mdi-account-outline"
+                outlined
+                dense
+            ></v-text-field>
 
-            </v-col>
+          </v-col>
 
-            <v-col
-                cols="12"
-                sm="6"
-                md="6"
-            >
+          <v-col
+              cols="12"
+              sm="6"
+              md="6"
+          >
 
-              <v-text-field
-                  v-model="editedItem.tax_id"
-                  label="เลขที่เสียภาษี"
-                  color="pink lighten-2"
-                  prepend-inner-icon="mdi-account-box"
-                  outlined
-                  dense
-              ></v-text-field>
+            <v-text-field
+                v-model="editedItem.tax_id"
+                label="เลขที่เสียภาษี"
+                color="pink lighten-2"
+                prepend-inner-icon="mdi-account-box"
+                outlined
+                dense
+            ></v-text-field>
 
-            </v-col>
+          </v-col>
 
           <v-col
               cols="12"
