@@ -48,6 +48,7 @@
                 style="margin-left: 10px"
                 color="pink lighten-2"
                 dark
+                :hidden="!btnAPI"
                 @click="ImportRE(selected)"
             >
               <v-icon left>mdi-api</v-icon>

@@ -193,6 +193,7 @@ new Vue({
 
         // btn or table hidden
         btnHiddenAPI: true,
+        btnAPI: true,
     },
 
 
@@ -357,6 +358,7 @@ new Vue({
 
         // table
         async initialize() {
+            this.btnAPI = true
             this.btnHiddenAPI = true
             this.spinTable = false
             const path = '/api/customer'
@@ -372,6 +374,7 @@ new Vue({
                 })
         },
         async APIImport() {
+            this.btnAPI = false
             this.btnHiddenAPI = true
             this.spinTable = false
             const path = '/api/import'
@@ -424,6 +427,9 @@ new Vue({
                 this.selected = []
                 this.model = []
             } else if (data === 'api') {
+                this.btnAPI = true
+                this.btnHiddenAPI = false
+                this.btnImport = false
                 this.transaction = []
                 this.selected = []
                 this.model = []
