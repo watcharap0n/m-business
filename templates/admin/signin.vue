@@ -12,7 +12,6 @@
               <v-carousel hide-delimiters>
                 <v-carousel-item v-for="(image,i) in images" :key="i" :src="image.src">
                   <div class="display-3">
-                    {{ images }}
                   </div>
                 </v-carousel-item>
               </v-carousel>

@@ -69,10 +69,10 @@ class DataColumnFilter:
             dfs = dfs.loc[dfs['product'] == self.product]
 
         d = datetime.strptime(self.after_start_date, '%Y-%m-%d')
-        self.after_start_date = "{}-{}-{}".format(d.year, d.day, d.month)
+        self.after_start_date = "{}-{}-{}".format(d.year, d.month, d.day)
 
         d = datetime.strptime(self.before_end_date, '%Y-%m-%d')
-        self.before_end_date = "{}-{}-{}".format(d.year, d.day, d.month)
+        self.before_end_date = "{}-{}-{}".format(d.year, d.month, d.day)
 
         after_start_date = dfs['date'] >= self.after_start_date
         before_end_date = dfs['date'] <= self.before_end_date
