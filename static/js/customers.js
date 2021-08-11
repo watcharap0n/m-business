@@ -159,8 +159,10 @@ new Vue({
         isProfile: false,
         selectedProduct: '',
         selectedChannel: '',
-        products: ['Construction', 'RealEstate', 'Project Planing', 'Other', 'Consulting'],
-        channels: ['LINE', 'GetDemo', 'Contact', 'Facebook'],
+        selectedTag: '',
+        products: [],
+        channels: [],
+        tags: [],
         productMango: ['RealEstate', 'Construction', 'BI Dashboard', 'Project Planning', 'CSM', 'QCM', 'Maintenance', 'Rental', 'MRP'],
 
         // tags
@@ -251,15 +253,15 @@ new Vue({
             })
     },
     async created() {
-        await this.initialize();
-        await this.getTags();
+        this.initialize();
+        this.getTags();
     },
 
     computed: {
         formTitle() {
             return this.editedIndex === -1 ? 'เพิ่มข้อมูล' : 'แก้ไขข้อมูล'
         },
-        formBtnAPI(){
+        formBtnAPI() {
             return this.btnHiddenAPI === true ? 'ตรวจสอบเข้า RE' : 'นำส่งเข้า RE'
         },
         dateRangeText() {
@@ -267,6 +269,43 @@ new Vue({
         },
     },
     methods: {
+        // table
+        async initialize() {
+            this.btnAPI = true
+            this.btnHiddenAPI = true
+            this.spinTable = false
+            const path = '/api/customer'
+            await axios.get(path)
+                .then((res) => {
+                    this.spinTable = true;
+                    this.transaction = res.data.transaction;
+                    this.products = res.data.products
+                    this.channels = res.data.channels
+                    this.tags = res.data.tags
+                    this.href = 'customer'
+                    this.btnImport = false
+                })
+                .catch((err) => {
+                    console.log(err)
+                })
+        },
+        async APIImport() {
+            this.btnAPI = false
+            this.btnHiddenAPI = true
+            this.spinTable = false
+            const path = '/api/import'
+            await axios.get(path)
+                .then((res) => {
+                    this.spinTable = true;
+                    this.transaction = res.data.transaction;
+                    this.href = 'import'
+                    this.btnImport = true
+                })
+                .catch((err) => {
+                    console.log(err)
+                })
+        },
+
         // excel
         openExcel(selected) {
             if (selected.length === 0) {
@@ -287,11 +326,9 @@ new Vue({
                 }
             }
         },
-
         exportExcel(path, data_id) {
             axios.post(path, data_id)
-                .then((res) => {
-                    console.log('excel is already')
+                .then(() => {
                     this.spinExcel = true
                 })
                 .catch
@@ -301,45 +338,67 @@ new Vue({
                 })
         },
 
-        // datetime
-
+        // sorting
         tableSorting() {
-            if (this.date.length === 0 && !this.selectedChannel && !this.selectedProduct) {
+            if (this.date.length === 0 && !this.selectedChannel && !this.selectedProduct && !this.selectedTag) {
                 this.$refs.form.validate()
             } else {
                 let dict = {
                     date: this.date,
                     channel: this.selectedChannel,
-                    product: this.selectedProduct
+                    product: this.selectedProduct,
+                    tag: []
+                }
+                if (this.selectedTag){
+                    dict.tag = [this.selectedTag]
                 }
                 if (this.href === 'customer') {
                     this.sendSorting('/api/c/sorting', dict)
+                    this.$refs.form.reset()
                 }
                 if (this.href === 'import') {
                     this.sendSorting('/api/m/sorting', dict)
+                    this.$refs.form.reset()
                 }
                 this.$refs.form.reset()
                 this.dialogDate = false
             }
         },
-
+        sortingOnclick(data) {
+            let dict = {
+                date: [],
+                channel: null,
+                product: null,
+                tag: []
+            }
+            if (data.channel) {
+                dict.channel = data.channel
+            } else if (data.product) {
+                dict.product = data.product
+            } else if (data.tag) {
+                dict.tag = [data.tag]
+            }
+            if (this.href === 'customer') {
+                this.sendSorting('/api/c/sorting', dict)
+            }
+            if (this.href === 'import') {
+                this.sendSorting('/api/m/sorting', dict)
+            }
+        },
         sendSorting(path, data) {
             this.spinTable = false
             axios.post(path, data)
                 .then((res) => {
-                    this.$refs.form.reset()
                     this.spinTable = true
                     this.date = []
                     this.transaction = res.data
                 })
                 .catch((err) => {
-                    this.$refs.form.reset()
                     this.spinTable = true
                     this.date = []
                     console.error(err)
                 })
         },
-
         async ImportRE(selected) {
             if (this.selected.length === 0) {
                 this.snackbar = true
@@ -354,40 +413,6 @@ new Vue({
                 this.text = `รายการทั้งหมด ${this.transaction.length} รายการ`
                 this.colorSb = 'primary'
             }
-        },
-
-        // table
-        async initialize() {
-            this.btnAPI = true
-            this.btnHiddenAPI = true
-            this.spinTable = false
-            const path = '/api/customer'
-            await axios.get(path)
-                .then((res) => {
-                    this.spinTable = true;
-                    this.transaction = res.data;
-                    this.href = 'customer'
-                    this.btnImport = false
-                })
-                .catch((err) => {
-                    console.log(err)
-                })
-        },
-        async APIImport() {
-            this.btnAPI = false
-            this.btnHiddenAPI = true
-            this.spinTable = false
-            const path = '/api/import'
-            await axios.get(path)
-                .then((res) => {
-                    this.spinTable = true;
-                    this.transaction = res.data;
-                    this.href = 'import'
-                    this.btnImport = true
-                })
-                .catch((err) => {
-                    console.log(err)
-                })
         },
         async moveImport() {
             if (this.selected.length > 0) {
@@ -534,43 +559,37 @@ new Vue({
                     this.spinButton = true;
                     console.log(err);
                 })
-        }
-        ,
+        },
         editItem(item) {
             this.editedIndex = this.transaction.indexOf(item)
             this.editedItem = Object.assign({}, item)
             this.dialogCustomer = true;
-        }
-        ,
+        },
         deleteItem(item) {
             this.editedIndex = this.transaction.indexOf(item)
             this.editedItem = Object.assign({}, item)
             this.dialogDelete = true
-        }
-        ,
+        },
         async deleteItemConfirm() {
             this.spinButton = false;
             await this.deleteTransaction(this.editedItem.id);
             this.transaction.splice(this.editedIndex, 1);
             this.closeDelete()
-        }
-        ,
+        },
         close() {
             this.dialogCustomer = false
             this.$nextTick(() => {
                 this.editedItem = Object.assign({}, this.defaultItem)
                 this.editedIndex = -1
             })
-        }
-        ,
+        },
         closeDelete() {
             this.dialogDelete = false
             this.$nextTick(() => {
                 this.editedItem = Object.assign({}, this.defaultItem)
                 this.editedIndex = -1
             })
-        }
-        ,
+        },
         async save() {
             if (this.editedIndex > -1) {
                 this.spinButton = false;
@@ -581,22 +600,19 @@ new Vue({
                 await this.addTransaction(this.editedItem);
             }
             this.close()
-        }
-        ,
-
+        },
 
         // tags
-        getTags() {
+        async getTags() {
             const path = '/api/tag'
-            axios.get(path)
+            await axios.get(path)
                 .then((res) => {
                     this.itemsTag = res.data
                 })
                 .catch((err) => {
                     console.error(err)
                 })
-        }
-        ,
+        },
         filter(item, queryText, itemText) {
             const hasValue = val => val != null ? val : ''
             const text = hasValue(itemText)
@@ -604,8 +620,7 @@ new Vue({
             return text.toString()
                 .toLowerCase()
                 .indexOf(query.toString().toLowerCase()) > -1
-        }
-        ,
+        },
         edit(index, item) {
             if (!this.editingTag) {
                 this.editingTag = item
@@ -616,8 +631,7 @@ new Vue({
                 this.editingTag = null
                 this.editingIndexTag = -1
             }
-        }
-        ,
+        },
         addTag(item) {
             const path = `/api/tag?tag=${item.text}`
             axios.get(path)
@@ -628,8 +642,7 @@ new Vue({
                 .catch((err) => {
                     console.error(err)
                 })
-        }
-        ,
+        },
         setTag(id, item) {
             const path = `/api/tag/${item}?id-query=${id}`;
             axios.put(path)
@@ -668,12 +681,10 @@ new Vue({
                 .catch((err) => {
                     console.error(err)
                 })
-        }
-        ,
+        },
         logout() {
             return window.location = '/secure/logout'
-        }
-        ,
+        },
 
         //appBar
         redirectPage(item) {

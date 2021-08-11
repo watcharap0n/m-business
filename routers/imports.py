@@ -23,7 +23,15 @@ async def import_get():
     data = list(data)
     for v in data:
         del v['_id']
-    return data[::-1]
+    products = set([v['product'] for v in data if v['product']])
+    channels = set([v['channel'] for v in data if v['channel']])
+    tags = set([v['tag'][0] for v in data if v['tag']])
+    return {
+        'transaction': data[::-1],
+        'products': products,
+        'channels': channels,
+        'tags': tags
+    }
 
 
 @router.post('/import', status_code=201, response_model=Transaction)
@@ -70,8 +78,16 @@ async def import_sorting(item: Optional[dict] = Body(None)):
     product = item['product']
     channel = item['channel']
     date = item['date']
+    tag = item['tag']
+
+    if not date:
+        sorting = DataColumnFilter(collection=collection, database=db, product=product, channel=channel, tag=tag)
+        data = sorting.sorting_data()
+        data = data.to_dict('records')
+        return data
+
     sorting = DataColumnFilter(collection=collection, after_start_date=date[0], before_end_date=date[1], database=db,
-                               product=product, channel=channel)
+                               product=product, channel=channel, tag=tag)
     data = sorting.sorting_data()
     data = data.to_dict('records')
     return data

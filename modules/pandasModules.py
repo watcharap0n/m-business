@@ -3,6 +3,7 @@ from typing import Any, Optional
 from datetime import datetime
 import numpy as np
 
+
 class DataColumnFilter:
     """
     Example
@@ -22,14 +23,16 @@ class DataColumnFilter:
             before_end_date: Optional[str] = None,
             channel: Optional[str] = None,
             product: Optional[str] = None,
+            tag: Optional[list] = None,
             id: Optional[list] = None
     ):
         self.database = database
-        self.colletion = collection
+        self.collection = collection
         self.after_start_date = after_start_date
         self.before_end_date = before_end_date
         self.channel = channel
         self.product = product
+        self.tag = tag
         self.id = id
 
     @staticmethod
@@ -43,7 +46,7 @@ class DataColumnFilter:
         self.location_data(dataframe=dataframe, key='product', value='Pusit (Consulting)', result='Consulting')
 
     def sorting_data(self):
-        data = self.database.find(self.colletion, {})
+        data = self.database.find(self.collection, {})
         df = pd.DataFrame(list(data))
         df = df.drop(['_id'], axis=1)
         df['date'] = pd.to_datetime(df['date'])
@@ -63,9 +66,67 @@ class DataColumnFilter:
         dfs = dfs.sort_values(by='date')
         dfs = dfs.reset_index()
         dfs.drop(['index'], axis=1)
-        if self.channel:
+
+        if self.channel and not self.product and not self.before_end_date and not self.tag:
             dfs = dfs.loc[dfs['channel'] == self.channel]
-        if self.product:
+            dfs = dfs.replace(np.nan, '', regex=True)
+            return dfs
+
+        elif self.product and not self.channel and not self.before_end_date and not self.tag:
+            dfs = dfs.loc[dfs['product'] == self.product]
+            dfs = dfs.replace(np.nan, '', regex=True)
+            return dfs
+
+        elif self.tag and not self.channel and not self.before_end_date and not self.product:
+            dfs = dfs[dfs['tag'].apply(lambda x: x == self.tag)]
+            dfs = dfs.replace(np.nan, '', regex=True)
+            return dfs
+
+        elif self.product and self.channel and self.tag:
+            dfs = dfs.loc[dfs['channel'] == self.channel]
+            dfs = dfs.loc[dfs['product'] == self.product]
+            dfs = dfs[dfs['tag'].apply(lambda x: x == self.tag)]
+            dfs = dfs.replace(np.nan, '', regex=True)
+            return dfs
+
+        elif self.product and self.channel:
+            dfs = dfs.loc[dfs['channel'] == self.channel]
+            dfs = dfs.loc[dfs['product'] == self.product]
+            dfs = dfs.replace(np.nan, '', regex=True)
+            return dfs
+
+        elif self.product and self.tag:
+            dfs = dfs.loc[dfs['product'] == self.product]
+            dfs = dfs[dfs['tag'].apply(lambda x: x == self.tag)]
+            dfs = dfs.replace(np.nan, '', regex=True)
+            return dfs
+
+        elif self.channel and self.tag:
+            dfs = dfs.loc[dfs['channel'] == self.channel]
+            dfs = dfs[dfs['tag'].apply(lambda x: x == self.tag)]
+            dfs = dfs.replace(np.nan, '', regex=True)
+            return dfs
+
+        elif self.before_end_date and self.channel:
+            dfs = dfs.loc[dfs['channel'] == self.channel]
+
+        elif self.before_end_date and self.product:
+            dfs = dfs.loc[dfs['product'] == self.product]
+
+        elif self.before_end_date and self.tag:
+            dfs = dfs[dfs['tag'].apply(lambda x: x == self.tag)]
+
+        elif self.before_end_date and self.product and self.tag:
+            dfs = dfs.loc[dfs['product'] == self.product]
+            dfs = dfs[dfs['tag'].apply(lambda x: x == self.tag)]
+
+        elif self.before_end_date and self.channel and self.tag:
+            dfs = dfs.loc[dfs['channel'] == self.product]
+            dfs = dfs[dfs['tag'].apply(lambda x: x == self.tag)]
+
+        elif self.product and self.channel and self.tag and self.before_end_date:
+            dfs = dfs[dfs['tag'].apply(lambda x: x == self.tag)]
+            dfs = dfs.loc[dfs['channel'] == self.channel]
             dfs = dfs.loc[dfs['product'] == self.product]
 
         d = datetime.strptime(self.after_start_date, '%Y-%m-%d')
@@ -85,7 +146,7 @@ class DataColumnFilter:
     def export_excel(self):
         data = []
         for i in self.id:
-            v = self.database.find_one(self.colletion, query={'id': i})
+            v = self.database.find_one(self.collection, query={'id': i})
             v = dict(v)
             del v['_id']
             data.append(v)

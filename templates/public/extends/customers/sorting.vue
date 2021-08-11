@@ -21,7 +21,7 @@
 
   <v-card>
     <v-card-title class="headline grey lighten-2">
-      Data information
+      ข้อมูลในการกรอง
     </v-card-title>
 
     <v-card-text>
@@ -40,9 +40,8 @@
             >
               <template v-slot:activator="{ on, attrs }">
                 <v-text-field
-                    :rules="[v => !!v || 'ไม่มีข้อมูลในการจัดเรียง']"
                     v-model="dateRangeText"
-                    label="Date"
+                    label="วันที่"
                     hint="YYYY/MM/DD format"
                     persistent-hint
                     prepend-icon="mdi-calendar"
@@ -75,22 +74,31 @@
           </v-col>
           <v-col cols="12">
             <v-select
-                :rules="[v => !!v || 'ไม่มีข้อมูลในการจัดเรียง']"
                 color="pink lighten-2"
                 :items="products"
                 v-model="selectedProduct"
-                label="Products"
+                label="ผลิตภัณฑ์"
             ></v-select>
           </v-col>
+
           <v-col cols="12">
             <v-select
-                :rules="[v => !!v || 'ไม่มีข้อมูลในการจัดเรียง']"
                 color="pink lighten-2"
                 v-model="selectedChannel"
                 :items="channels"
-                label="Channels"
+                label="ช่องทาง"
             ></v-select>
           </v-col>
+
+          <v-col cols="12">
+            <v-select
+                color="pink lighten-2"
+                v-model="selectedTag"
+                :items="tags"
+                label="แท็ก"
+            ></v-select>
+          </v-col>
+
         </v-row>
       </v-form>
     </v-card-text>

@@ -247,7 +247,9 @@
               dark
               color="red"
               class="ma-2"
-              v-for="i in item.tag" :key="i.length">
+              v-for="i in item.tag" :key="i.length"
+              @click="sortingOnclick({'tag': i})"
+          >
             [[ i ]]
           </v-chip>
         </template>
@@ -281,7 +283,8 @@
         </template>
 
         <template v-slot:item.product="{item}">
-          <v-chip class="ma-2" :color="colorProduct(item.product)" label>
+          <v-chip class="ma-2" :color="colorProduct(item.product)" label
+                  @click="sortingOnclick({'product': item.product})">
             <div v-if="item.product === 'Construction'">
               <strong style="color: green">[[item.product]]</strong>
             </div>
@@ -319,25 +322,25 @@
         </template>
 
         <template v-slot:item.channel="{item}">
-          <div v-if="item.channel === 'Contact'">
+          <div v-if="item.channel === 'Contact'" @click="sortingOnclick({'channel': item.channel})">
             <v-chip outlined color="blue darken-2">
               [[item.channel ]]
             </v-chip>
           </div>
 
-          <div v-else-if="item.channel === 'GetDemo'">
+          <div v-else-if="item.channel === 'GetDemo'" @click="sortingOnclick({'channel': item.channel})">
             <v-chip outlined color="pink lighten-2">
               [[item.channel ]]
             </v-chip>
           </div>
 
-          <div v-else-if="item.channel === 'LINE'">
+          <div v-else-if="item.channel === 'LINE'" @click="sortingOnclick({'channel': item.channel})">
             <v-chip outlined color="green accent-4">
               [[item.channel ]]
             </v-chip>
           </div>
 
-          <div v-else>
+          <div v-else @click="sortingOnclick({'channel': item.channel})">
             <v-chip outlined>
               [[item.channel ]]
             </v-chip>
