@@ -45,7 +45,7 @@ class DataColumnFilter:
         self.location_data(dataframe=dataframe, key='product', value='Mango ERP (Real Estate)', result='RealEstate')
         self.location_data(dataframe=dataframe, key='product', value='Pusit (Consulting)', result='Consulting')
 
-    def sorting_data(self):
+    def filter(self):
         data = self.database.find(self.collection, {})
         df = pd.DataFrame(list(data))
         df = df.drop(['_id'], axis=1)
@@ -66,7 +66,9 @@ class DataColumnFilter:
         dfs = dfs.sort_values(by='date')
         dfs = dfs.reset_index()
         dfs.drop(['index'], axis=1)
+        return dfs
 
+    def sorting_table(self, dfs):
         if self.channel and not self.product and not self.before_end_date and not self.tag:
             dfs = dfs.loc[dfs['channel'] == self.channel]
             dfs = dfs.replace(np.nan, '', regex=True)

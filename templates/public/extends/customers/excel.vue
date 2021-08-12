@@ -12,7 +12,7 @@
         :hidden="!btnHiddenAPI"
         v-bind="attrs"
         v-on="on"
-        @click="openExcel(selected)"
+        @click="openDialog"
     >
       <v-icon>
         mdi-file-excel-outline
@@ -48,7 +48,7 @@
             type="submit"
             :loading="!spinExcel"
             :disabled="!btnExcel"
-            @click="dialogExcel = false"
+            @click="submitExcel(selected)"
         >
           ตกลง
         </v-btn>

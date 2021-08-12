@@ -82,19 +82,21 @@ async def import_sorting(item: Optional[dict] = Body(None)):
 
     if not date:
         sorting = DataColumnFilter(collection=collection, database=db, product=product, channel=channel, tag=tag)
-        data = sorting.sorting_data()
+        dfs = sorting.filter()
+        data = sorting.sorting_table(dfs=dfs)
         data = data.to_dict('records')
         return data
 
     sorting = DataColumnFilter(collection=collection, after_start_date=date[0], before_end_date=date[1], database=db,
                                product=product, channel=channel, tag=tag)
-    data = sorting.sorting_data()
+    dfs = sorting.filter()
+    data = sorting.sorting_table(dfs=dfs)
     data = data.to_dict('records')
     return data
 
 
 @router.post('/datafile/import/excel')
-async def customers_excel(id: Optional[list] = Body([])):
+async def customers_excel(id: Optional[list] = Body(None)):
     excel = DataColumnFilter(id=id, database=db, collection=collection)
     excel.export_excel().save()
     file = os.path.join('static', 'excels/customers.xlsx')

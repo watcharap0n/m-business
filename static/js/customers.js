@@ -25,7 +25,7 @@ new Vue({
         spinAuth: false,
 
         // table
-        page: 0,
+        page: 1,
         hiddenAPI: true,
         navigation: [
             {
@@ -307,32 +307,48 @@ new Vue({
         },
 
         // excel
-        openExcel(selected) {
-            if (selected.length === 0) {
+        openDialog() {
+            if (this.selected.length === 0) {
                 this.btnExcel = false
-                this.spinExcel = true
-            } else if (selected.length > 0) {
+            } else if (this.selected.length > 0) {
                 this.btnExcel = true
-                let data_id = []
-                selected.forEach((v) => {
-                    data_id.push(v.id)
-                })
-                this.spinExcel = false
-                if (this.href === 'customer') {
-                    this.exportExcel('/api/datafile/customer/excel', data_id)
-                }
-                if (this.href === 'import') {
-                    this.exportExcel('/api/datafile/import/excel', data_id)
-                }
+                this.spinExcel = true
+            }
+        },
+        submitExcel(selected) {
+            this.btnExcel = true
+            let data_id = []
+            selected.forEach((v) => {
+                data_id.push(v.id)
+            })
+            this.spinExcel = false
+
+            if (this.href === 'customer') {
+                this.exportExcel('/api/datafile/customer/excel', data_id)
+            }
+            if (this.href === 'import') {
+                this.exportExcel('/api/datafile/import/excel', data_id)
             }
         },
         exportExcel(path, data_id) {
-            axios.post(path, data_id)
-                .then(() => {
+            axios.post(path, data_id, {
+                headers: {
+                    'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                    'Content-Disposition': "attachment; filename=customers.xlsx"
+                },
+                responseType: 'arraybuffer'
+            })
+                .then((res) => {
+                    // const url = window.URL.createObjectURL(new Blob([res.data[0]]));
+                    const link = document.createElement('a');
+                    // link.href = url;
+                    link.setAttribute('download', 'customers.xlsx');
+                    document.body.appendChild(link);
+                    link.click();
                     this.spinExcel = true
+                    this.dialogExcel = false
                 })
-                .catch
-                ((err) => {
+                .catch((err) => {
                     this.spinExcel = true
                     console.error(err)
                 })
@@ -349,7 +365,7 @@ new Vue({
                     product: this.selectedProduct,
                     tag: []
                 }
-                if (this.selectedTag){
+                if (this.selectedTag) {
                     dict.tag = [this.selectedTag]
                 }
                 if (this.href === 'customer') {

@@ -10,19 +10,19 @@ import os
 
 router = APIRouter()
 
-line_bot_api_notify = LineBotApi(os.environ['line_bot_api'])
-handler_notify = WebhookHandler(os.environ['handler'])
+# line_bot_api_notify = LineBotApi(os.environ['line_bot_api'])
+# handler_notify = WebhookHandler(os.environ['handler'])
 
-# client = 'mongodb://127.0.0.1:27017'
-client = os.environ.get('MONGODB_URI')
+client = 'mongodb://127.0.0.1:27017'
+# client = os.environ.get('MONGODB_URI')
 db = MongoDB(database_name='Mango', uri=client)
 collection = 'line_bot_notify'
 
 
-# from environ.client_environ import line_bot_api, handler
-#
-# line_bot_api_notify = LineBotApi(line_bot_api)
-# handler_notify = WebhookHandler(handler)
+from environ.client_environ import line_bot_api, handler
+
+line_bot_api_notify = LineBotApi(line_bot_api)
+handler_notify = WebhookHandler(handler)
 
 
 def get_profile_notify(user_id):

@@ -6,8 +6,20 @@
 
   <br><br><br>
   <div class="container-fluid">
-    <v-card class="mx-auto" class="elevation-1">
 
+    <v-row>
+      <v-col cols="6">
+
+      </v-col>
+
+      <v-col cols="6">
+
+      </v-col>
+
+    </v-row>
+
+
+    <v-card class="mx-auto" class="elevation-1">
       <v-bottom-navigation
           style="background: linear-gradient(to right, #7C4DFF, #304FFE, #448AFF);"
           v-model="page"
@@ -380,7 +392,7 @@
         v-model="snackbar"
         :timeout="timeout"
     >
-      [[text ]]
+      [[ text ]]
 
       <template v-slot:action="{ attrs }">
         <v-btn
