@@ -19,13 +19,17 @@ new Vue({
             },
             {
                 icon: 'mdi-star',
-                text: 'Train BOT',
+                text: 'สอนบอทแมงโก้'
+            },
+            {
+                icon: 'mdi-star',
+                text: 'สอนบอท',
             },
         ],
         modelList: 0,
         showWebhook: true,
         showIntent: false,
-        showMyColor: false,
+        showBotMango: false,
 
         spinAuth: false,
         hasSaved: false,
@@ -42,6 +46,7 @@ new Vue({
         hiddenAccess: true,
         nameIntent: '',
         nameAccestoken: '',
+        mangoAccess: '',
         validAccess: false,
         dialogIntent: false,
         dialogDeleteIntent: false,
@@ -90,7 +95,7 @@ new Vue({
         itemsIntent() {
             return [
                 {
-                    name: 'Your Intents',
+                    name: 'Intents',
                     children: this.users,
                 },
             ]
@@ -130,11 +135,19 @@ new Vue({
             this.dialogAcesstoken = false
             this.treeHidden = true
         },
-        async getIntents(item) {
+        async intents(item) {
             const pause = ms => new Promise(resolve => setTimeout(resolve, ms))
             await pause(1500)
-            let data = {'access_token': this.nameAccestoken}
-            const path = `/intent/data/?access_token=${this.nameAccestoken}`
+            if (this.showIntent === true) {
+                let data = {'access_token': this.nameAccestoken}
+                return this.getIntents(data, item)
+            } else if (this.showBotMango === true) {
+                return this.getIntents(null, item)
+            }
+        },
+
+        getIntents(data, item) {
+            const path = `/intent/data`
             return axios.post(path, data)
                 .then((res) => {
                     item.children.push(...res.data)
@@ -142,14 +155,27 @@ new Vue({
                 })
                 .catch((err) => console.error(err))
         },
-        addIntent() {
-            this.spinIntent = false
-            this.dataAppend.name = this.nameIntent
-            this.dataAppend.uid = this.userAuth.uid
-            this.dataAppend.access_token = this.nameAccestoken
-            console.log(this.dataAppend)
+
+        createIntent() {
+            console.log()
+            if (this.showIntent === true) {
+                this.spinIntent = false
+                this.dataAppend.name = this.nameIntent
+                this.dataAppend.uid = this.userAuth.uid
+                this.dataAppend.access_token = this.nameAccestoken
+                this.addIntent(this.dataAppend)
+            } else if (this.showBotMango === true) {
+                this.spinIntent = false
+                this.dataAppend.name = this.nameIntent
+                this.dataAppend.uid = this.userAuth.uid
+                this.dataAppend.access_token = null
+                console.log(this.dataAppend)
+                this.addIntent(this.dataAppend)
+            }
+        },
+        addIntent(data) {
             const path = '/intent/add'
-            axios.post(path, this.dataAppend)
+            axios.post(path, data)
                 .then((res) => {
                     this.nameIntent = ''
                     this.spinIntent = true
@@ -207,17 +233,35 @@ new Vue({
         // listModel
         listModel(data) {
             if (data === 'Webhook') {
+                this.active = []
+                this.open = []
+                this.users = []
+                this.hiddenIntent = false
+                this.nameAccestoken = ''
+                this.mangoAccess = ''
                 this.showIntent = false
-                this.showMyColor = false
                 this.showWebhook = true
-            } else if (data === 'Train BOT') {
+                this.showBotMango = false
+            } else if (data === 'สอนบอท') {
+                this.active = []
+                this.open = []
+                this.users = []
+                this.hiddenIntent = false
+                this.nameAccestoken = ''
+                this.mangoAccess = ''
                 this.showWebhook = false
-                this.showMyColor = false
                 this.showIntent = true
-            } else if (data === 'Color') {
+                this.showBotMango = false
+            } else if (data === 'สอนบอทแมงโก้') {
+                this.active = []
+                this.open = []
+                this.users = []
+                this.hiddenIntent = false
+                this.nameAccestoken = ''
+                this.mangoAccess = 'mango'
                 this.showWebhook = false
                 this.showIntent = false
-                this.showMyColor = true
+                this.showBotMango = true
             }
         },
 

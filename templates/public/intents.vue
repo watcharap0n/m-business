@@ -8,13 +8,13 @@
     <br>
     <br><br>
 
-    <v-container class="text-center">
+    <v-container class="container-fluid">
       <v-row>
 
-        <v-col cols="2">
+        <v-col cols="3">
           <v-card
               class="mx-auto"
-              max-width="500"
+              max-width="800"
           >
             <v-list>
               <v-list-item-group v-model="modelList">
@@ -35,7 +35,7 @@
           </v-card>
         </v-col>
 
-        <v-col cols="10">
+        <v-col cols="9">
 
 
           <div :hidden="!showWebhook">
@@ -45,7 +45,7 @@
             >
               <v-icon>mdi-account</v-icon>
               <v-toolbar-title class="font-weight-light">
-                Create Webhook
+                สร้าง Webhook
               </v-toolbar-title>
               <v-spacer></v-spacer>
               <v-btn
@@ -65,7 +65,7 @@
             </v-toolbar>
             <v-card-text
             >
-              <v-form  v-model="validWebhook" ref="formWebhook"
+              <v-form v-model="validWebhook" ref="formWebhook"
                       lazy-validation>
                 <v-text-field
                     required
@@ -84,7 +84,7 @@
                 ></v-text-field>
 
                 <v-subheader>
-                  <strong> Your Webhook URL: </strong> &nbsp;&nbsp; [[webhook]]
+                  <strong> Webhook URL: </strong> &nbsp;&nbsp; [[webhook]]
                 </v-subheader>
 
               </v-form>
@@ -115,17 +115,20 @@
 
           <!--            start intent-->
 
-          <div :hidden="!showIntent">
+          <div :hidden="!showBotMango">
+            {% include 'public/extends/intents/intentMango.vue' %}
+          </div>
 
+          <div :hidden="!showIntent">
 
             <v-card>
               <v-card-title dark
-                            style="background: linear-gradient(90deg, rgba(252,117,149,1) 0%, rgba(255,16,117,1) 77%, rgba(255,67,118,1) 100%);">
+                            style="background: linear-gradient(to right, #7C4DFF, #304FFE, #448AFF);">
                 <v-icon dark>
                   mdi-robot
                 </v-icon>
                 &nbsp;
-                Dataset Train Bot
+                ชุดข้อมูลสอนบอท
 
                 <v-spacer></v-spacer>
                 <v-dialog
@@ -176,7 +179,7 @@
                           text
                           @click="dialogAcesstoken = false"
                       >
-                        Disagree
+                        ยกเลิก
                       </v-btn>
                       <v-btn
                           color="green darken-1"
@@ -185,7 +188,7 @@
                           :loading="!spinIntent"
                           @click="formAccessToken"
                       >
-                        Agree
+                        ตกลง
                       </v-btn>
                     </v-card-actions>
                   </v-card>
@@ -208,7 +211,7 @@
                       <v-icon left>
                         mdi-pencil
                       </v-icon>
-                      Create Intent
+                      สร้าง Intent
                     </v-btn>
                   </template>
                   <v-card>
@@ -216,7 +219,7 @@
                     <v-toolbar flat
                                style="background: linear-gradient(90deg, rgba(252,117,149,1) 0%, rgba(255,16,117,1) 77%, rgba(255,67,118,1) 100%);"
                                dark>
-                      Name Intent
+                      ชื่อ Intent
                     </v-toolbar>
 
                     <v-card-text>
@@ -238,15 +241,15 @@
                           text
                           @click="dialogIntent = false"
                       >
-                        Disagree
+                        ยกเลิก
                       </v-btn>
                       <v-btn
                           color="green darken-1"
                           text
                           :loading="!spinIntent"
-                          @click="addIntent"
+                          @click="createIntent"
                       >
-                        Agree
+                        ตกลง
                       </v-btn>
                     </v-card-actions>
                   </v-card>
@@ -265,7 +268,7 @@
                   <v-treeview
                       :hidden="!treeHidden"
                       :active.sync="active"
-                      :load-children="getIntents"
+                      :load-children="intents"
                       :items="itemsIntent"
                       :open.sync="open"
                       activatable
@@ -304,7 +307,7 @@
                           </template>
                           <v-card>
                             <v-card-title class="text-h5">
-                              are you sure ?
+                              คุณแน่ใจที่จะลบ ?
                             </v-card-title>
                             <v-card-actions>
                               <v-spacer></v-spacer>
@@ -313,7 +316,7 @@
                                   text
                                   @click="dialogDeleteIntent = false"
                               >
-                                Disagree
+                                ยกเลิก
                               </v-btn>
                               <v-btn
                                   color="red darken-1"
@@ -321,7 +324,7 @@
                                   :loading="!spinIntent"
                                   @click="deleteIntent(item)"
                               >
-                                Agree
+                                ตกลง
                               </v-btn>
                             </v-card-actions>
                           </v-card>
@@ -347,7 +350,7 @@
                         class="text-h6 grey--text text--lighten-1 font-weight-light"
                         style="align-self: center;"
                     >
-                      Select a Intent
+                      เลือก Intent
                     </div>
 
                     <v-card
@@ -359,7 +362,7 @@
                         <div class="mb-2">
 
                           <h3 class="text-h5 ">
-                            Question ? (Training Set)
+                            สร้างคำถาม (สิงที่จะสอน)
                           </h3>
 
                           <v-text-field
@@ -368,9 +371,10 @@
                               filled
                               clear-icon="mdi-close-circle"
                               clearable
-                              label="Create Question"
+                              label="คำถาม"
                               type="text"
                               :loading="!spinIntent"
+                              @keyup.enter="sendQuestion"
                               @click:append-outer="sendQuestion"
                           ></v-text-field>
 
@@ -404,7 +408,7 @@
 
 
                       <h3 class="text-h5 ">
-                        Anwser
+                        คำตอบ (สิ่งที่ให้บอทตอบ)
                       </h3>
                       <v-row
                           class="text-left"
@@ -416,9 +420,10 @@
                             filled
                             clear-icon="mdi-close-circle"
                             clearable
-                            label="Create Answer"
+                            label="คำตอบ"
                             type="text"
                             :loading="!spinIntent"
+                            @keyup.enter="sendAnswer"
                             @click:append-outer="sendAnswer"
                         ></v-text-field>
 

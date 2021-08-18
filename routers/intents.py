@@ -6,6 +6,7 @@ from config.object_str import CutId
 from models.intent_bot import Intent
 import os
 
+mango_channel = '55zHqfzX2vguSp2YjK2Gt73Ejpzt1DHgsmiM1k3YRNYKJED7x6KXW1Je3FvUZe39fFENh0teAR9CiYXl4emWDmLVmFlqTOczl9Sos1jJDU3MOVM8zYH9Xfrzmdk7r3TuSZwZKFRoE4rxifjGZ7MvAgdB04t89/1O/w1cDnyilFU='
 router = APIRouter()
 client = os.environ.get('MONGODB_URI')
 # client = 'mongodb://127.0.0.1:27017'
@@ -15,8 +16,14 @@ collection = 'intents'
 
 @router.post('/data')
 async def data_intent(access_token: Optional[dict] = Body(None)):
-    access_token = access_token['access_token']
-    data = db.find(collection=collection, query={'access_token': access_token})
+    if access_token:
+        access_token = access_token.get('access_token')
+        data = db.find(collection=collection, query={'access_token': access_token})
+        data = list(data)
+        for v in data:
+            del v['_id']
+        return data
+    data = db.find(collection=collection, query={'access_token': mango_channel})
     data = list(data)
     for v in data:
         del v['_id']
@@ -27,6 +34,11 @@ async def data_intent(access_token: Optional[dict] = Body(None)):
 async def add_intent(item: Intent):
     key = CutId(_id=ObjectId()).dict()['id']
     item = item.dict()
+    if item.get('access_token'):
+        item['id'] = key
+        db.insert_one(collection=collection, data=item)
+        return item
+    item['access_token'] = mango_channel
     item['id'] = key
     db.insert_one(collection=collection, data=item)
     return item
