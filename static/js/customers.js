@@ -253,8 +253,8 @@ new Vue({
             })
     },
     async created() {
-        this.initialize();
-        this.getTags();
+        await this.APIImport();
+        await this.getTags();
     },
 
     computed: {
