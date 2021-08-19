@@ -47,7 +47,8 @@ class DataColumnFilter:
 
     def filter(self):
         data = self.database.find(self.collection, {})
-        df = pd.DataFrame(list(data))
+        data = list(data)
+        df = pd.DataFrame(data)
         df = df.drop(['_id'], axis=1)
         df['date'] = pd.to_datetime(df['date'])
         self.filter_data(df)
@@ -62,6 +63,7 @@ class DataColumnFilter:
             'day': 'category',
             'english_day': 'category'
         })
+        df1 = df1.replace(np.nan, '')
         dfs = df.merge(df1, left_index=True, right_index=True)
         dfs = dfs.sort_values(by='date')
         dfs = dfs.reset_index()
@@ -86,9 +88,8 @@ class DataColumnFilter:
         elif self.tag and not self.channel and not self.before_end_date and not self.product:
             dfs = dfs[dfs['tag'].apply(lambda x: x == self.tag)]
             dfs['date'] = dfs['date'].dt.strftime('%d/%m/%Y')
-            dfs = dfs.replace(np.nan, '', regex=True)
-            print('tag')
-            return dfs
+            result = dfs.replace(np.nan, '', regex=True)
+            return result
 
         elif self.product and self.channel and self.tag:
             dfs = dfs.loc[dfs['channel'] == self.channel]
@@ -157,7 +158,6 @@ class DataColumnFilter:
         filtered_dates = dfs.loc[between_two_dates]
         filtered_dates['date'] = filtered_dates['date'].dt.strftime('%d/%m/%Y')
         filtered_dates = filtered_dates.replace(np.nan, '', regex=True)
-        print('all')
         return filtered_dates
 
     def export_excel(self):

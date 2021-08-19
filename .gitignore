@@ -12,3 +12,4 @@ environ/client_environ
 environ/client_environ.py
 docker-compose.yml
 test_coding.py
+test.json

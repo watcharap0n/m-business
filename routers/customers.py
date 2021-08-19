@@ -12,7 +12,6 @@ import os
 router = APIRouter()
 
 client = os.environ.get('MONGODB_URI')
-# client = 'mongodb://127.0.0.1:27017'
 db = MongoDB(database_name='Mango', uri=client)
 collection = 'customers'
 
@@ -53,7 +52,6 @@ async def customers_put(
         id: Optional[str] = Path(None)
 ):
     payload = item.dict()
-    _d = datetime.datetime.now()
     query = {'id': id}
     values = {'$set': payload}
     db.update_one(collection=collection, values=values, query=query)
@@ -93,23 +91,18 @@ async def customer_sorting(item: Optional[dict] = Body(None)):
     channel = item['channel']
     date = item['date']
     tag = item['tag']
-    print('item')
-    print(item)
     if not date:
         sorting = DataColumnFilter(collection=collection, database=db, product=product, channel=channel, tag=tag)
         dfs = sorting.filter()
         data = sorting.sorting_table(dfs=dfs)
         data = data.to_dict('records')
-        print('data')
-        print(data)
         return data
+
     sorting = DataColumnFilter(collection=collection, after_start_date=date[0], before_end_date=date[1], database=db,
                                product=product, channel=channel, tag=tag)
     dfs = sorting.filter()
     data = sorting.sorting_table(dfs=dfs)
     data = data.to_dict('records')
-    print('data1')
-    print(data)
     return data
 
 

@@ -10,7 +10,6 @@ from starlette.responses import FileResponse
 import os
 
 client = os.environ.get('MONGODB_URI')
-# client = 'mongodb://127.0.0.1:27017'
 db = MongoDB(database_name='Mango', uri=client)
 collection = 'imports'
 
@@ -53,7 +52,6 @@ async def import_put(
         id: Optional[str] = Path(None)
 ):
     payload = item.dict()
-    _d = datetime.datetime.now()
     query = {'id': id}
     values = {'$set': payload}
     db.update_one(collection=collection, values=values, query=query)
