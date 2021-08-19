@@ -4,10 +4,10 @@ from config.db import MongoDB
 from bson import ObjectId
 from config.object_str import CutId
 from models.intent_bot import Intent
-from environ.client_environ import mango_channel
+# from environ.client_environ import mango_channel
 import os
 
-# mango_channel = '55zHqfzX2vguSp2YjK2Gt73Ejpzt1DHgsmiM1k3YRNYKJED7x6KXW1Je3FvUZe39fFENh0teAR9CiYXl4emWDmLVmFlqTOczl9Sos1jJDU3MOVM8zYH9Xfrzmdk7r3TuSZwZKFRoE4rxifjGZ7MvAgdB04t89/1O/w1cDnyilFU='
+mango_channel = '55zHqfzX2vguSp2YjK2Gt73Ejpzt1DHgsmiM1k3YRNYKJED7x6KXW1Je3FvUZe39fFENh0teAR9CiYXl4emWDmLVmFlqTOczl9Sos1jJDU3MOVM8zYH9Xfrzmdk7r3TuSZwZKFRoE4rxifjGZ7MvAgdB04t89/1O/w1cDnyilFU='
 router = APIRouter()
 client = os.environ.get('MONGODB_URI')
 # client = 'mongodb://127.0.0.1:27017'
