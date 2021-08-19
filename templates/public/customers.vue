@@ -260,7 +260,7 @@
               color="red"
               class="ma-2"
               v-for="i in item.tag" :key="i.length"
-              @click="sortingOnclick({'tag': i})"
+              @click="sortingOnclick({'tag': i.toString()})"
           >
             [[ i ]]
           </v-chip>

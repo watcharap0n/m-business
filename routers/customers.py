@@ -93,7 +93,7 @@ async def customer_sorting(item: Optional[dict] = Body(None)):
     channel = item['channel']
     date = item['date']
     tag = item['tag']
-
+    
     if not date:
         sorting = DataColumnFilter(collection=collection, database=db, product=product, channel=channel, tag=tag)
         dfs = sorting.filter()

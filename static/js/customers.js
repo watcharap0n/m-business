@@ -63,7 +63,7 @@ new Vue({
             {
                 text: 'อื่นๆ',
                 value: 'other',
-                align: "center"
+                align: "center",
             },
             {
                 text: 'ข้อมูลลูกค้า',
@@ -385,7 +385,7 @@ new Vue({
                 date: [],
                 channel: null,
                 product: null,
-                tag: []
+                tag: null
             }
             if (data.channel) {
                 dict.channel = data.channel
