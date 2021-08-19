@@ -692,7 +692,11 @@ new Vue({
             axios.post(path, data)
                 .then((res) => {
                     this.spinTag = true
-                    this.initialize()
+                    if (this.href === 'customer') {
+                        this.initialize()
+                    } else if (this.href === 'import') {
+                        this.APIImport()
+                    }
                 })
                 .catch((err) => {
                     console.error(err)
